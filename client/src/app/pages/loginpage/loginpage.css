@@ -1,0 +1,135 @@
+/* Page background */
+
+#login-page {
+    margin-top: 10%;
+    background: white;
+    /* Full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10 20px;
+    /* Horizontal padding only */
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Prevent scrolling */
+}
+
+
+/* Container */
+
+.container {
+    background: white;
+    max-width: 350px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 6px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+
+/* Form heading */
+
+.form-login-heading {
+    background: #66d9ed;
+    color: white;
+    padding: 15px 0;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 6px 6px 0 0;
+    margin: 0 0 30px 0;
+    font-size: 16px;
+    letter-spacing: 1.2px;
+}
+
+
+/* Form controls */
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+/* Button */
+
+.btn-theme {
+    background: #66d9ed;
+    color: white;
+    padding: 10px 0;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-theme:hover {
+    background: #4fb0cb;
+}
+
+
+/* Optional error message */
+
+.error {
+    color: #cc0000;
+    font-size: 12px;
+    margin-top: -12px;
+    margin-bottom: 10px;
+}
+
+
+/* Hide and show forms based on checkbox state */
+
+.form-signup {
+    display: none;
+}
+
+#toggle-signup:checked~.container .form-login {
+    display: none;
+}
+
+#toggle-signup:checked~.container .form-signup {
+    display: block;
+}
+
+
+/* Optional: make toggle link look clickable */
+
+.link-toggle {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.link-toggle:hover {
+    color: #0056b3;
+}
+
+.form-forgot {
+    display: none;
+}
+
+
+/* Show forgot form, hide others */
+
+#toggle-forgot:checked~.container .form-login,
+#toggle-forgot:checked~.container .form-signup {
+    display: none;
+}
+
+#toggle-forgot:checked~.container .form-forgot {
+    display: block;
+}
+
+
+/* Ensure that when signup is toggled, forgot form is hidden */
+
+#toggle-signup:checked~.container .form-forgot {
+    display: none;
+}

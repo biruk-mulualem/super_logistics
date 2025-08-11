@@ -1,1 +1,46 @@
-<p>logistics works!</p>
+<!-- Sidebar -->
+<div id="dashboard_page">
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/logistics"><i class="fas fa-layer-group"></i> logistics</a></li>
+                <li><a href="/history"><i class="fas fa-file-alt"></i> history</a></li>
+                <li><a href="/report"><i class="fas fa-chart-bar"></i> report</a></li>
+                <li><a href="/recyclebin"><i class="fas fa-table"></i> recycle bin</a></li>
+                <li><a href="/setting"><i class="fas fa-table"></i> settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">SDT</div>
+    </aside>
+    <!-- Main Content Area -->
+    <div class="main">
+        <!-- Top Navbar -->
+        <header class="topbar">
+            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+
+
+            <div class="topbar-user">
+                <img src="https://i.pravatar.cc/40" alt="User" class="user-avatar" />
+                <span class="username">John Doe</span>
+                <i class="fas fa-caret-down dropdown-icon"></i>
+
+                <div class="user-dropdown">
+                    <a href="#">Profile</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Notifications <span class="badge">3</span></a>
+                    <a href="#">Help</a>
+                    <a href="#">Logout</a>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <h1>Logistics</h1>
+            <app-reusable-table [headers]="tableHeaders" [data]="tableData"></app-reusable-table>
+
+
+        </div>
+
+
+    </div>
+</div>

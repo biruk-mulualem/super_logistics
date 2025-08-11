@@ -1,0 +1,47 @@
+<div class="table-section">
+    <div class="container">
+        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
+        <button class="add-btn" (click)="addRow()">Add</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="responsive-table">
+            <thead>
+                <tr>
+                    <th *ngFor="let header of headers">{{ header }}</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of paginatedData; let i = index">
+                    <td *ngFor="let header of headers" [attr.data-label]="header">
+                        <div *ngIf="!row.isEditing">{{ row[header.toLowerCase()] }}</div>
+                        <div *ngIf="row.isEditing">
+                            <input [(ngModel)]="row[header.toLowerCase()]" />
+                        </div>
+                    </td>
+                    <td data-label="Actions">
+                        <ng-container *ngIf="row.isEditing; else actionButtons">
+                            <button (click)="saveRow(row)">Save</button>
+                            <button (click)="cancelEdit(row)">Cancel</button>
+                        </ng-container>
+                        <ng-template #actionButtons>
+                            <button (click)="editRow(row)">Edit</button>
+                            <button (click)="deleteRow(row)">Delete</button>
+                        </ng-template>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">&lt;</button>
+        <button class="page-btn" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
+            {{ i + 1 }}
+        </button>
+        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
+    </div>
+</div>

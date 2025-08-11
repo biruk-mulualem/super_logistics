@@ -1,1 +1,87 @@
-<p>report works!</p>
+<!-- Sidebar -->
+<div id="dashboard_page">
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/logistics"><i class="fas fa-layer-group"></i> logistics</a></li>
+                <li><a href="/history"><i class="fas fa-file-alt"></i> history</a></li>
+                <li><a href="/report"><i class="fas fa-chart-bar"></i> report</a></li>
+                <li><a href="/recyclebin"><i class="fas fa-table"></i> recycle bin</a></li>
+                <li><a href="/setting"><i class="fas fa-table"></i> settings</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">SDT</div>
+    </aside>
+    <!-- Main Content Area -->
+    <div class="main">
+        <!-- Top Navbar -->
+        <header class="topbar">
+            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+
+
+            <div class="topbar-user">
+                <img src="https://i.pravatar.cc/40" alt="User" class="user-avatar" />
+                <span class="username">John Doe</span>
+                <i class="fas fa-caret-down dropdown-icon"></i>
+
+                <div class="user-dropdown">
+                    <a href="#">Profile</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Notifications <span class="badge">3</span></a>
+                    <a href="#">Help</a>
+                    <a href="#">Logout</a>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <div class="content">
+            <h1>Report</h1>
+
+
+            <!-- Cards -->
+            <div class="card-row">
+                <div class="card card-primary">Primary Card <a href="#">View Details</a></div>
+                <div class="card card-warning">Warning Card <a href="#">View Details</a></div>
+                <div class="card card-success">Success Card <a href="#">View Details</a></div>
+                <div class="card card-danger">Danger Card <a href="#">View Details</a></div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts">
+                <div class="chart-box">Area Chart Example</div>
+                <div class="chart-box">Bar Chart Example</div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-section">
+                <h3>DataTable Example</h3>
+                <input type="text" placeholder="Full text search" />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Country</th>
+                            <th>Area</th>
+                            <th>Population</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Russia</td>
+                            <td>17,075,200</td>
+                            <td>146,989,754</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>France</td>
+                            <td>640,679</td>
+                            <td>64,979,548</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

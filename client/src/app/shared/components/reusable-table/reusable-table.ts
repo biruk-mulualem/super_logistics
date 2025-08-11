@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -16,12 +15,19 @@ export class ReusableTable implements OnInit {
 
   filteredData: any[] = [];
   searchQuery: string = '';
+
   currentPage: number = 1;
   rowsPerPage: number = 10;
 
-  private originalRowData = new Map<any, any>();
-
   isBrowser: boolean;
+
+  showAddModal = false;
+  showEditModal = false;
+  showDeleteModal = false;
+
+  addData: any = {};
+  editData: any = {};
+  deleteRowData: any = null;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -33,7 +39,7 @@ export class ReusableTable implements OnInit {
     if (this.isBrowser) {
       this.setRowsPerPageBasedOnWidth(window.innerWidth);
     } else {
-      this.rowsPerPage = 10;  // default for SSR
+      this.rowsPerPage = 10;
     }
   }
 
@@ -44,16 +50,14 @@ export class ReusableTable implements OnInit {
     }
   }
 
-private setRowsPerPageBasedOnWidth(width: number) {
-  if (width <= 480) {
-    this.rowsPerPage = 1;      // phones: 1 row per page
-  } else {
-    this.rowsPerPage = 10;     // larger devices: 10 rows per page
+  private setRowsPerPageBasedOnWidth(width: number) {
+    if (width <= 480) {
+      this.rowsPerPage = 1;
+    } else {
+      this.rowsPerPage = 10;
+    }
+    this.currentPage = 1;
   }
-  this.currentPage = 1;        // always reset to page 1
-}
-
-
 
   get paginatedData(): any[] {
     const start = (this.currentPage - 1) * this.rowsPerPage;
@@ -77,53 +81,91 @@ private setRowsPerPageBasedOnWidth(width: number) {
   setPage(page: number): void {
     this.currentPage = page;
   }
-
   prevPage(): void {
     if (this.currentPage > 1) this.currentPage--;
   }
-
   nextPage(): void {
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  editRow(row: any): void {
-    this.originalRowData.set(row, { ...row });
-    row.isEditing = true;
-  }
+  // --- Modal handling with body scroll toggle ---
 
-  cancelEdit(row: any): void {
-    const original = this.originalRowData.get(row);
-    if (original) {
-      Object.assign(row, original);
+  private toggleBodyScroll(disable: boolean) {
+    if (!this.isBrowser) return;
+    if (disable) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
     }
-    row.isEditing = false;
-    this.originalRowData.delete(row);
   }
 
-  saveRow(row: any): void {
-    // Add backend update calls here if needed
-    row.isEditing = false;
-    this.originalRowData.delete(row);
+  openAddModal(): void {
+    this.addData = {};
+    this.headers.forEach(header => {
+      this.addData[header.toLowerCase()] = '';
+    });
+    this.showAddModal = true;
+    this.toggleBodyScroll(true);
   }
 
-  deleteRow(row: any): void {
-    this.data = this.data.filter(r => r !== row);
+  closeAddModal(): void {
+    this.showAddModal = false;
+    this.toggleBodyScroll(false);
+  }
+
+  saveAdd(): void {
+    this.addData.id = this.generateId();
+    this.data.unshift(this.addData);
+    this.applyFilterAndPagination();
+    this.closeAddModal();
+  }
+
+  openEditModal(row: any): void {
+    this.editData = { ...row };
+    this.showEditModal = true;
+    this.toggleBodyScroll(true);
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.toggleBodyScroll(false);
+  }
+
+  saveEdit(): void {
+    const index = this.data.findIndex(r => r.id === this.editData.id);
+    if (index > -1) {
+      this.data[index] = this.editData;
+    }
+    this.applyFilterAndPagination();
+    this.closeEditModal();
+  }
+
+  openDeleteModal(row: any): void {
+    this.deleteRowData = row;
+    this.showDeleteModal = true;
+    this.toggleBodyScroll(true);
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.deleteRowData = null;
+    this.toggleBodyScroll(false);
+  }
+
+  confirmDelete(): void {
+    this.data = this.data.filter(r => r !== this.deleteRowData);
+    this.applyFilterAndPagination();
+    this.closeDeleteModal();
+  }
+
+  private applyFilterAndPagination() {
     this.onSearch();
-
     if (this.currentPage > this.totalPages) {
       this.currentPage = this.totalPages || 1;
     }
   }
 
-  addRow(): void {
-    const newRow: any = {};
-    this.headers.forEach(header => {
-      newRow[header.toLowerCase()] = '';
-    });
-    newRow.isEditing = true;
-
-    this.data.unshift(newRow);
-    this.filteredData = [...this.data];
-    this.currentPage = 1;
+  private generateId(): number {
+    return Math.floor(Math.random() * 1000000);
   }
 }

@@ -1,0 +1,106 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 240px;
+    background-color: #1a2a5a;
+    /* dark navy */
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    box-sizing: border-box;
+    transition: width 0.3s ease;
+    color: white;
+}
+
+.sidebar.collapsed {
+    width: 72px;
+    /* narrow when collapsed */
+}
+
+.icon-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 12px;
+}
+
+button {
+    background: none;
+    border: none;
+    color: white;
+    /* explicitly white */
+    font-size: 20px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+button i,
+button .label {
+    color: white;
+    /* explicitly white */
+}
+
+button:hover,
+button.active {
+    background-color: #29468b;
+}
+
+button i {
+    min-width: 24px;
+    text-align: center;
+}
+
+.label {
+    font-size: 16px;
+    user-select: none;
+}
+
+hr {
+    width: 90%;
+    border: 1px solid #29468b;
+    margin: 20px auto;
+    border-radius: 1px;
+}
+
+.profile {
+    margin-top: auto;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e7e9ec;
+}
+
+.toggle-btn {
+    margin-bottom: 20px;
+    font-size: 24px;
+    padding: 10px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.toggle-btn:hover {
+    background-color: #29468b;
+}

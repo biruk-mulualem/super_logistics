@@ -1,9 +1,13 @@
 <div class="table-section">
+    <!-- Top Search and Add Button -->
     <div class="container">
         <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
-        <button class="add-btn" (click)="addRow()">Add</button>
+
+        <button class="add-btn" (click)="openAddModal()">Add</button>
+
     </div>
 
+    <!-- Table -->
     <div class="table-wrapper">
         <table class="responsive-table">
             <thead>
@@ -15,22 +19,13 @@
             <tbody>
                 <tr *ngFor="let row of paginatedData; let i = index">
                     <td *ngFor="let header of headers" [attr.data-label]="header">
-                        <div *ngIf="!row.isEditing">{{ row[header.toLowerCase()] }}</div>
-                        <div *ngIf="row.isEditing">
-                            <input [(ngModel)]="row[header.toLowerCase()]" />
-                        </div>
+                        {{ row[header.toLowerCase()] }}
                     </td>
                     <td data-label="Actions">
-                        <ng-container *ngIf="row.isEditing; else actionButtons">
-                            <button (click)="saveRow(row)">Save</button>
-                            <button (click)="cancelEdit(row)">Cancel</button>
-                        </ng-container>
-                        <ng-template #actionButtons>
-                            <button (click)="editRow(row)">Edit</button>
-                            <button (click)="deleteRow(row)">Delete</button>
-                        </ng-template>
-                    </td>
 
+                        <button (click)="openEditModal(row)">Edit</button>
+                        <button (click)="openDeleteModal(row)">Delete</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -44,4 +39,49 @@
         </button>
         <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
     </div>
-</div>
+
+    <!-- ADD MODAL -->
+    <div class="modal" *ngIf="showAddModal" (click)="closeAddModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>Add Row</h3>
+            <div class="modal-form">
+                <div class="modal-input-group" *ngFor="let header of headers">
+                    <label>{{ header }}</label>
+                    <input [(ngModel)]="addData[header.toLowerCase()]" />
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button (click)="saveAdd()">Add</button>
+                <button (click)="closeAddModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal" *ngIf="showEditModal" (click)="closeEditModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>Edit Row</h3>
+            <div class="modal-form">
+                <div class="modal-input-group" *ngFor="let header of headers">
+                    <label>{{ header }}</label>
+                    <input [(ngModel)]="editData[header.toLowerCase()]" />
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button (click)="saveEdit()">Save</button>
+                <button (click)="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this row?</p>
+            <div class="modal-buttons">
+                <button (click)="confirmDelete()">Yes</button>
+                <button (click)="closeDeleteModal()">No</button>
+            </div>
+        </div>
+    </div>

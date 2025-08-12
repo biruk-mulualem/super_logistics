@@ -1,7 +1,7 @@
-/* Main content */
+/* Base layout */
 
 .main {
-    margin-left: 250px;
+    margin-left: 100px;
     transition: margin-left 0.3s ease;
     padding: 20px;
     flex: 1;
@@ -19,4 +19,58 @@
 
 .content {
     padding: 20px;
+}
+
+
+/* Responsive table wrapper */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* Table styling */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    /* prevent it from squishing too much */
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+
+/* 📱 Mobile-specific styles for 480px and below */
+
+@media (max-width: 480px) {
+    .main {
+        margin-left: 0 !important;
+        padding: 10px;
+    }
+    .content {
+        padding: 0px;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    table {
+        min-width: 400px;
+        /* narrower for smaller phones */
+    }
+    th,
+    td {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
+
+h1 {
+    text-align: 10px;
 }

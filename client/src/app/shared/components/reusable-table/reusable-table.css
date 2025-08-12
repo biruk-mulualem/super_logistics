@@ -1,4 +1,4 @@
-/* Container */
+/* ------------------ Base Layout ------------------ */
 
 .container {
     display: flex;
@@ -8,9 +8,6 @@
     margin-bottom: 15px;
     gap: 10px;
 }
-
-
-/* Search Bar */
 
 .search-input {
     flex: 1 1 200px;
@@ -28,9 +25,6 @@
     outline: none;
 }
 
-
-/* Add Button */
-
 .add-btn {
     background-color: #5cb85c;
     border: none;
@@ -47,8 +41,16 @@
     background-color: #4cae4c;
 }
 
+.main-content {
+    margin-left: 150px;
+    /* space for sidebar */
+    padding: 20px;
+    /* optional for spacing */
+    box-sizing: border-box;
+}
 
-/* Table Section */
+
+/* ------------------ Table ------------------ */
 
 .table-section {
     background: white;
@@ -59,16 +61,10 @@
     box-sizing: border-box;
 }
 
-
-/* Table Wrapper */
-
 .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
-
-
-/* Table Styling */
 
 table {
     width: 100%;
@@ -89,9 +85,6 @@ td {
     word-wrap: break-word;
 }
 
-
-/* Responsive inputs inside table cells */
-
 .table-wrapper td input {
     width: 100%;
     max-width: 100%;
@@ -101,16 +94,7 @@ td {
 }
 
 
-/* Avoid row expansion breaking layout */
-
-.table-wrapper tbody tr {
-    overflow-wrap: break-word;
-    word-break: break-word;
-    word-wrap: break-word;
-}
-
-
-/* Pagination */
+/* ------------------ Pagination ------------------ */
 
 .pagination {
     margin-top: 20px;
@@ -147,112 +131,23 @@ td {
 }
 
 
-/* Responsive table layout on tablets and phones (<= 992px) */
-
-@media (max-width: 992px) {
-    table,
-    thead,
-    tbody,
-    th,
-    td,
-    tr {
-        display: block;
-        width: 100%;
-    }
-    thead {
-        display: none;
-    }
-    tr {
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        padding: 10px;
-        border-radius: 6px;
-        background-color: #fafafa;
-    }
-    td {
-        position: relative;
-        padding-left: 40%;
-        /* reduced from 50% for input space */
-        text-align: left;
-        border: none;
-        border-bottom: 1px solid #eee;
-        box-sizing: border-box;
-    }
-    td::before {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        width: 35%;
-        /* slightly less width for label */
-        padding-right: 10px;
-        white-space: nowrap;
-        font-weight: bold;
-        content: attr(data-label);
-        color: #333;
-    }
-    td:last-child {
-        border-bottom: none;
-    }
-}
-
-
-/* Extra small devices (phones <= 480px) */
-
-@media (max-width: 480px) {
-    .search-input,
-    .add-btn {
-        width: 100%;
-        flex: 1 1 auto;
-    }
-    .pagination {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .page-btn {
-        flex: 1 1 30%;
-        margin-bottom: 5px;
-    }
-    /* Hide all rows by default */
-    .table-wrapper tbody tr {
-        display: none;
-    }
-    /* Show only the active row (controlled by Angular) */
-    .table-wrapper tbody tr.active-row {
-        display: block;
-    }
-}
-
-
-/* ----------- MODAL STYLES ----------- */
-
-
-/* ----------- MODAL STYLES ----------- */
-
-
-/* Modal backdrop: full viewport, dark transparent background */
+/* ------------------ Modal ------------------ */
 
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    /* full viewport width */
     height: 100vh;
-    /* full viewport height */
     background: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
     padding: 15px;
-    /* padding to avoid content stuck to edges */
     box-sizing: border-box;
     overflow-y: auto;
-    /* allow scrolling if modal content too tall */
 }
-
-
-/* Modal content box */
 
 .modal-content {
     background: white;
@@ -260,17 +155,11 @@ td {
     border-radius: 6px;
     width: 100%;
     max-width: 720px;
-    /* max width for desktop */
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     position: relative;
     max-height: 90vh;
-    /* max height relative to viewport */
     overflow-y: auto;
-    /* scroll inside modal if content too tall */
 }
-
-
-/* Modal heading */
 
 .modal-content h3 {
     margin-top: 0;
@@ -279,19 +168,12 @@ td {
     color: #333;
 }
 
-
-/* Modal form container: flexible grid */
-
 .modal-form {
     display: flex;
     flex-wrap: wrap;
     gap: 15px 20px;
-    /* vertical and horizontal gap */
     align-items: flex-start;
 }
-
-
-/* Input group inside modal */
 
 .modal-input-group {
     display: flex;
@@ -299,12 +181,7 @@ td {
     flex: 1 1 200px;
     min-width: 150px;
     max-width: 280px;
-    margin-bottom: 0;
-    /* managed by gap */
 }
-
-
-/* Label style */
 
 .modal-input-group label {
     font-weight: 600;
@@ -312,9 +189,6 @@ td {
     margin-bottom: 6px;
     color: #444;
 }
-
-
-/* Inputs/selects/textarea */
 
 .modal-input-group input,
 .modal-input-group select,
@@ -328,16 +202,10 @@ td {
     font-family: inherit;
 }
 
-
-/* Textarea specific */
-
 .modal-input-group textarea {
     min-height: 60px;
     resize: vertical;
 }
-
-
-/* Modal buttons container */
 
 .modal-buttons {
     margin-top: 25px;
@@ -345,9 +213,6 @@ td {
     justify-content: flex-end;
     gap: 12px;
 }
-
-
-/* Modal buttons */
 
 .modal-buttons button {
     padding: 8px 18px;
@@ -358,9 +223,6 @@ td {
     transition: background-color 0.25s ease;
 }
 
-
-/* Save / Confirm buttons: green */
-
 .modal-buttons button:first-child {
     background-color: #5cb85c;
     color: white;
@@ -369,9 +231,6 @@ td {
 .modal-buttons button:first-child:hover {
     background-color: #4cae4c;
 }
-
-
-/* Cancel buttons: grey */
 
 .modal-buttons button:last-child {
     background-color: #e0e0e0;
@@ -382,91 +241,122 @@ td {
     background-color: #ccc;
 }
 
-
-/* Full width input group (e.g. for remarks) */
-
 .modal-input-group.full-width {
     flex-basis: 100%;
     max-width: 100%;
 }
-
-
-/* Prevent background scroll when modal is open */
 
 body.modal-open {
     overflow: hidden;
 }
 
 
-/* Responsive: stack modal form on smaller screens */
+/* ------------------ Responsive: Table & Layout ------------------ */
 
-@media (max-width: 700px) {
-    .modal-form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px 20px;
-        /* vertical and horizontal gap */
-        flex-direction: row !important;
-    }
-    .modal-input-group {
-        flex: 1 1 calc(33.333% - 20px);
-        /* 3 per row with 20px gap */
-        max-width: calc(33.333% - 20px);
-        min-width: 120px;
-        /* Prevents items from shrinking too much */
-    }
-    .modal-input-group.full-width {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-    .modal-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .modal-buttons button {
+
+/* ✅ Tablet and large phones (<= 1024px) */
+
+@media (max-width: 1024px) {
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+        display: block;
         width: 100%;
+        font-size: 13px;
+    }
+    thead {
+        display: none;
+    }
+    tr {
+        border: 1px solid #ddd;
+        margin-bottom: 15px;
+        border-radius: 6px;
+        background-color: #fafafa;
+        padding: 10px;
+    }
+    td {
+        position: relative;
+        padding-left: 40%;
+        border: none;
+        border-bottom: 1px solid #eee;
+        box-sizing: border-box;
+        text-align: left;
+    }
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 35%;
+        font-weight: bold;
+        white-space: nowrap;
+        color: #333;
+    }
+    td:last-child {
+        border-bottom: none;
+    }
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-input,
+    .add-btn {
+        width: 50%;
+        margin-left: 25%;
+    }
+    .search-input {
+        max-width: 100%;
+        /* allow full width */
+        flex: 1 1 100%;
+        /* take up full available width */
+        min-width: auto;
+        /* remove the fixed min-width */
     }
 }
 
 
-/* Extra small devices (phones <= 480px) */
+/* ✅ Small phones (<= 768px) */
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 150px;
+        /* same as sidebar width */
+        padding-left: 10px;
+        /* optional, small padding */
+    }
+    .table-wrapper {
+        margin-left: 50px;
+    }
+    .search-input {
+        max-width: 100%;
+        /* allow full width */
+        flex: 1 1 100%;
+        /* take up full available width */
+        min-width: auto;
+        /* remove the fixed min-width */
+    }
+}
 
 
-/* Stack buttons vertically, full width, smaller padding */
+/* ✅ Extra small phones (<= 480px) */
 
 @media (max-width: 480px) {
-    .modal {
-        padding: 10px;
+    table,
+    td {
+        font-size: 11px;
     }
-    .modal-content {
-        padding: 15px 20px;
-        max-width: 95%;
-        width: 95%;
+    td::before {
+        font-size: 11px;
     }
-    .modal-form {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        /* Ensure inputs wrap in rows */
-        gap: 12px;
-    }
-    .modal-input-group {
-        flex: 1 1 calc(33.333% - 12px);
-        /* 3 per row with gap */
-        max-width: calc(33.333% - 12px);
-        min-width: 100px;
-        /* Prevents excessive shrinking */
-        box-sizing: border-box;
-    }
-    .modal-input-group.full-width {
-        flex: 1 1 100%;
+    .search-input {
         max-width: 100%;
-    }
-    .modal-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .modal-buttons button {
-        width: 100%;
+        /* allow full width */
+        flex: 1 1 100%;
+        /* take up full available width */
+        min-width: auto;
+        /* remove the fixed min-width */
     }
 }

@@ -4,12 +4,11 @@
         <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
 
         <button class="add-btn" (click)="openAddModal()">Add</button>
-
     </div>
 
     <!-- Table -->
     <div class="table-wrapper">
-        <table class="responsive-table">
+        <table>
             <thead>
                 <tr>
                     <th *ngFor="let header of headers">{{ header }}</th>
@@ -22,7 +21,6 @@
                         {{ row[header.toLowerCase()] }}
                     </td>
                     <td data-label="Actions">
-
                         <button (click)="openEditModal(row)">Edit</button>
                         <button (click)="openDeleteModal(row)">Delete</button>
                     </td>
@@ -33,11 +31,15 @@
 
     <!-- Pagination -->
     <div class="pagination">
-        <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">&lt;</button>
+        <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+      &lt;
+    </button>
         <button class="page-btn" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
-            {{ i + 1 }}
-        </button>
-        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
+      {{ i + 1 }}
+    </button>
+        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      &gt;
+    </button>
     </div>
 
     <!-- ADD MODAL -->
@@ -85,3 +87,4 @@
             </div>
         </div>
     </div>
+</div>

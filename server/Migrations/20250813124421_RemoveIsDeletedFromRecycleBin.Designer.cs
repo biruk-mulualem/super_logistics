@@ -12,8 +12,8 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    [Migration("20250731092923_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250813124421_RemoveIsDeletedFromRecycleBin")]
+    partial class RemoveIsDeletedFromRecycleBin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,7 +77,7 @@ namespace server.Migrations
                     b.ToTable("Histories");
                 });
 
-            modelBuilder.Entity("server.Models.LogisticsItem", b =>
+            modelBuilder.Entity("server.Models.LogisticsFollowup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,59 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogisticsItems");
+                    b.ToTable("LogisticsFollowups");
+                });
+
+            modelBuilder.Entity("server.Models.RecycleBin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AkkArrived")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("BillNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("ContReturned")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("DjbArrived")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DjbDeparted")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ItemDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("LoadingDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("SdtArrived")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Shipper")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Transitor")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Uom")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RecycleBins");
                 });
 
             modelBuilder.Entity("server.Models.Report", b =>
@@ -215,7 +267,7 @@ namespace server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("server.Models.User_Log", b =>
+            modelBuilder.Entity("server.Models.UserLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,7 +292,7 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User_Logs");
+                    b.ToTable("UserLogs");
                 });
 #pragma warning restore 612, 618
         }

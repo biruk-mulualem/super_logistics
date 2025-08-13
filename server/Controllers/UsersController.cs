@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -17,16 +15,19 @@ namespace server.Controllers
             _context = context;
         }
 
+        // GET: api/users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
+        // GET: api/users/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
+
             if (user == null)
             {
                 return NotFound();
@@ -35,6 +36,7 @@ namespace server.Controllers
             return user;
         }
 
+        // POST: api/users
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -44,6 +46,7 @@ namespace server.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
 
+        // PUT: api/users/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -60,19 +63,17 @@ namespace server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _context.Users.AnyAsync(e => e.Id == id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
+        // DELETE: api/users/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -86,6 +87,11 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool UserExists(int id)
+        {
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

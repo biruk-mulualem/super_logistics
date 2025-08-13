@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -17,18 +15,19 @@ namespace server.Controllers
             _context = context;
         }
 
-        // 🔹 GET: api/Histories
+        // GET: api/histories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<History>>> GetHistories()
         {
             return await _context.Histories.ToListAsync();
         }
 
-        // 🔹 GET: api/Histories/{id}
+        // GET: api/histories/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<History>> GetHistory(int id)
         {
             var history = await _context.Histories.FindAsync(id);
+
             if (history == null)
             {
                 return NotFound();
@@ -37,7 +36,7 @@ namespace server.Controllers
             return history;
         }
 
-        // 🔹 POST: api/Histories
+        // POST: api/histories
         [HttpPost]
         public async Task<ActionResult<History>> PostHistory(History history)
         {
@@ -47,7 +46,7 @@ namespace server.Controllers
             return CreatedAtAction(nameof(GetHistory), new { id = history.Id }, history);
         }
 
-        // 🔹 PUT: api/Histories/{id}
+        // PUT: api/histories/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutHistory(int id, History history)
         {
@@ -64,20 +63,17 @@ namespace server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _context.Histories.AnyAsync(e => e.Id == id))
+                if (!HistoryExists(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
-        // 🔹 DELETE: api/Histories/{id}
+        // DELETE: api/histories/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHistory(int id)
         {
@@ -91,6 +87,11 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool HistoryExists(int id)
+        {
+            return _context.Histories.Any(e => e.Id == id);
         }
     }
 }

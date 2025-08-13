@@ -31,7 +31,7 @@
 /* Form heading */
 
 .form-login-heading {
-    background: #66d9ed;
+    background: #1a2a5a;
     color: white;
     padding: 15px 0;
     font-weight: 600;
@@ -58,7 +58,7 @@
 /* Button */
 
 .btn-theme {
-    background: #66d9ed;
+    background: #1a2a5a;
     color: white;
     padding: 10px 0;
     border: none;
@@ -102,13 +102,13 @@
 /* Optional: make toggle link look clickable */
 
 .link-toggle {
-    color: #007bff;
+    color: #1a2a5a;
     cursor: pointer;
     text-decoration: underline;
 }
 
 .link-toggle:hover {
-    color: #0056b3;
+    color: #1a2a5a;
 }
 
 .form-forgot {

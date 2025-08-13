@@ -7,7 +7,6 @@ import { Report } from './pages/report/report';
 import { Recyclebin } from './pages/recyclebin/recyclebin';
 import { Setting } from './pages/setting/setting';
 
-
 export const routes: Routes = [
   { path: 'login', component: Loginpage, },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,7 +15,8 @@ export const routes: Routes = [
   {path:'history',component: History},
   {path:'report',component: Report},
   {path:'recyclebin',component: Recyclebin},
-  {path:'setting',component: Setting}
+  {path:'setting',component: Setting},
+    
 ];
 
 

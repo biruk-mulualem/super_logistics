@@ -17,7 +17,7 @@ export class ReusableTable implements OnInit {
   searchQuery: string = '';
 
   currentPage: number = 1;
-  rowsPerPage: number = 10;
+  rowsPerPage: number = 13;
 
   isBrowser: boolean;
 
@@ -39,7 +39,7 @@ export class ReusableTable implements OnInit {
     if (this.isBrowser) {
       this.setRowsPerPageBasedOnWidth(window.innerWidth);
     } else {
-      this.rowsPerPage = 10;
+      this.rowsPerPage = 13;
     }
   }
 
@@ -54,7 +54,7 @@ export class ReusableTable implements OnInit {
     if (width <= 480) {
       this.rowsPerPage = 1;
     } else {
-      this.rowsPerPage = 10;
+      this.rowsPerPage = 13;
     }
     this.currentPage = 1;
   }
@@ -168,4 +168,8 @@ export class ReusableTable implements OnInit {
   private generateId(): number {
     return Math.floor(Math.random() * 1000000);
   }
+
+
+
+
 }

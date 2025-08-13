@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -17,16 +15,19 @@ namespace server.Controllers
             _context = context;
         }
 
+        // GET: api/userlogs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserLog>>> GetUserLogs()
         {
             return await _context.UserLogs.ToListAsync();
         }
 
+        // GET: api/userlogs/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<UserLog>> GetUserLog(int id)
         {
             var userLog = await _context.UserLogs.FindAsync(id);
+
             if (userLog == null)
             {
                 return NotFound();
@@ -35,6 +36,7 @@ namespace server.Controllers
             return userLog;
         }
 
+        // POST: api/userlogs
         [HttpPost]
         public async Task<ActionResult<UserLog>> PostUserLog(UserLog userLog)
         {
@@ -44,6 +46,7 @@ namespace server.Controllers
             return CreatedAtAction(nameof(GetUserLog), new { id = userLog.Id }, userLog);
         }
 
+        // PUT: api/userlogs/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserLog(int id, UserLog userLog)
         {
@@ -60,19 +63,17 @@ namespace server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _context.UserLogs.AnyAsync(e => e.Id == id))
+                if (!UserLogExists(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
+        // DELETE: api/userlogs/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserLog(int id)
         {
@@ -86,6 +87,11 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool UserLogExists(int id)
+        {
+            return _context.UserLogs.Any(e => e.Id == id);
         }
     }
 }

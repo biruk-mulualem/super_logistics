@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -17,16 +15,19 @@ namespace server.Controllers
             _context = context;
         }
 
+        // GET: api/reports
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Report>>> GetReports()
         {
             return await _context.Reports.ToListAsync();
         }
 
+        // GET: api/reports/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReport(int id)
         {
             var report = await _context.Reports.FindAsync(id);
+
             if (report == null)
             {
                 return NotFound();
@@ -35,6 +36,7 @@ namespace server.Controllers
             return report;
         }
 
+        // POST: api/reports
         [HttpPost]
         public async Task<ActionResult<Report>> PostReport(Report report)
         {
@@ -44,6 +46,7 @@ namespace server.Controllers
             return CreatedAtAction(nameof(GetReport), new { id = report.Id }, report);
         }
 
+        // PUT: api/reports/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReport(int id, Report report)
         {
@@ -60,19 +63,17 @@ namespace server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _context.Reports.AnyAsync(e => e.Id == id))
+                if (!ReportExists(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
         }
 
+        // DELETE: api/reports/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
@@ -86,6 +87,11 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool ReportExists(int id)
+        {
+            return _context.Reports.Any(e => e.Id == id);
         }
     }
 }

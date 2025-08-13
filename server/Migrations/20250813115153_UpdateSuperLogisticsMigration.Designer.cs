@@ -12,8 +12,8 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    [Migration("20250731114236_RenameUserLog")]
-    partial class RenameUserLog
+    [Migration("20250813115153_UpdateSuperLogisticsMigration")]
+    partial class UpdateSuperLogisticsMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,7 +77,7 @@ namespace server.Migrations
                     b.ToTable("Histories");
                 });
 
-            modelBuilder.Entity("server.Models.LogisticsItem", b =>
+            modelBuilder.Entity("server.Models.LogisticsFollowup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,7 @@ namespace server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LogisticsItems");
+                    b.ToTable("LogisticsFollowups");
                 });
 
             modelBuilder.Entity("server.Models.Report", b =>

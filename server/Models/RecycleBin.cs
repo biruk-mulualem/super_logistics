@@ -2,8 +2,9 @@ using System;
 
 namespace server.Models
 {
-    public class LogisticsItem
-    {        public int Id { get; set; }
+    public class RecycleBin
+    {
+        public int Id { get; set; }
         public string? ItemDescription { get; set; }
         public string? BillNo { get; set; }
         public string? Shipper { get; set; }

@@ -1,7 +1,7 @@
 /* Base layout */
 
 .main {
-    margin-left: 100px;
+    margin-left: 40px;
     transition: margin-left 0.3s ease;
     padding: 20px;
     flex: 1;
@@ -51,7 +51,8 @@ td {
 
 @media (max-width: 480px) {
     .main {
-        margin-left: 0 !important;
+        margin-top: 50px;
+        margin-left: 15px !important;
         padding: 10px;
     }
     .content {

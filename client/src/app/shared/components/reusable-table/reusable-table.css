@@ -5,13 +5,13 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    gap: 10px;
+    margin-bottom: 10px;
+    gap: 0px;
 }
 
 .search-input {
-    flex: 1 1 200px;
-    min-width: 150px;
+    flex: 1 1 100px;
+    min-width: 130px;
     max-width: 20%;
     padding: 8px 12px;
     font-size: 14px;
@@ -25,8 +25,9 @@
     outline: none;
 }
 
-.add-btn {
-    background-color: #5cb85c;
+.add-btn,
+.edit-btn,
+.delete-btn {
     border: none;
     color: white;
     padding: 8px 14px;
@@ -37,6 +38,40 @@
     flex-shrink: 0;
 }
 
+.add-btn {
+    background-color: #5cb85c;
+}
+
+#plus_button {
+    background-color: #41dbf7;
+    border: none;
+    color: white;
+    padding: 1px 10px;
+    font-size: 19px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: 15%;
+}
+
+.uom-header {
+    display: flex;
+    align-items: center;
+    /* vertically center label and button */
+    gap: 69%;
+    /* optional spacing between them */
+}
+
+.edit-btn {
+    background-color: #0eb1f1;
+    margin-right: 10px;
+}
+
+.delete-btn {
+    background-color: #f73403;
+}
+
 .add-btn:hover {
     background-color: #4cae4c;
 }
@@ -44,7 +79,7 @@
 .main-content {
     margin-left: 150px;
     /* space for sidebar */
-    padding: 20px;
+    padding: 5px;
     /* optional for spacing */
     box-sizing: border-box;
 }
@@ -54,10 +89,10 @@
 
 .table-section {
     background: white;
-    padding: 20px;
-    border-radius: 4px;
+    padding: 10px;
+    border-radius: 2px;
     border: 1px solid #ddd;
-    max-width: 100%;
+    max-width: 110%;
     box-sizing: border-box;
 }
 
@@ -78,7 +113,7 @@ thead {
 
 th,
 td {
-    padding: 12px;
+    padding: px;
     text-align: left;
     border: 1px solid #ddd;
     white-space: normal;
@@ -89,8 +124,8 @@ td {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    font-size: 14px;
-    padding: 6px 8px;
+    font-size: 20px;
+    padding: 2px 4px;
 }
 
 

@@ -2,9 +2,8 @@ using System;
 
 namespace server.Models
 {
-    public class History
-    {
-        public int Id { get; set; }
+    public class LogisticsFollowup
+    {        public int Id { get; set; }
         public string? ItemDescription { get; set; }
         public string? BillNo { get; set; }
         public string? Shipper { get; set; }
@@ -20,7 +19,3 @@ namespace server.Models
         public string? Remark { get; set; }
     }
 }
-
-
-
-

@@ -1,46 +1,44 @@
-<aside class="sidebar" [class.collapsed]="isCollapsed">
+<aside class="sidebar">
     <!-- Top toggle button -->
-    <button class="toggle-btn" (click)="toggleCollapse()" aria-label="Toggle Sidebar">
-    <i class="fas fa-bars"></i>
-  </button>
-
-    <div class="icon-group">
-        <button class="toggle-btn" (click)="toggleCollapse()" aria-label="Toggle Sidebar">
-  <i class="fas fa-bars"></i>
-</button>
-        <button (click)="setActive(1)" [class.active]="activeIndex === 1" aria-label="Dashboard" [title]="'Dashboard'">
-      <i class="fas fa-th"></i>
+    <br><br><br><br><br>
+    <div class="icon-group" class="dashboard_icon">
+        <button [routerLink]="'/dashboard'" aria-label="Dashboard" [title]="'Dashboard'">
+      <i class="fas fa-tachometer-alt"></i> <!-- Dashboard icon -->
       <span class="label" *ngIf="!isCollapsed">Dashboard</span>
+      <span class="tooltip-text">Dashboard</span>
     </button>
     </div>
-
     <hr />
-
     <div class="icon-group">
-        <button (click)="setActive(2)" [class.active]="activeIndex === 2" aria-label="Images" [title]="'Images'">
-      <i class="fas fa-image"></i>
+        <button [routerLink]="'/logistics'" aria-label="Logistics" [title]="'Logistics'">
+      <i class="fas fa-truck"></i> <!-- Logistics icon -->
       <span class="label" *ngIf="!isCollapsed">Logistics</span>
+      <span class="tooltip-text">Logistics</span>
     </button>
-        <button (click)="setActive(3)" [class.active]="activeIndex === 3" aria-label="Documents" [title]="'Documents'">
-      <i class="fas fa-file-alt"></i>
+        <button [routerLink]="'/history'" aria-label="History" [title]="'History'">
+      <i class="fas fa-history"></i> <!-- History icon -->
       <span class="label" *ngIf="!isCollapsed">History</span>
+      <span class="tooltip-text">History</span>
     </button>
-        <button (click)="setActive(4)" [class.active]="activeIndex === 4" aria-label="Pin" [title]="'Pin'">
-      <i class="fas fa-thumbtack"></i>
+        <button [routerLink]="'/report'" aria-label="Report" [title]="'Report'">
+      <i class="fas fa-chart-bar"></i> <!-- Report icon -->
       <span class="label" *ngIf="!isCollapsed">Report</span>
+      <span class="tooltip-text">Report</span>
     </button>
-        <button (click)="setActive(5)" [class.active]="activeIndex === 5" aria-label="Chat" [title]="'Chat'">
-      <i class="fas fa-comment"></i>
+        <button [routerLink]="'/recyclebin'" aria-label="Recyclebin" [title]="'Recyclebin'">
+      <i class="fas fa-trash-alt"></i> <!-- Recyclebin icon -->
       <span class="label" *ngIf="!isCollapsed">Recyclebin</span>
+      <span class="tooltip-text">Recyclebin</span>
     </button>
     </div>
 
     <hr />
 
     <div class="icon-group">
-        <button (click)="setActive(8)" [class.active]="activeIndex === 8" aria-label="Settings" [title]="'Settings'">
-      <i class="fas fa-cog"></i>
+        <button aria-label="Settings" [routerLink]="'/setting'" [title]="'Settings'">
+      <i class="fas fa-cog"></i> <!-- Settings icon -->
       <span class="label" *ngIf="!isCollapsed">Settings</span>
+      <span class="tooltip-text">Settings</span>
     </button>
     </div>
 

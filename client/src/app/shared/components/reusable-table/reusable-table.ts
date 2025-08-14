@@ -2,6 +2,8 @@ import { Component, Input, OnInit, HostListener, Inject, PLATFORM_ID } from '@an
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
+import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
+
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -10,9 +12,11 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./reusable-table.css']
 })
 export class ReusableTable implements OnInit {
-  @Input() headers: string[] = [];
+@Input() headers: { label: string; key: string }[] = [];
+
   @Input() data: any[] = [];
 
+  
   filteredData: any[] = [];
   searchQuery: string = '';
 
@@ -28,10 +32,13 @@ export class ReusableTable implements OnInit {
   addData: any = {};
   editData: any = {};
   deleteRowData: any = null;
+  constructor(
+  @Inject(PLATFORM_ID) private platformId: Object,
+  private logisticsService: LogisticsFollowupService   // <-- add this
+) {
+  this.isBrowser = isPlatformBrowser(this.platformId);
+}
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
 
   ngOnInit(): void {
     this.filteredData = [...this.data];
@@ -98,27 +105,85 @@ export class ReusableTable implements OnInit {
       document.body.classList.remove('modal-open');
     }
   }
+openAddModal(): void {
+  this.addData = {}; // Reset any previous data
 
-  openAddModal(): void {
-    this.addData = {};
-    this.headers.forEach(header => {
-      this.addData[header.toLowerCase()] = '';
-    });
-    this.showAddModal = true;
-    this.toggleBodyScroll(true);
-  }
+  this.headers.forEach(header => {
+    this.addData[header.key] = ''; // Initialize each form field with an empty string
+  });
+
+  this.showAddModal = true;       // Show the modal
+  this.toggleBodyScroll(true);    // Optional UX improvement
+}
 
   closeAddModal(): void {
     this.showAddModal = false;
     this.toggleBodyScroll(false);
   }
 
-  saveAdd(): void {
-    this.addData.id = this.generateId();
-    this.data.unshift(this.addData);
+saveAdd(): void {
+  console.log('saveAdd clicked', this.addData);
+
+  const sanitizedData = {
+    ...this.addData,
+
+    // Convert to numbers or fallback to 0
+    quantity: Number(this.addData.quantity) || 0,
+    loadedOnfcl: Number(this.addData.loadedOnfcl) || 0,
+    numberofContReturned: Number(this.addData.numberofContReturned) || 0,
+
+    // Normalize date fields
+    etadjb: this.formatDate(this.addData.etadjb),
+    loadingDate: this.formatDate(this.addData.loadingDate),
+    djbArrived: this.formatDate(this.addData.djbArrived),
+    docSentDjb: this.formatDate(this.addData.docSentDjb),
+    docCollected: this.formatDate(this.addData.docCollected),
+    billCollected: this.formatDate(this.addData.billCollected),
+    taxPaid: this.formatDate(this.addData.taxPaid),
+    djbDeparted: this.formatDate(this.addData.djbDeparted),
+    akkArrived: this.formatDate(this.addData.akkArrived),
+    sdtArrived: this.formatDate(this.addData.sdtArrived),
+    containerReturned: this.formatDate(this.addData.containerReturned)
+  };
+
+  // ❌ Prevent `id` from being sent
+  delete (sanitizedData as any).id;
+
+  this.logisticsService.createFollowup(sanitizedData).subscribe({
+    next: (res: any) => {
+      console.log('Entry added', res);
+      this.loadFollowups();
+      this.closeAddModal();
+    },
+    error: (err: any) => {
+      console.error('Failed to add', err);
+
+      if (err.error?.errors) {
+        for (let key in err.error.errors) {
+          console.warn(`${key}: ${err.error.errors[key].join(', ')}`);
+        }
+      }
+    }
+  });
+}
+
+
+private formatDate(date: string | null | undefined): string | null {
+  if (!date) return null;
+  const parsed = new Date(date);
+  return isNaN(parsed.getTime()) ? null : parsed.toISOString().split('T')[0]; // "YYYY-MM-DD"
+}
+
+
+
+loadFollowups() {
+  this.logisticsService.getFollowups().subscribe(data => {
+    this.data = data;
     this.applyFilterAndPagination();
-    this.closeAddModal();
-  }
+  });
+}
+
+
 
   openEditModal(row: any): void {
     this.editData = { ...row };
@@ -131,14 +196,18 @@ export class ReusableTable implements OnInit {
     this.toggleBodyScroll(false);
   }
 
-  saveEdit(): void {
-    const index = this.data.findIndex(r => r.id === this.editData.id);
-    if (index > -1) {
-      this.data[index] = this.editData;
+saveEdit(): void {
+  this.logisticsService.updateFollowup(this.editData.id, this.editData).subscribe({
+    next: () => {
+      this.loadFollowups(); // Reload after update
+      this.closeEditModal();
+    },
+    error: (err) => {
+      console.error('Failed to update', err);
     }
-    this.applyFilterAndPagination();
-    this.closeEditModal();
-  }
+  });
+}
+
 
   openDeleteModal(row: any): void {
     this.deleteRowData = row;
@@ -152,11 +221,20 @@ export class ReusableTable implements OnInit {
     this.toggleBodyScroll(false);
   }
 
-  confirmDelete(): void {
-    this.data = this.data.filter(r => r !== this.deleteRowData);
-    this.applyFilterAndPagination();
-    this.closeDeleteModal();
-  }
+confirmDelete(): void {
+  if (!this.deleteRowData) return;
+
+  this.logisticsService.deleteFollowup(this.deleteRowData.id).subscribe({
+    next: () => {
+      this.loadFollowups(); // Reload after delete
+      this.closeDeleteModal();
+    },
+    error: (err) => {
+  console.error('Failed to add', err); 
+
+    }
+  });
+}
 
   private applyFilterAndPagination() {
     this.onSearch();

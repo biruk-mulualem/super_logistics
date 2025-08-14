@@ -28,11 +28,10 @@ namespace Server
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngularClient", policy =>
-                    policy.AllowAnyOrigin()   // Allow requests from any origin (frontend URL)
+                 policy.WithOrigins("http://localhost:4200") // or your deployed Angular URL
                           .AllowAnyMethod()   // Allow any HTTP method (GET, POST, PUT, DELETE, etc.)
                           .AllowAnyHeader()); // Allow any headers in the request (useful for authentication, content type, etc.)
             });
-
             // Add Swagger for API documentation (Swagger generates interactive API documentation)
             builder.Services.AddEndpointsApiExplorer(); // This adds API endpoint discovery
             builder.Services.AddSwaggerGen(); // Adds Swagger generation services for documentation
@@ -49,6 +48,7 @@ namespace Server
                 app.UseSwagger(); // Enables the Swagger middleware to generate the API documentation
                 app.UseSwaggerUI(); // Enables Swagger's UI to interact with the API from a browser
             }
+
 
             // Enable authorization middleware (necessary for handling authentication/authorization)
             app.UseAuthorization();

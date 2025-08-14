@@ -13,8 +13,8 @@
     flex: 1 1 100px;
     min-width: 130px;
     max-width: 20%;
-    padding: 8px 12px;
-    font-size: 14px;
+    padding: 8px 14px 10px;
+    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 6px;
     transition: border-color 0.3s ease;
@@ -30,12 +30,16 @@
 .delete-btn {
     border: none;
     color: white;
-    padding: 8px 14px;
+    padding: 6px 10px;
     font-size: 14px;
     border-radius: 6px;
-    cursor: pointer;
     white-space: nowrap;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    cursor: pointer;
 }
 
 .add-btn {
@@ -47,7 +51,7 @@
     border: none;
     color: white;
     padding: 1px 10px;
-    font-size: 19px;
+    font-size: 20px;
     border-radius: 6px;
     cursor: pointer;
     white-space: nowrap;
@@ -84,15 +88,21 @@
     box-sizing: border-box;
 }
 
+.action-buttons {
+    display: flex;
+    gap: 0px;
+    /* Adjust space between buttons */
+}
+
 
 /* ------------------ Table ------------------ */
 
 .table-section {
     background: white;
-    padding: 10px;
+    padding: 2px;
     border-radius: 2px;
     border: 1px solid #ddd;
-    max-width: 110%;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
@@ -105,10 +115,11 @@ table {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
+    font-size: 13px;
 }
 
 thead {
-    background-color: #f1f1f1;
+    background-color: #13a0c4;
 }
 
 th,
@@ -124,8 +135,17 @@ td {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    font-size: 20px;
-    padding: 2px 4px;
+    font-size: 10px;
+    padding: 2px 2px;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: white;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #d8d7d7;
+    /* light gray */
 }
 
 
@@ -372,6 +392,28 @@ body.modal-open {
         /* take up full available width */
         min-width: auto;
         /* remove the fixed min-width */
+    }
+    /* Hide all page buttons except first and last (prev and next) */
+    .pagination button.page-btn:not(:first-child):not(:last-child) {
+        display: none;
+    }
+    /* Style prev and next buttons for better tapping */
+    .pagination button.page-btn:first-child,
+    .pagination button.page-btn:last-child {
+        min-width: 44px;
+        height: 44px;
+        font-size: 15px;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 

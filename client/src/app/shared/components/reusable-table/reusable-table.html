@@ -14,28 +14,33 @@
         <table>
             <thead>
                 <tr>
-                    <th *ngFor="let header of headers">{{ header }}</th>
+                    <th *ngFor="let header of headers">{{ header.label }}</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let row of paginatedData; let i = index">
-                    <td *ngFor="let header of headers" [attr.data-label]="header">
-                        {{ row[header.toLowerCase()] }}
+                <tr *ngFor="let row of paginatedData">
+                    <td *ngFor="let header of headers" [attr.data-label]="header.label">
+                        {{ row[header.key] }}
                     </td>
                     <td data-label="Actions">
-                        <button (click)="openEditModal(row)" class="edit-btn" title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button (click)="openDeleteModal(row)" class="delete-btn" title="Delete">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-
+                        <div class="action-buttons">
+                            <button (click)="openEditModal(row)" class="edit-btn" title="Edit">
+      <i class="fas fa-edit"></i>
+    </button>
+                            <button (click)="openDeleteModal(row)" class="delete-btn" title="Delete">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+                        </div>
                     </td>
+
                 </tr>
             </tbody>
+
         </table>
     </div>
+
+
 
     <!-- Pagination -->
     <div class="pagination">
@@ -49,20 +54,16 @@
             &gt;
         </button>
     </div>
-
     <!-- ADD MODAL -->
     <div class="modal" *ngIf="showAddModal" (click)="closeAddModal()">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <div class="modal-form">
                 <h3>Add Logistics Entry</h3>
-
             </div>
-
             <div class="modal-form">
-
                 <div class="modal-input-group">
                     <label>Item Description</label>
-                    <input [(ngModel)]="addData.item" placeholder="Enter item description" />
+                    <input [(ngModel)]="addData.itemDescription" placeholder="Enter item description" />
                 </div>
 
                 <div class="modal-input-group">
@@ -127,12 +128,12 @@
 
                 <div class="modal-input-group">
                     <label>Bill No</label>
-                    <input [(ngModel)]="addData.bNo" placeholder="Enter bill number" />
+                    <input [(ngModel)]="addData.billNo" placeholder="Enter bill number" />
                 </div>
 
                 <div class="modal-input-group">
                     <label>Loaded On</label>
-                    <input type="number" [(ngModel)]="addData.loadedOn" />
+                    <input type="number" [(ngModel)]="addData.LoadedOnfcl" />
                 </div>
 
                 <div class="modal-input-group">
@@ -174,15 +175,46 @@
                         <!-- Add more shippers as needed -->
                     </select>
                 </div>
+                <div class="modal-input-group">
+                    <label>Doc Owner</label>
+                    <input [(ngModel)]="addData.docOwner" placeholder="Enter document owner" />
+                </div>
 
+                <div class="modal-input-group">
+                    <label>Truck Way Bill</label>
+                    <input [(ngModel)]="addData.truckWayBill" placeholder="Enter truck waybill number" />
+                </div>
                 <div class="modal-input-group">
                     <label>Loading Date</label>
                     <input type="date" [(ngModel)]="addData.loadingDate" />
                 </div>
 
+
+                <div class="modal-input-group">
+                    <label>ETA DJB</label>
+                    <input type="date" [(ngModel)]="addData.etadjb" />
+                </div>
+
+
+
                 <div class="modal-input-group">
                     <label>DJB Arrived</label>
                     <input type="date" [(ngModel)]="addData.djbArrived" />
+                </div>
+
+                <div class="modal-input-group">
+                    <label>Doc Sent DJB</label>
+                    <input type="date" [(ngModel)]="addData.docSentDjb" />
+                </div>
+
+                <div class="modal-input-group">
+                    <label>Doc Collected</label>
+                    <input type="date" [(ngModel)]="addData.docCollected" />
+                </div>
+
+                <div class="modal-input-group">
+                    <label>Bill Collected</label>
+                    <input type="date" [(ngModel)]="addData.billCollected" />
                 </div>
 
                 <div class="modal-input-group">
@@ -204,17 +236,18 @@
                     <label>Container Returned</label>
                     <input type="date" [(ngModel)]="addData.containerReturned" />
                 </div>
-
+                <div class="modal-input-group">
+                    <label>Tax Paid</label>
+                    <input type="date" [(ngModel)]="addData.taxPaid" />
+                </div>
                 <div class="modal-input-group">
                     <label>Remark</label>
                     <textarea [(ngModel)]="addData.remark" placeholder="Optional notes..."></textarea>
                 </div>
-
             </div>
-
             <div class="modal-buttons">
-                <button (click)="saveAdd()" class="btn btn-primary">Save
-                    Logistics Entry</button>
+                <button (click)="saveAdd()" class="btn btn-primary">Save Logistics Entry</button>
+
                 <button (click)="closeAddModal()" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
@@ -224,11 +257,12 @@
     <div class="modal" *ngIf="showEditModal" (click)="closeEditModal()">
         <div class="modal-content" (click)="$event.stopPropagation()">
             <h3>Edit Logistics Entry</h3>
+
             <div class="modal-form">
 
                 <div class="modal-input-group">
                     <label>Item Description</label>
-                    <input [(ngModel)]="editData.item" placeholder="Enter item description" />
+                    <input [(ngModel)]="editData.itemDescription" placeholder="Enter item description" />
                 </div>
 
                 <div class="modal-input-group">
@@ -239,96 +273,91 @@
                 <div class="modal-input-group">
                     <label>UOM</label>
                     <select [(ngModel)]="editData.uom">
-                        <option value disabled>Select UOM</option>
-                        <option value="mg">mg</option>
-                        <option value="g">g</option>
-                        <option value="kg">kg</option>
-                        <option value="ton">ton</option>
-                        <option value="tons">tons</option>
-                        <!-- Volume -->
-                        <option value="ml">ml</option>
-                        <option value="cl">cl</option>
-                        <option value="dl">dl</option>
-                        <option value="ltr">LTR</option>
-                        <option value="m3">cubic meter (m³)</option>
-                        <!-- Length -->
-                        <option value="mm">mm</option>
-                        <option value="cm">cm</option>
-                        <option value="m">m</option>
-                        <option value="inch">inch</option>
-                        <option value="ft">ft</option>
-                        <option value="yd">yd</option>
-                        <!-- Area -->
-                        <option value="sqm">square meter (m²)</option>
-                        <option value="sqft">square foot (ft²)</option>
-                        <!-- Count/Units -->
-                        <option value="pcs">PCS</option>
-                        <option value="units">Units</option>
-                        <option value="pack">Pack</option>
-                        <option value="box">Box</option>
-                        <option value="bag">Bag</option>
-                        <option value="roll">Roll</option>
-                        <option value="rolls">Rolls</option>
-                        <option value="sheet">Sheet</option>
-                        <option value="sheets">Sheets</option>
-                        <option value="bundle">Bundle</option>
-                        <option value="set">Set</option>
-                        <option value="pair">Pair</option>
-                        <!-- Custom/Other -->
-                        <option value="coil">Coil</option>
-                        <option value="coils">Coils</option>
-                        <option value="drum">Drum</option>
-                        <option value="can">Can</option>
-                        <option value="pallet">Pallet</option>
-                        <option value="carton">Carton</option>
-                        <option value="barrel">Barrel</option>
-                        <option value="container">Container</option>
-                        <option value="tray">Tray</option>
-                    </select>
+          <option value="" disabled>Select UOM</option>
+          <option value="mg">mg</option>
+          <option value="g">g</option>
+          <option value="kg">kg</option>
+          <option value="ton">ton</option>
+          <option value="tons">tons</option>
+          <option value="ml">ml</option>
+          <option value="cl">cl</option>
+          <option value="dl">dl</option>
+          <option value="ltr">LTR</option>
+          <option value="m3">cubic meter (m³)</option>
+          <option value="mm">mm</option>
+          <option value="cm">cm</option>
+          <option value="m">m</option>
+          <option value="inch">inch</option>
+          <option value="ft">ft</option>
+          <option value="yd">yd</option>
+          <option value="sqm">square meter (m²)</option>
+          <option value="sqft">square foot (ft²)</option>
+          <option value="pcs">PCS</option>
+          <option value="units">Units</option>
+          <option value="pack">Pack</option>
+          <option value="box">Box</option>
+          <option value="bag">Bag</option>
+          <option value="roll">Roll</option>
+          <option value="rolls">Rolls</option>
+          <option value="sheet">Sheet</option>
+          <option value="sheets">Sheets</option>
+          <option value="bundle">Bundle</option>
+          <option value="set">Set</option>
+          <option value="pair">Pair</option>
+          <option value="coil">Coil</option>
+          <option value="coils">Coils</option>
+          <option value="drum">Drum</option>
+          <option value="can">Can</option>
+          <option value="pallet">Pallet</option>
+          <option value="carton">Carton</option>
+          <option value="barrel">Barrel</option>
+          <option value="container">Container</option>
+          <option value="tray">Tray</option>
+        </select>
                 </div>
 
                 <div class="modal-input-group">
                     <label>Bill No</label>
-                    <input [(ngModel)]="editData.bNo" placeholder="Enter bill number" />
+                    <input [(ngModel)]="editData.billNo" placeholder="Enter bill number" />
                 </div>
 
                 <div class="modal-input-group">
-                    <label>Loaded On</label>
-                    <input type="number" [(ngModel)]="editData.loadedOn" />
+                    <label>Loaded On (No. of Containers)</label>
+                    <input type="number" [(ngModel)]="editData.loadedOnfcl" placeholder="Enter number of containers" />
                 </div>
 
                 <div class="modal-input-group">
                     <label>Type of Container</label>
                     <select [(ngModel)]="editData.containerType">
-                        <option value disabled>Select container</option>
-                        <option value="20ft">20FT</option>
-                        <option value="40ft">40FT</option>
-                        <option value="40ft-hq">40FT-HQ</option>
-                    </select>
+          <option value="" disabled>Select container</option>
+          <option value="20ft">20FT</option>
+          <option value="40ft">40FT</option>
+          <option value="40ft-hq">40FT-HQ</option>
+        </select>
                 </div>
 
                 <div class="modal-input-group">
                     <label>Shipper</label>
                     <select [(ngModel)]="editData.shipper">
-                        <option value disabled>Select Shipper</option>
-                        <option value="CMA-GCM">CMA-GCM</option>
-                        <option value="HAPAGLOYD">HAPAGLOYD</option>
-                        <option value="MERSK">MERSK</option>
-                        <option value="MEDSEA">MEDSEA</option>
-                    </select>
+          <option value="" disabled>Select Shipper</option>
+          <option value="CMA-GCM">CMA-GCM</option>
+          <option value="HAPAGLOYD">HAPAGLOYD</option>
+          <option value="MERSK">MERSK</option>
+          <option value="MEDSEA">MEDSEA</option>
+        </select>
                 </div>
 
                 <div class="modal-input-group">
                     <label>Transitor</label>
                     <select [(ngModel)]="editData.transitor">
-                        <option value disabled>Select Transitor</option>
-                        <option value="ECO">ECO</option>
-                        <option value="AFRICA">AFRICA</option>
-                        <option value="SIYAN">SIYAN</option>
-                        <option value="CYEN">CYEN</option>
-                        <option value="ELITE">ELITE</option>
-                        <option value="STM">STM</option>
-                    </select>
+          <option value="" disabled>Select Transitor</option>
+          <option value="ECO">ECO</option>
+          <option value="AFRICA">AFRICA</option>
+          <option value="SIYAN">SIYAN</option>
+          <option value="CYEN">CYEN</option>
+          <option value="ELITE">ELITE</option>
+          <option value="STM">STM</option>
+        </select>
                 </div>
 
                 <div class="modal-input-group">
@@ -358,23 +387,67 @@
 
                 <div class="modal-input-group">
                     <label>Container Returned</label>
-                    <input type="date" [(ngModel)]="editData.containerReturned" />
+                    <input type="date" [(ngModel)]="editData.numberofContReturned" />
                 </div>
 
+
+                <!-- Doc Owner -->
                 <div class="modal-input-group">
+                    <label>Doc Owner</label>
+                    <input [(ngModel)]="editData.docOwner" placeholder="Enter document owner" />
+                </div>
+
+                <!-- Truck Waybill -->
+                <div class="modal-input-group">
+                    <label>Truck Waybill</label>
+                    <input [(ngModel)]="editData.truckWayBill" placeholder="Enter truck waybill number" />
+                </div>
+
+                <!-- Doc Sent to DJB -->
+                <div class="modal-input-group">
+                    <label>Doc Sent to DJB</label>
+                    <input type="date" [(ngModel)]="editData.docSentDjb" />
+                </div>
+
+                <!-- Doc Collected -->
+                <div class="modal-input-group">
+                    <label>Doc Collected</label>
+                    <input type="date" [(ngModel)]="editData.docCollected" />
+                </div>
+
+                <!-- Bill Collected -->
+                <div class="modal-input-group">
+                    <label>Bill Collected</label>
+                    <input type="date" [(ngModel)]="editData.billCollected" />
+                </div>
+
+                <!-- Tax Paid -->
+                <div class="modal-input-group">
+                    <label>Tax Paid</label>
+                    <input type="date" [(ngModel)]="editData.taxPaid" />
+                </div>
+
+                <!-- ETA DJB -->
+                <div class="modal-input-group">
+                    <label>ETA DJB</label>
+                    <input type="date" [(ngModel)]="editData.etadjb" />
+                </div>
+
+                <div class="modal-input-group" id="remark-input">
                     <label>Remark</label>
                     <textarea [(ngModel)]="editData.remark" placeholder="Optional notes..."></textarea>
                 </div>
 
+
             </div>
 
             <div class="modal-buttons">
-                <button (click)="saveEdit()" class="btn btn-primary">Save
-                    Changes</button>
+                <button (click)="saveEdit()" class="btn btn-primary">Save Changes</button>
                 <button (click)="closeEditModal()" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
+
 
     <!-- DELETE MODAL -->
     <div class="modal" *ngIf="showDeleteModal" (click)="closeDeleteModal()">

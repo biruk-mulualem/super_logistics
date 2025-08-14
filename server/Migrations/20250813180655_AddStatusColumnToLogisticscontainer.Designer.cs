@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250813180655_AddStatusColumnToLogisticscontainer")]
+    partial class AddStatusColumnToLogisticscontainer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,44 +33,32 @@ namespace server.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("AkkArrived")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("BillCollected")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("AkkArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("BillNo")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ContainerType")
-                        .HasColumnType("longtext");
+                    b.Property<bool>("ContReturned")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<DateOnly?>("DjbArrived")
-                        .HasColumnType("date");
+                    b.Property<int>("ContainerType")
+                        .HasColumnType("int");
 
-                    b.Property<DateOnly?>("DjbDeparted")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbArrived")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("DocCollected")
-                        .HasColumnType("date");
-
-                    b.Property<string>("DocOwner")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("DocSentDjb")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("Etadjb")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbDeparted")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemDescription")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LoadedOnfcl")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("LoadedOn")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("LoadingDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("LoadingDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -75,25 +66,16 @@ namespace server.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly?>("SdtArrived")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("SdtArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Shipper")
                         .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("TaxPaid")
-                        .HasColumnType("date");
 
                     b.Property<string>("Transitor")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Uom")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("numberofContReturned")
-                        .HasColumnType("int");
-
-                    b.Property<string>("truckWayBill")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -109,44 +91,32 @@ namespace server.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("AkkArrived")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("BillCollected")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("AkkArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("BillNo")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ContainerType")
-                        .HasColumnType("longtext");
+                    b.Property<bool>("ContReturned")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<DateOnly?>("DjbArrived")
-                        .HasColumnType("date");
+                    b.Property<int>("ContainerType")
+                        .HasColumnType("int");
 
-                    b.Property<DateOnly?>("DjbDeparted")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbArrived")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("DocCollected")
-                        .HasColumnType("date");
-
-                    b.Property<string>("DocOwner")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("DocSentDjb")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("Etadjb")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbDeparted")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemDescription")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LoadedOnfcl")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("LoadedOn")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("LoadingDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("LoadingDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -154,25 +124,16 @@ namespace server.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly?>("SdtArrived")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("SdtArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Shipper")
                         .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("TaxPaid")
-                        .HasColumnType("date");
 
                     b.Property<string>("Transitor")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Uom")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("numberofContReturned")
-                        .HasColumnType("int");
-
-                    b.Property<string>("truckWayBill")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -188,44 +149,32 @@ namespace server.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("AkkArrived")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("BillCollected")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("AkkArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("BillNo")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ContainerType")
-                        .HasColumnType("longtext");
+                    b.Property<bool>("ContReturned")
+                        .HasColumnType("tinyint(1)");
 
-                    b.Property<DateOnly?>("DjbArrived")
-                        .HasColumnType("date");
+                    b.Property<int>("ContainerType")
+                        .HasColumnType("int");
 
-                    b.Property<DateOnly?>("DjbDeparted")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbArrived")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("DocCollected")
-                        .HasColumnType("date");
-
-                    b.Property<string>("DocOwner")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("DocSentDjb")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("Etadjb")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbDeparted")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemDescription")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LoadedOnfcl")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("LoadedOn")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("LoadingDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("LoadingDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -233,25 +182,16 @@ namespace server.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly?>("SdtArrived")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("SdtArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Shipper")
                         .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("TaxPaid")
-                        .HasColumnType("date");
 
                     b.Property<string>("Transitor")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Uom")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("numberofContReturned")
-                        .HasColumnType("int");
-
-                    b.Property<string>("truckWayBill")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -267,44 +207,29 @@ namespace server.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly?>("AkkArrived")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("BillCollected")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("AkkArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("BillNo")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ContainerType")
-                        .HasColumnType("longtext");
+                    b.Property<int>("ContainerType")
+                        .HasColumnType("int");
 
-                    b.Property<DateOnly?>("DjbArrived")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbArrived")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("DjbDeparted")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("DocCollected")
-                        .HasColumnType("date");
-
-                    b.Property<string>("DocOwner")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("DocSentDjb")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("Etadjb")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("DjbDeparted")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemDescription")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LoadedOnfcl")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("LoadedOn")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateOnly?>("LoadingDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("LoadingDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -312,14 +237,11 @@ namespace server.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
 
-                    b.Property<DateOnly?>("SdtArrived")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("SdtArrived")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Shipper")
                         .HasColumnType("longtext");
-
-                    b.Property<DateOnly?>("TaxPaid")
-                        .HasColumnType("date");
 
                     b.Property<string>("Transitor")
                         .HasColumnType("longtext");
@@ -329,9 +251,6 @@ namespace server.Migrations
 
                     b.Property<int>("numberofContReturned")
                         .HasColumnType("int");
-
-                    b.Property<string>("truckWayBill")
-                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

@@ -21,7 +21,7 @@ export class ReusableTable implements OnInit {
   searchQuery: string = '';
 
   currentPage: number = 1;
-  rowsPerPage: number = 13;
+  rowsPerPage: number = 16;
 
   isBrowser: boolean;
 
@@ -46,7 +46,7 @@ export class ReusableTable implements OnInit {
     if (this.isBrowser) {
       this.setRowsPerPageBasedOnWidth(window.innerWidth);
     } else {
-      this.rowsPerPage = 13;
+      this.rowsPerPage = 16;
     }
   }
 
@@ -61,7 +61,7 @@ export class ReusableTable implements OnInit {
     if (width <= 480) {
       this.rowsPerPage = 1;
     } else {
-      this.rowsPerPage = 13;
+      this.rowsPerPage = 16;
     }
     this.currentPage = 1;
   }

@@ -16,11 +16,26 @@ namespace server.Controllers
         }
 
         // GET: api/logisticsfollowups
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LogisticsFollowup>>> GetLogisticsFollowups()
-        {
-            return await _context.LogisticsFollowups.ToListAsync();
-        }
+   [HttpGet("logistics")]
+public async Task<ActionResult<IEnumerable<LogisticsFollowup>>> GetLogisticsFollowups()
+{
+    var filtered = await _context.LogisticsFollowups
+        .Where(f => f.EmpityContainersLeftUnreturned != 0)
+        .ToListAsync();
+
+    return filtered;
+}
+
+// For History page: show rows where containers have been returned
+[HttpGet("history")]
+public async Task<ActionResult<IEnumerable<LogisticsFollowup>>> GetHistoryFollowups()
+{
+    var filtered = await _context.LogisticsFollowups
+        .Where(f => f.EmpityContainersLeftUnreturned == 0)
+        .ToListAsync();
+
+    return filtered;
+}
 
         // GET: api/logisticsfollowups/{id}
         [HttpGet("{id}")]
@@ -36,15 +51,7 @@ namespace server.Controllers
             return logisticsFollowup;
         }
 
-        // POST: api/logisticsfollowups
-        [HttpPost]
-        public async Task<ActionResult<LogisticsFollowup>> PostLogisticsFollowup(LogisticsFollowup logisticsFollowup)
-        {
-            _context.LogisticsFollowups.Add(logisticsFollowup);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetLogisticsFollowup), new { id = logisticsFollowup.Id }, logisticsFollowup);
-        }
 
         // PUT: api/logisticsfollowups/{id}
         [HttpPut("{id}")]

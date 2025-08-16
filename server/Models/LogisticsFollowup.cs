@@ -1,14 +1,17 @@
 using System;
-
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace server.Models
 {
     public class LogisticsFollowup
     { 
-        public int Id { get; set; }
+          public int Id { get; set; } // DB auto-increment
+    public string TransactionId { get; set; } = null!; // "SDT000001" etc.
         public string? ItemDescription { get; set; }
         public string? Uom { get; set; }
-        public int Quantity { get; set; }
-        public int LoadedOnfcl { get; set; }
+     [Column(TypeName = "decimal(10,2)")]
+    public decimal? TotalPaidInPercent { get; set; }
+        public int? LoadedOnfcl { get; set; }
         public string? ContainerType { get; set; }
         public string? BillNo { get; set; }
         public string? truckWayBill { get; set; }
@@ -25,7 +28,8 @@ namespace server.Models
         public DateOnly? DjbDeparted { get; set; }
         public DateOnly? AkkArrived { get; set; }
         public DateOnly? SdtArrived { get; set; }
-        public int numberofContReturned { get; set; }
+        public int? EmpityContainersLeftUnreturned { get; set; }
+          public string? Origin { get; set; }
         public string? Remark { get; set; }
     }
 }

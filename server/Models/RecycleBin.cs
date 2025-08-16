@@ -25,7 +25,7 @@ namespace server.Models
         public DateOnly? DjbDeparted { get; set; }
         public DateOnly? AkkArrived { get; set; }
         public DateOnly? SdtArrived { get; set; }
-        public int numberofContReturned { get; set; }
+        public int EmpityContainersLeftUnreturned { get; set; }
         public string? Remark { get; set; }
     }
     }

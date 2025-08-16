@@ -1,33 +1,70 @@
 <aside class="sidebar">
     <!-- Top toggle button -->
     <br><br><br><br><br>
+
     <div class="icon-group" class="dashboard_icon">
-        <button [routerLink]="'/dashboard'" aria-label="Dashboard" [title]="'Dashboard'">
+        <button [routerLink]="'/dashboard'" aria-label="Dashboard">
       <i class="fas fa-tachometer-alt"></i> <!-- Dashboard icon -->
-      <span class="label" *ngIf="!isCollapsed">Dashboard</span>
       <span class="tooltip-text">Dashboard</span>
     </button>
     </div>
+
     <hr />
+
     <div class="icon-group">
-        <button [routerLink]="'/logistics'" aria-label="Logistics" [title]="'Logistics'">
-      <i class="fas fa-truck"></i> <!-- Logistics icon -->
-      <span class="label" *ngIf="!isCollapsed">Logistics</span>
+        <button [routerLink]="'/intransit'" aria-label="intransit">
+      <i class="fas fa-money-bill-wave"></i>
+      <span class="tooltip-text">Intransit</span>
+    </button>
+    </div>
+
+    <div class="icon-group">
+        <button [routerLink]="'/logistics'" aria-label="Logistics">
+      <i class="fas fa-truck"></i>
       <span class="tooltip-text">Logistics</span>
     </button>
-        <button [routerLink]="'/history'" aria-label="History" [title]="'History'">
-      <i class="fas fa-history"></i> <!-- History icon -->
-      <span class="label" *ngIf="!isCollapsed">History</span>
-      <span class="tooltip-text">History</span>
-    </button>
-        <button [routerLink]="'/report'" aria-label="Report" [title]="'Report'">
-      <i class="fas fa-chart-bar"></i> <!-- Report icon -->
-      <span class="label" *ngIf="!isCollapsed">Report</span>
-      <span class="tooltip-text">Report</span>
-    </button>
-        <button [routerLink]="'/recyclebin'" aria-label="Recyclebin" [title]="'Recyclebin'">
-      <i class="fas fa-trash-alt"></i> <!-- Recyclebin icon -->
-      <span class="label" *ngIf="!isCollapsed">Recyclebin</span>
+
+        <!-- Dropdown for History -->
+        <div class="dropdown">
+            <button class="dropdown-btn" aria-label="History">
+        <i class="fas fa-history"></i>
+        <span class="label">History</span>
+        <!-- <i class="fas fa-caret-down"></i> -->
+      </button>
+            <div class="dropdown-content">
+                <button [routerLink]="'/history'" aria-label="Logistics History">
+
+          <span>Logistics History</span>
+        </button>
+                <button [routerLink]="'/history'" aria-label="Intransit History">
+
+          <span>Intransit History</span>
+        </button>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button aria-label="Report">
+        <i class="fas fa-chart-bar"></i>
+        <span class="tooltip-text">Report</span>
+        <!-- <i class="fas fa-caret-down"></i> -->
+      </button>
+
+            <div class="dropdown-content">
+
+                <button [routerLink]="'/report'" aria-label="Logistics Report">
+
+          <span>Logistics Report</span>
+        </button>
+                <button [routerLink]="'/report'" aria-label="Intransit Report">
+
+          <span>Intransit Report</span>
+        </button>
+            </div>
+        </div>
+
+        <button [routerLink]="'/recyclebin'" aria-label="Recyclebin">
+      <i class="fas fa-trash-alt"></i>
       <span class="tooltip-text">Recyclebin</span>
     </button>
     </div>
@@ -35,8 +72,8 @@
     <hr />
 
     <div class="icon-group">
-        <button aria-label="Settings" [routerLink]="'/setting'" [title]="'Settings'">
-      <i class="fas fa-cog"></i> <!-- Settings icon -->
+        <button aria-label="Settings" [routerLink]="'/setting'">
+      <i class="fas fa-cog"></i>
       <span class="label" *ngIf="!isCollapsed">Settings</span>
       <span class="tooltip-text">Settings</span>
     </button>

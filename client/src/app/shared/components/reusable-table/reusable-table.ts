@@ -1,68 +1,119 @@
-import { Component, Input, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  HostListener,
+  Inject,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
-import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
-
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   imports: [CommonModule, FormsModule],
   selector: 'app-reusable-table',
   templateUrl: './reusable-table.html',
-  styleUrls: ['./reusable-table.css']
+  styleUrls: ['./reusable-table.css'],
 })
-export class ReusableTable implements OnInit {
-@Input() headers: { label: string; key: string }[] = [];
-
+export class ReusableTable implements OnInit, OnChanges {
+  // =======================
+  // --- Inputs / Outputs ---
+  // =======================
+  @Input() headers: { label: string; key: string }[] = [];
   @Input() data: any[] = [];
 
-  
+  @Output() add = new EventEmitter<any>();
+  @Output() edit = new EventEmitter<any>();
+  @Output() delete = new EventEmitter<any>();
+
+  // =======================
+  // --- Table state ---
+  // =======================
   filteredData: any[] = [];
   searchQuery: string = '';
-
   currentPage: number = 1;
-  rowsPerPage: number = 16;
+  rowsPerPage: number = 13;
 
-  isBrowser: boolean;
-
+  // =======================
+  // --- Modal state ---
+  // =======================
   showAddModal = false;
   showEditModal = false;
   showDeleteModal = false;
+  showDetailModal = false;
 
   addData: any = {};
   editData: any = {};
   deleteRowData: any = null;
-  constructor(
-  @Inject(PLATFORM_ID) private platformId: Object,
-  private logisticsService: LogisticsFollowupService   // <-- add this
-) {
-  this.isBrowser = isPlatformBrowser(this.platformId);
-}
+  selectedRow: any = null;
 
+  isBrowser: boolean;
 
-  ngOnInit(): void {
-    this.filteredData = [...this.data];
+  // =======================
+  // --- Page type & buttons ---
+  // =======================
+  pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
+  buttonVisibility = { add: true, edit: true, delete: true, detail: true };
 
-    if (this.isBrowser) {
-      this.setRowsPerPageBasedOnWidth(window.innerWidth);
-    } else {
-      this.rowsPerPage = 16;
-    }
+  // =======================
+  // --- Route configuration ---
+  // =======================
+  routeConfigs: {
+    match: string;
+    pageType: 'logistics' | 'intransit' | 'reports' | 'history';
+    add?: boolean;
+    edit?: boolean;
+    delete?: boolean;
+    detail?: boolean;
+  }[] = [
+    { match: '/intransit', pageType: 'intransit', add: true, edit: true, delete: true, detail: true },
+    { match: '/logistics', pageType: 'logistics', add: false, edit: true, delete: true, detail: true },
+    { match: '/reports', pageType: 'reports', add: false, edit: true, delete: false, detail: true },
+    { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true },
+  ];
+
+  // =======================
+  // --- Constructor ---
+  // =======================
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, public router: Router) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    // Track route changes to update page type and buttons dynamically
+    this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
+      this.updatePageTypeAndButtons();
+    });
   }
 
+  // =======================
+  // --- Lifecycle hooks ---
+  // =======================
+  ngOnInit(): void {
+    this.filteredData = [...this.data];
+    if (this.isBrowser) this.setRowsPerPageBasedOnWidth(window.innerWidth);
+    this.applyFilterAndPagination();
+    this.updatePageTypeAndButtons();
+  }
+
+  ngOnChanges(): void {
+    this.applyFilterAndPagination();
+  }
+
+  // =======================
+  // --- Window / Pagination ---
+  // =======================
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    if (this.isBrowser) {
-      this.setRowsPerPageBasedOnWidth(event.target.innerWidth);
-    }
+    if (this.isBrowser) this.setRowsPerPageBasedOnWidth(event.target.innerWidth);
   }
 
   private setRowsPerPageBasedOnWidth(width: number) {
-    if (width <= 480) {
-      this.rowsPerPage = 1;
-    } else {
-      this.rowsPerPage = 16;
-    }
+    this.rowsPerPage = width <= 480 ? 1 : 13;
     this.currentPage = 1;
   }
 
@@ -75,116 +126,83 @@ export class ReusableTable implements OnInit {
     return Math.ceil(this.filteredData.length / this.rowsPerPage);
   }
 
-  onSearch(): void {
-    const query = this.searchQuery.toLowerCase();
-    this.filteredData = this.data.filter(row =>
-      Object.values(row).some(value =>
-        String(value).toLowerCase().includes(query)
-      )
-    );
-    this.currentPage = 1;
-  }
-
   setPage(page: number): void {
     this.currentPage = page;
   }
+
   prevPage(): void {
     if (this.currentPage > 1) this.currentPage--;
   }
+
   nextPage(): void {
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  // --- Modal handling with body scroll toggle ---
+  // =======================
+  // --- Search / Filter ---
+  // =======================
+  onSearch(): void {
+    const query = this.searchQuery.toLowerCase();
+    this.filteredData = this.data.filter(row =>
+      Object.values(row).some(val => String(val).toLowerCase().includes(query))
+    );
+    this.currentPage = 1;
+  }
 
-  private toggleBodyScroll(disable: boolean) {
-    if (!this.isBrowser) return;
-    if (disable) {
-      document.body.classList.add('modal-open');
+  private applyFilterAndPagination() {
+    this.onSearch();
+    if (this.currentPage > this.totalPages) this.currentPage = this.totalPages || 1;
+  }
+
+  // =======================
+  // --- Page type & button visibility ---
+  // =======================
+  private updatePageTypeAndButtons() {
+    const currentRoute = this.router.url;
+    const config = this.routeConfigs.find(cfg => currentRoute.includes(cfg.match));
+
+    if (config) {
+      this.pageType = config.pageType;
+      this.buttonVisibility.add = config.add ?? false;
+      this.buttonVisibility.edit = config.edit ?? false;
+      this.buttonVisibility.delete = config.delete ?? false;
+      this.buttonVisibility.detail = config.detail ?? false;
     } else {
-      document.body.classList.remove('modal-open');
+      this.pageType = null;
+      this.buttonVisibility = { add: true, edit: true, delete: true, detail: true };
     }
   }
-openAddModal(): void {
-  this.addData = {}; // Reset any previous data
 
-  this.headers.forEach(header => {
-    this.addData[header.key] = ''; // Initialize each form field with an empty string
-  });
+  // =======================
+  // --- Modal / body scroll helper ---
+  // =======================
+  private toggleBodyScroll(disable: boolean) {
+    if (!this.isBrowser) return;
+    document.body.classList.toggle('modal-open', disable);
+  }
 
-  this.showAddModal = true;       // Show the modal
-  this.toggleBodyScroll(true);    // Optional UX improvement
-}
+  // =======================
+  // --- Add Modal ---
+  // =======================
+  openAddModal(): void {
+    this.addData = {};
+    this.showAddModal = true;
+    this.toggleBodyScroll(true);
+  }
 
   closeAddModal(): void {
     this.showAddModal = false;
     this.toggleBodyScroll(false);
   }
 
-saveAdd(): void {
-  console.log('saveAdd clicked', this.addData);
+  saveAddClick(): void {
+    this.add.emit(this.addData);
+    this.closeAddModal();
+  }
 
-  const sanitizedData = {
-    ...this.addData,
-
-    // Convert to numbers or fallback to 0
-    quantity: Number(this.addData.quantity) || 0,
-    loadedOnfcl: Number(this.addData.loadedOnfcl) || 0,
-    numberofContReturned: Number(this.addData.numberofContReturned) || 0,
-
-    // Normalize date fields
-    etadjb: this.formatDate(this.addData.etadjb),
-    loadingDate: this.formatDate(this.addData.loadingDate),
-    djbArrived: this.formatDate(this.addData.djbArrived),
-    docSentDjb: this.formatDate(this.addData.docSentDjb),
-    docCollected: this.formatDate(this.addData.docCollected),
-    billCollected: this.formatDate(this.addData.billCollected),
-    taxPaid: this.formatDate(this.addData.taxPaid),
-    djbDeparted: this.formatDate(this.addData.djbDeparted),
-    akkArrived: this.formatDate(this.addData.akkArrived),
-    sdtArrived: this.formatDate(this.addData.sdtArrived),
-    containerReturned: this.formatDate(this.addData.containerReturned)
-  };
-
-  // ❌ Prevent `id` from being sent
-  delete (sanitizedData as any).id;
-
-  this.logisticsService.createFollowup(sanitizedData).subscribe({
-    next: (res: any) => {
-      console.log('Entry added', res);
-      this.loadFollowups();
-      this.closeAddModal();
-    },
-    error: (err: any) => {
-      console.error('Failed to add', err);
-
-      if (err.error?.errors) {
-        for (let key in err.error.errors) {
-          console.warn(`${key}: ${err.error.errors[key].join(', ')}`);
-        }
-      }
-    }
-  });
-}
-
-
-private formatDate(date: string | null | undefined): string | null {
-  if (!date) return null;
-  const parsed = new Date(date);
-  return isNaN(parsed.getTime()) ? null : parsed.toISOString().split('T')[0]; // "YYYY-MM-DD"
-}
-
-
-
-loadFollowups() {
-  this.logisticsService.getFollowups().subscribe(data => {
-    this.data = data;
-    this.applyFilterAndPagination();
-  });
-}
-
-
-
+  // =======================
+  // --- Edit Modal ---
+  // =======================
   openEditModal(row: any): void {
     this.editData = { ...row };
     this.showEditModal = true;
@@ -196,19 +214,14 @@ loadFollowups() {
     this.toggleBodyScroll(false);
   }
 
-saveEdit(): void {
-  this.logisticsService.updateFollowup(this.editData.id, this.editData).subscribe({
-    next: () => {
-      this.loadFollowups(); // Reload after update
-      this.closeEditModal();
-    },
-    error: (err) => {
-      console.error('Failed to update', err);
-    }
-  });
-}
+  saveEditClick(): void {
+    this.edit.emit(this.editData);
+    this.closeEditModal();
+  }
 
-
+  // =======================
+  // --- Delete Modal ---
+  // =======================
   openDeleteModal(row: any): void {
     this.deleteRowData = row;
     this.showDeleteModal = true;
@@ -221,33 +234,23 @@ saveEdit(): void {
     this.toggleBodyScroll(false);
   }
 
-confirmDelete(): void {
-  if (!this.deleteRowData) return;
-
-  this.logisticsService.deleteFollowup(this.deleteRowData.id).subscribe({
-    next: () => {
-      this.loadFollowups(); // Reload after delete
-      this.closeDeleteModal();
-    },
-    error: (err) => {
-  console.error('Failed to add', err); 
-
-    }
-  });
-}
-
-  private applyFilterAndPagination() {
-    this.onSearch();
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = this.totalPages || 1;
-    }
+  confirmDeleteClick(): void {
+    this.delete.emit(this.deleteRowData);
+    this.closeDeleteModal();
   }
 
-  private generateId(): number {
-    return Math.floor(Math.random() * 1000000);
+  // =======================
+  // --- Detail Modal ---
+  // =======================
+  openDetailModal(row: any): void {
+    this.selectedRow = row;
+    this.showDetailModal = true;
+    this.toggleBodyScroll(true);
   }
 
-
-
-
+  closeDetailModal(): void {
+    this.showDetailModal = false;
+    this.selectedRow = null;
+    this.toggleBodyScroll(false);
+  }
 }

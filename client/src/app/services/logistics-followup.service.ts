@@ -7,28 +7,27 @@ import { Observable } from 'rxjs';
 })
 export class LogisticsFollowupService {
 
-  private apiUrl = 'http://localhost:5000/api/logisticsfollowups'; // Your API URL
+  private apiUrl = 'http://localhost:5000/api/logisticsfollowups'; // Base API URL
 
   constructor(private http: HttpClient) { }
 
-  getFollowups(): Observable<any[]> { // fetch all
-    return this.http.get<any[]>(this.apiUrl);
+  // --- GET all logistics rows (filtered) ---
+  getLogisticsData(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/logistics`);
   }
 
-  getFollowupById(id: number): Observable<any> { // fetch one by id
+  // --- GET single logistics row by id ---
+  getLogisticsDataById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  createFollowup(data: any): Observable<any> { // add new
-    return this.http.post<any>(this.apiUrl, data);
-  }
-
-  updateFollowup(id: number, data: any): Observable<any> { // update existing
+  // --- PUT / update a logistics row by id ---
+  updateLogisticsData(id: string, data: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${id}`, data);
   }
 
-  deleteFollowup(id: number): Observable<any> { // delete
+  // --- DELETE a logistics row by id ---
+  deleteLogisticsData(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
-
 }

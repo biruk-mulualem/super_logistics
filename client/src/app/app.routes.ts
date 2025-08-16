@@ -6,17 +6,16 @@ import { History } from './pages/history/history';
 import { Report } from './pages/report/report';
 import { Recyclebin } from './pages/recyclebin/recyclebin';
 import { Setting } from './pages/setting/setting';
+import { Intransit } from './pages/intransit/intransit';
 
 export const routes: Routes = [
-  { path: 'login', component: Loginpage, },
+  { path: 'login', component: Loginpage },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  {path:'dashboard',component: Dashboard},
-  {path:'logistics',component: Logistics},
-  {path:'history',component: History},
-  {path:'report',component: Report},
-  {path:'recyclebin',component: Recyclebin},
-  {path:'setting',component: Setting},
-    
+  { path: 'dashboard', component: Dashboard },
+  { path: 'logistics', component: Logistics },
+  { path: 'history', component: History },
+  { path: 'report', component: Report },
+  { path: 'recyclebin', component: Recyclebin },
+  { path: 'setting', component: Setting },
+  { path: 'intransit', component: Intransit },
 ];
-
-

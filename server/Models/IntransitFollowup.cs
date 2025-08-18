@@ -7,13 +7,14 @@ public class IntransitFollowup
 {
     
     public int Id { get; set; } // DB auto-increment
-    public string TransactionId { get; set; } = null!; // "SDT000001" etc.
+    public string? TransactionId { get; set; } // "SDT000001" etc.
     public string? ItemDescription { get; set; }
     public string? Uom { get; set; }
     [Column(TypeName = "decimal(10,2)")]
     public decimal? Quantity { get; set; }
 
     public DateOnly? PurchaseDate { get; set; }
+     public string? PurchaseOrder { get; set; }
     public string? PurchaseCompany { get; set; }
     public string? ContactPerson { get; set; }
     public string? PaidFrom { get; set; }

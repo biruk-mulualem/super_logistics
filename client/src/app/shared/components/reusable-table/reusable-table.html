@@ -14,6 +14,7 @@
                 <tr>
                     <th *ngFor="let header of headers">{{ header.label }}</th>
                     <th *ngIf="buttonVisibility.edit || buttonVisibility.delete || buttonVisibility.detail ">Actions</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -38,6 +39,7 @@
                             <button *ngIf="buttonVisibility.delete" (click)="openDeleteModal(row)" class="delete-btn" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
+
                         </div>
                     </td>
 
@@ -369,6 +371,10 @@
                         <input type="date" [(ngModel)]="editData.purchaseDate" placeholder="Enter Purchase Date" required />
                     </div>
                     <div class="modal-input-group">
+                        <label>Purchase Order</label>
+                        <input type="text" [(ngModel)]="editData.purchaseOrder" placeholder="Enter item purchase Order" required />
+                    </div>
+                    <div class="modal-input-group">
                         <label>Item Description</label>
                         <input type="text" [(ngModel)]="editData.itemDescription" placeholder="Enter item description" required />
                     </div>
@@ -441,39 +447,32 @@
 
                     <div class="modal-input-group">
                         <label>Unit Price</label>
-                        <input type="decimal" [(ngModel)]="editData.unitPrice" required />
+                        <input type="number" [(ngModel)]="editData.unitPrice" required />
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>Total Price</label>
-                        <input type="decimal" [(ngModel)]="editData.totalPrice" required />
-                    </div>
 
                     <div class="modal-input-group">
                         <label>Total Amount Paid</label>
-                        <input type="decimal" [(ngModel)]="editData.totalAmountPaid" required />
+                        <input type="number" [(ngModel)]="editData.totalAmountPaid" required />
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>Total Paid In Percent</label>
-                        <input type="decimal" [(ngModel)]="editData.totalPaidInPercent" required />
-                    </div>
+
 
                     <div class="modal-input-group">
                         <label> Qnty Recived</label>
-                        <input type="decimal" [(ngModel)]="editData.qntyRecived" required />
+                        <input type="number" [(ngModel)]="editData.qntyRecived" required />
                     </div>
 
                     <!-- Doc Owner -->
                     <div class="modal-input-group">
                         <label>Qnty Remaning</label>
-                        <input [(ngModel)]="editData.qntyRemaning" placeholder="Enter qnty Remaning" required />
+                        <input type="number" [(ngModel)]="editData.qntyRemaning" placeholder="Enter qnty Remaning" required />
                     </div>
 
                     <!-- Truck Waybill -->
                     <div class="modal-input-group">
                         <label>Grn</label>
-                        <input [(ngModel)]="editData.grn" placeholder="Enter grn" required />
+                        <input type="text" [(ngModel)]="editData.grn" placeholder="Enter grn" required />
                     </div>
                     <!-- Doc Sent to DJB -->
                     <div class="modal-input-group">
@@ -549,12 +548,12 @@
                             }}</span>
                     </div>
                 </div>
+
                 <div class="modal-buttons">
                     <button (click)="closeDetailModal()">Close</button>
                 </div>
             </div>
         </div>
-
         <!-- Add Intransit Modal -->
         <div class="modal" *ngIf="showAddModal" (click)="showAddModal = false">
             <div class="modal-content" (click)="$event.stopPropagation()">
@@ -564,6 +563,10 @@
                     <div class="modal-input-group">
                         <label>Purchase Date</label>
                         <input type="date" [(ngModel)]="addData.purchaseDate" required />
+                    </div>
+                    <div class="modal-input-group">
+                        <label>Purchase Order</label>
+                        <input type="text" [(ngModel)]="addData.purchaseOrder" required />
                     </div>
                     <div class="modal-input-group">
                         <label>Item Description</label>
@@ -679,6 +682,9 @@
 
             </div>
         </div>
+
+
+
 
     </ng-container>
     <ng-container *ngIf="pageType === 'history'">

@@ -22,9 +22,6 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./reusable-table.css'],
 })
 export class ReusableTable implements OnInit, OnChanges {
-  // =======================
-  // --- Inputs / Outputs ---
-  // =======================
   @Input() headers: { label: string; key: string }[] = [];
   @Input() data: any[] = [];
 
@@ -32,17 +29,11 @@ export class ReusableTable implements OnInit, OnChanges {
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
 
-  // =======================
-  // --- Table state ---
-  // =======================
   filteredData: any[] = [];
   searchQuery: string = '';
   currentPage: number = 1;
   rowsPerPage: number = 13;
 
-  // =======================
-  // --- Modal state ---
-  // =======================
   showAddModal = false;
   showEditModal = false;
   showDeleteModal = false;
@@ -55,15 +46,9 @@ export class ReusableTable implements OnInit, OnChanges {
 
   isBrowser: boolean;
 
-  // =======================
-  // --- Page type & buttons ---
-  // =======================
   pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
   buttonVisibility = { add: true, edit: true, delete: true, detail: true };
 
-  // =======================
-  // --- Route configuration ---
-  // =======================
   routeConfigs: {
     match: string;
     pageType: 'logistics' | 'intransit' | 'reports' | 'history';
@@ -78,21 +63,13 @@ export class ReusableTable implements OnInit, OnChanges {
     { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true },
   ];
 
-  // =======================
-  // --- Constructor ---
-  // =======================
   constructor(@Inject(PLATFORM_ID) private platformId: Object, public router: Router) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-
-    // Track route changes to update page type and buttons dynamically
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
       this.updatePageTypeAndButtons();
     });
   }
 
-  // =======================
-  // --- Lifecycle hooks ---
-  // =======================
   ngOnInit(): void {
     this.filteredData = [...this.data];
     if (this.isBrowser) this.setRowsPerPageBasedOnWidth(window.innerWidth);
@@ -104,9 +81,6 @@ export class ReusableTable implements OnInit, OnChanges {
     this.applyFilterAndPagination();
   }
 
-  // =======================
-  // --- Window / Pagination ---
-  // =======================
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     if (this.isBrowser) this.setRowsPerPageBasedOnWidth(event.target.innerWidth);
@@ -138,9 +112,6 @@ export class ReusableTable implements OnInit, OnChanges {
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  // =======================
-  // --- Search / Filter ---
-  // =======================
   onSearch(): void {
     const query = this.searchQuery.toLowerCase();
     this.filteredData = this.data.filter(row =>
@@ -154,13 +125,9 @@ export class ReusableTable implements OnInit, OnChanges {
     if (this.currentPage > this.totalPages) this.currentPage = this.totalPages || 1;
   }
 
-  // =======================
-  // --- Page type & button visibility ---
-  // =======================
   private updatePageTypeAndButtons() {
     const currentRoute = this.router.url;
     const config = this.routeConfigs.find(cfg => currentRoute.includes(cfg.match));
-
     if (config) {
       this.pageType = config.pageType;
       this.buttonVisibility.add = config.add ?? false;
@@ -173,31 +140,48 @@ export class ReusableTable implements OnInit, OnChanges {
     }
   }
 
-  // =======================
-  // --- Modal / body scroll helper ---
-  // =======================
   private toggleBodyScroll(disable: boolean) {
     if (!this.isBrowser) return;
     document.body.classList.toggle('modal-open', disable);
   }
 
   // =======================
-  // --- Add Modal ---
+  // --- Add Modal (dynamic items, first fixed) ---
   // =======================
   openAddModal(): void {
-    this.addData = {};
+    this.addData = {
+      purchaseDate: '',
+      purchaseOrder: '',
+      purchaseCompany: '',
+      contactPerson: '',
+      paidFrom: '',
+      origin: '',
+      remark: '',
+      items: [
+        { itemDescription: '', quantity: 0, unitPrice: 0, uom: '' } // first fixed item
+      ]
+    };
     this.showAddModal = true;
     this.toggleBodyScroll(true);
   }
 
-  closeAddModal(): void {
-    this.showAddModal = false;
-    this.toggleBodyScroll(false);
+  addItem(): void {
+    this.addData.items.push({ itemDescription: '', quantity: 0, unitPrice: 0, uom: '' });
+  }
+
+  removeItem(index: number): void {
+    if (index === 0) return; // cannot remove first item
+    this.addData.items.splice(index, 1);
   }
 
   saveAddClick(): void {
     this.add.emit(this.addData);
     this.closeAddModal();
+  }
+
+  closeAddModal(): void {
+    this.showAddModal = false;
+    this.toggleBodyScroll(false);
   }
 
   // =======================

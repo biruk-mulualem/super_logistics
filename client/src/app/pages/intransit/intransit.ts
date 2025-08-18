@@ -19,6 +19,7 @@ export class Intransit implements OnInit, OnDestroy {
     { label: 'Id', key: 'id' },
     { label: 'Ref Id', key: 'transactionId' },
     { label: 'Purchase Date', key: 'purchaseDate' },
+        { label: 'Purchase Order', key: 'purchaseOrder' },
     { label: 'Item Description', key: 'itemDescription' },
     { label: 'UOM', key: 'uom' },
     { label: 'Quantity', key: 'quantity' },
@@ -82,16 +83,23 @@ export class Intransit implements OnInit, OnDestroy {
   }
 
   // --- Handle Edit ---
-  onEdit(updatedData: any) {
-    this.intransitService.updateIntransitData(updatedData.id, updatedData).subscribe({
-      next: () => {
-        this.tableData = this.tableData.map(row =>
-          row.id === updatedData.id ? updatedData : row
-        );
-      },
-      error: (err) => console.error('Failed to update:', err)
-    });
-  }
+onEdit(updatedData: any) {
+  // Create a payload without server-calculated fields
+  const payload = { ...updatedData };
+  delete payload.totalPrice;
+  delete payload.totalPaidInPercent;
+
+  this.intransitService.updateIntransitData(updatedData.id, payload).subscribe({
+    next: (savedData) => {
+      // Update the table row with backend response
+      this.tableData = this.tableData.map(row =>
+        row.id === savedData.id ? savedData : row
+      );
+    },
+    error: (err) => console.error('Failed to update:', err)
+  });
+}
+
 
   // --- Handle Delete ---
   onDelete(rowData: any) {

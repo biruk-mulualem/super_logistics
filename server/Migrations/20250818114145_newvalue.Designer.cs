@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250818114145_newvalue")]
+    partial class newvalue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,31 +254,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LogisticsFollowups");
-                });
-
-            modelBuilder.Entity("server.Models.PoItemsList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PurchaseOrder")
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal?>("Quantity")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("UnitPrice")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("Uom")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PoItemsLists");
                 });
 
             modelBuilder.Entity("server.Models.RecycleBin", b =>

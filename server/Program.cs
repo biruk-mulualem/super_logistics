@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using server.Models; // <-- adjust as needed to match your actual namespace
 
-namespace Server
+namespace server
 {
     // Main entry point for the application
     public class Program

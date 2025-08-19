@@ -14,32 +14,35 @@ import { IntransitFollowupService } from '../../services/intransit-followup.serv
   styleUrls: ['./intransit.css']
 })
 export class Intransit implements OnInit, OnDestroy {
-
   tableHeaders = [
     { label: 'Id', key: 'id' },
     { label: 'Ref Id', key: 'transactionId' },
+    { label: 'Origin', key: 'origin' },
     { label: 'Purchase Date', key: 'purchaseDate' },
-        { label: 'Purchase Order', key: 'purchaseOrder' },
-    { label: 'Item Description', key: 'itemDescription' },
-    { label: 'UOM', key: 'uom' },
-    { label: 'Quantity', key: 'quantity' },
-    { label: 'Paid From', key: 'paidFrom' },
-    { label: 'Unit Price', key: 'unitPrice' },
-    { label: 'Total Price', key: 'totalPrice' },
-    { label: 'Total Amount Paid', key: 'totalAmountPaid' },
+    { label: 'Purchase Order', key: 'purchaseOrder' },
+    { label: 'Total Price($)', key: 'totalPrice' },
+    { label: 'Total Amount Paid($)', key: 'totalAmountPaid' },
     { label: 'Total Paid (%)', key: 'totalPaidInPercent' },
   ];
 
   detailHeaders = [
+    { label: 'Paid From', key: 'paidFrom' },
+    { label: 'Item Description', key: 'itemDescription' },
+    { label: 'UOM', key: 'uom' },
+    { label: 'Quantity', key: 'quantity' },
+    { label: 'Unit Price()', key: 'unitPrice' },
     { label: 'Purchase Company', key: 'purchaseCompany' },
     { label: 'Contact Person', key: 'contactPerson' },
-    { label: 'Quantity Received', key: 'qntyRecived' },
-    { label: 'Quantity Remaining', key: 'qntyRemaning' },
     { label: 'GRN', key: 'grn' },
     { label: 'Remark', key: 'remark' }
   ];
 
   tableData: any[] = [];
+  editData: any = null;
+  showEditModal = false;
+  uomOptions = ['mg','g','kg','ton','pcs','box','roll'];
+  originOptions = ['china','india'];
+
   private routerSub?: Subscription;
 
   constructor(
@@ -48,9 +51,8 @@ export class Intransit implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.loadFollowups(); // load once on init
+    this.loadFollowups();
 
-    // Optional: reload only when navigating back, but will skip if data exists
     this.routerSub = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
@@ -67,41 +69,67 @@ export class Intransit implements OnInit, OnDestroy {
   // --- Load data from backend ---
   loadFollowups() {
     this.intransitService.getIntransitData().subscribe({
-      next: (data) => this.tableData = data,
+      next: (data) => {
+        this.tableData = data.map(row => ({
+          ...row,
+          items: this.parseItems(row.itemQntyUomUnitprice)
+        }));
+      },
       error: (err) => console.error('Failed to load followups:', err)
     });
   }
 
-  // --- Handle Add ---
+  // --- Parse/Serialize utility ---
+  private parseItems(serialized: string | null | undefined): any[] {
+    if (!serialized) return [];
+    return serialized.split(';')
+      .map(item => item.trim())
+      .filter(item => item.length > 0)
+      .map(item => {
+        const [descPart, pricePart] = item.split('@').map(x => x.trim());
+        const [itemDescription, quantityUom] = descPart.split(':').map(x => x.trim());
+        const [quantityStr, uom] = quantityUom.split(' ').map(x => x.trim());
+        return {
+          itemDescription,
+          quantity: Number(quantityStr),
+          uom,
+          unitPrice: Number(pricePart.replace('$','').trim())
+        };
+      });
+  }
+
+  private serializeItems(items: any[]): string {
+    if (!items || items.length === 0) return '';
+    return items.map(it => `${it.itemDescription}:${it.quantity} ${it.uom} @ ${it.unitPrice}$`).join('; ');
+  }
+
+  // --- Edit modal ---
+  openEditModal(row: any) {
+    this.editData = { ...row, items: JSON.parse(JSON.stringify(row.items)) }; // deep copy
+    this.showEditModal = true;
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editData = null;
+  }
+
+ 
+  // --- Handle Add/Delete ---
   saveAdd(newData: any) {
-    this.intransitService.createIntransitData(newData).subscribe({
+    const payload = {
+      ...newData,
+      itemQntyUomUnitprice: this.serializeItems(newData.items)
+    };
+    this.intransitService.createIntransitData(payload).subscribe({
       next: (created) => {
-        this.tableData = [...this.tableData, created]; // append locally
+        const parsed = { ...created, items: this.parseItems(created.itemQntyUomUnitprice) };
+        this.tableData = [...this.tableData, parsed];
       },
-      error: err => console.error('Failed to add:', err)
+      error: (err) => console.error('Failed to add:', err)
     });
   }
 
-  // --- Handle Edit ---
-onEdit(updatedData: any) {
-  // Create a payload without server-calculated fields
-  const payload = { ...updatedData };
-  delete payload.totalPrice;
-  delete payload.totalPaidInPercent;
-
-  this.intransitService.updateIntransitData(updatedData.id, payload).subscribe({
-    next: (savedData) => {
-      // Update the table row with backend response
-      this.tableData = this.tableData.map(row =>
-        row.id === savedData.id ? savedData : row
-      );
-    },
-    error: (err) => console.error('Failed to update:', err)
-  });
-}
-
-
-  // --- Handle Delete ---
   onDelete(rowData: any) {
     this.intransitService.deleteIntransitData(rowData.id).subscribe({
       next: () => {

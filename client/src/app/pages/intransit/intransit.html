@@ -9,8 +9,10 @@
         <div class="content">
             <br>
             <h1> <span style="visibility: hidden;">-------</span> Intransit</h1>
-            <app-reusable-table [headers]="tableHeaders" [data]="tableData" (add)="saveAdd($event)" (edit)="onEdit($event)" (delete)="onDelete($event)"></app-reusable-table>
+            <!-- <app-reusable-table [headers]="tableHeaders" [data]="tableData" (add)="saveAdd($event)" (edit)="onEdit($event)" (delete)="onDelete($event)"></app-reusable-table>
+ -->
 
+            <app-reusable-table [headers]="tableHeaders" [data]="tableData" (add)="saveAdd($event)" (delete)="onDelete($event)"></app-reusable-table>
 
 
 

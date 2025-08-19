@@ -364,129 +364,129 @@
         <div class="modal" *ngIf="showEditModal" (click)="closeEditModal()">
             <div class="modal-content" (click)="$event.stopPropagation()">
                 <h3>Edit Intransit Entry</h3>
+                <hr>
+                <span>
+                    Product Detail
+                </span>
+                <div *ngFor="let item of editData.items; let i = index" class="detail-row">
 
-                <div class="modal-form">
-                    <div class="modal-input-group">
-                        <label>Purchase Date</label>
-                        <input type="date" [(ngModel)]="editData.purchaseDate" placeholder="Enter Purchase Date" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Purchase Order</label>
-                        <input type="text" [(ngModel)]="editData.purchaseOrder" placeholder="Enter item purchase Order" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Item Description</label>
-                        <input type="text" [(ngModel)]="editData.itemDescription" placeholder="Enter item description" required />
-                    </div>
+                    <div class="modal-form">
+                        <div class="modal-input-group">
 
-                    <div class="modal-input-group">
-                        <label>Quantity</label>
-                        <input type="number" [(ngModel)]="editData.quantity" placeholder="Enter quantity" required />
+                            <label>Item:</label>
+                            <input type="text" [(ngModel)]="item.itemDescription" required />
+
+                        </div>
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>UOM</label>
-                        <select [(ngModel)]="editData.uom">
-                            <option value disabled>Select UOM</option>
-                            <option value="mg">mg</option>
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ton">ton</option>
-                            <option value="tons">tons</option>
-                            <option value="ml">ml</option>
-                            <option value="cl">cl</option>
-                            <option value="dl">dl</option>
-                            <option value="ltr">LTR</option>
-                            <option value="m3">cubic meter (m³)</option>
-                            <option value="mm">mm</option>
-                            <option value="cm">cm</option>
-                            <option value="m">m</option>
-                            <option value="inch">inch</option>
-                            <option value="ft">ft</option>
-                            <option value="yd">yd</option>
-                            <option value="sqm">square meter (m²)</option>
-                            <option value="sqft">square foot (ft²)</option>
-                            <option value="pcs">PCS</option>
-                            <option value="units">Units</option>
-                            <option value="pack">Pack</option>
-                            <option value="box">Box</option>
-                            <option value="bag">Bag</option>
-                            <option value="roll">Roll</option>
-                            <option value="rolls">Rolls</option>
-                            <option value="sheet">Sheet</option>
-                            <option value="sheets">Sheets</option>
-                            <option value="bundle">Bundle</option>
-                            <option value="set">Set</option>
-                            <option value="pair">Pair</option>
-                            <option value="coil">Coil</option>
-                            <option value="coils">Coils</option>
-                            <option value="drum">Drum</option>
-                            <option value="can">Can</option>
-                            <option value="pallet">Pallet</option>
-                            <option value="carton">Carton</option>
-                            <option value="barrel">Barrel</option>
-                            <option value="container">Container</option>
-                            <option value="tray">Tray</option>
-                        </select>
+                    <div class="modal-form">
+                        <div class="modal-input-group">
+                            <label>Quantity:</label>
+                            <input type="number" [(ngModel)]="item.quantity" required />
+                        </div>
+
+                    </div>
+                    <div class="modal-form">
+                        <div class="modal-input-group">
+                            <label>UOM:</label>
+                            <select [(ngModel)]="item.uom" required>
+                                <option value="mg">mg</option>
+                                <option value="g">g</option>
+                                <option value="kg">kg</option>
+                                <option value="ton">ton</option>
+                                <option value="pcs">PCS</option>
+                                <option value="box">Box</option>
+                                <option value="roll">Roll</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>Purchase Company</label>
-                        <input type="text" [(ngModel)]="editData.purchaseCompany" placeholder="Enterpurchase Company" required />
-                    </div>
+                    <div class="modal-form">
+                        <div class="modal-input-group">
+                            <label>U.Price($):</label>
+                            <input type="number" [(ngModel)]="item.unitPrice" required />
+                        </div>
 
-                    <div class="modal-input-group">
-                        <label>contact Person</label>
-                        <input type="text" [(ngModel)]="editData.contactPerson" placeholder="Enter contactPerson" required />
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>Paid From</label>
-                        <input type="text" [(ngModel)]="editData.paidFrom" required />
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>Unit Price</label>
-                        <input type="number" [(ngModel)]="editData.unitPrice" required />
-                    </div>
-
-
-                    <div class="modal-input-group">
-                        <label>Total Amount Paid</label>
-                        <input type="number" [(ngModel)]="editData.totalAmountPaid" required />
-                    </div>
-
-
-
-                    <div class="modal-input-group">
-                        <label> Qnty Recived</label>
-                        <input type="number" [(ngModel)]="editData.qntyRecived" required />
-                    </div>
-
-                    <!-- Doc Owner -->
-                    <div class="modal-input-group">
-                        <label>Qnty Remaning</label>
-                        <input type="number" [(ngModel)]="editData.qntyRemaning" placeholder="Enter qnty Remaning" required />
-                    </div>
-
-                    <!-- Truck Waybill -->
-                    <div class="modal-input-group">
-                        <label>Grn</label>
-                        <input type="text" [(ngModel)]="editData.grn" placeholder="Enter grn" required />
-                    </div>
-                    <!-- Doc Sent to DJB -->
-                    <div class="modal-input-group">
-                        <label>Remark</label>
-                        <textarea name [(ngModel)]="editData.remark" id></textarea>
                     </div>
 
                 </div>
+                <hr>
+
+                <!-- Editable metadata -->
+                <span>
+                   Common Data
+                </span>
+                <div class="modal-form">
+                    <div class="modal-input-group">
+                        <label>Purchase Date</label>
+                        <input type="date" [(ngModel)]="editData.purchaseDate" required />
+                    </div>
+                    <div class="modal-input-group">
+                        <label>Purchase Order</label>
+                        <input type="text" [(ngModel)]="editData.purchaseOrder" required />
+                    </div>
+
+
+
+                    <div class="modal-input-group">
+                        <label>Origin</label>
+                        <select [(ngModel)]="editData.origin" required>
+                            <option value="china">china</option>
+                            <option value="india">india</option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="modal-input-group">
+                        <label>Total Amount Paid($)</label>
+                        <input type="number" [(ngModel)]="editData.totalAmountPaid" required />
+                    </div>
+                </div>
+
+
+                <div class="modal-form">
+                    <div class="modal-input-group">
+                        <label>GRN:</label>
+                        <input type="text" [(ngModel)]="editData.grn" required />
+                    </div>
+
+                    <div class="modal-input-group">
+                        <label>Paid From:</label>
+                        <input type="text" [(ngModel)]="editData.paidFrom" required />
+                    </div>
+                    <div class="modal-input-group">
+                        <label>Purchase Company:</label>
+                        <input type="text" [(ngModel)]="editData.purchaseCompany" required />
+                    </div>
+                    <div class="modal-input-group">
+                        <label>Contact Person:</label>
+                        <input type="text" [(ngModel)]="editData.contactPerson" required />
+                    </div>
+                    <div class="modal-input-group">
+                        <label>Remark:</label>
+
+                        <textarea [(ngModel)]="editData.remark" id=""></textarea>
+
+                    </div>
+
+
+                </div>
+                <!-- Read-only fields -->
+
+
+
+
+
+
+                <!-- Buttons -->
                 <div class="modal-buttons">
                     <button (click)="saveEditClick()" class="btn btn-primary">Save Changes</button>
                     <button (click)="closeEditModal()" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
         </div>
+
         <!-- Intransit Delete Modal -->
         <div class="modal" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
             <div class="modal-content" (click)="$event.stopPropagation()">
@@ -503,29 +503,49 @@
             <div class="modal-content" (click)="$event.stopPropagation()">
                 <h3>Intransit Detail</h3>
                 <!-- Row 1 -->
-                <div class="detail-row">
+
+                <!-- Items Section -->
+
+                <span>Product Detail</span>
+                <br>
+                <div *ngFor="let item of selectedRow?.items" class="detail-row">
+
                     <div class="detail-item">
-                        <span class="label">Quantity Received:</span>
-                        <span class="value">{{ selectedRow?.qntyRecived
-                            }}</span>
+                        <span class="label">Item:</span>
+                        <span class="value">{{ item.itemDescription }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="label">Quantity:</span>
+                        <span class="value">{{ item.quantity }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Quantity Remaining:</span>
-                        <span class="value">{{ selectedRow?.qntyRemaning
-                            }}</span>
+                        <span class="label">Uom:</span>
+                        <span class="value">{{ item.uom }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">U.Price($):</span>
+                        <span class="value">{{ item.unitPrice }}</span>
                     </div>
                 </div>
+
+                <br>
                 <!-- Row 2 -->
+                <span>Common Data</span>
+                <br>
                 <div class="detail-row">
                     <div class="detail-item">
                         <span class="label">GRN:</span>
                         <span class="value">{{ selectedRow?.grn }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">Remark:</span>
-                        <span class="value">{{ selectedRow?.remark }}</span>
+                        <span class="label">Paid form:</span>
+                        <span class="value">{{ selectedRow?.paidFrom
+                            }}</span>
                     </div>
+
                 </div>
+                <br>
 
                 <!-- Row 3 -->
                 <div class="detail-row">
@@ -540,114 +560,87 @@
                             }}</span>
                     </div>
                 </div>
+                <br>
 
                 <div class="detail-row">
+
                     <div class="detail-item">
-                        <span class="label">Origin:</span>
-                        <span class="value">{{ selectedRow?.origin
-                            }}</span>
+                        <span class="label">Remark:</span>
+                        <span class="value">{{ selectedRow?.remark }}</span>
                     </div>
                 </div>
+
+
+                <span>Payment History</span>
+                <br>
 
                 <div class="modal-buttons">
                     <button (click)="closeDetailModal()">Close</button>
                 </div>
             </div>
         </div>
-        <!-- Add Intransit Modal -->
-        <div class="modal" *ngIf="showAddModal" (click)="showAddModal = false">
-            <div class="modal-content" (click)="$event.stopPropagation()">
-                <h3>Add Intransit Entry</h3>
+        <!-- add modal -->
 
-                <div class="modal-form">
-                    <div class="modal-input-group">
-                        <label>Purchase Date</label>
-                        <input type="date" [(ngModel)]="addData.purchaseDate" required />
+        <div class="modal" *ngIf="showAddModal" (click)="closeAddModal()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <!-- Add Row button -->
+
+                <div class="modal-header">
+                    <h3>Add Intransit Entry</h3>
+                    <div class="modal-buttons">
+                        <button (click)="addItemRow()" class="btn btn-success">+
+                            Add Item</button>
                     </div>
+
+                </div>
+                <div *ngFor="let item of addData.items; let i = index" class="row">
+                    <div class="modal-input-group">
+                        <label>Item Description</label>
+                        <input type="text" [(ngModel)]="item.itemDescription" required />
+                    </div>
+
+                    <div class="modal-input-group">
+                        <label>UOM</label>
+                        <select [(ngModel)]="item.uom" required>
+                            <option value="mg">mg</option>
+                            <option value="g">g</option>
+                            <option value="kg">kg</option>
+                            <option value="ton">ton</option>
+                            <option value="pcs">PCS</option>
+                            <option value="box">Box</option>
+                            <option value="roll">Roll</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-input-group">
+                        <label>Quantity</label>
+                        <input type="number" [(ngModel)]="item.quantity" required />
+                    </div>
+
+                    <div class="modal-input-group">
+                        <label>Unit Price ($)</label>
+                        <input type="number" [(ngModel)]="item.unitPrice" required />
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" (click)="removeItem(i)" [disabled]="i === 0">
+                            X
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-form">
                     <div class="modal-input-group">
                         <label>Purchase Order</label>
                         <input type="text" [(ngModel)]="addData.purchaseOrder" required />
                     </div>
                     <div class="modal-input-group">
-                        <label>Item Description</label>
-                        <input type="text" [(ngModel)]="addData.itemDescription" required />
+                        <label>Purchase Date</label>
+                        <input type="date" [(ngModel)]="addData.purchaseDate" required />
                     </div>
-                    <div class="modal-input-group">
-                        <label>Quantity</label>
-                        <input type="number" [(ngModel)]="addData.quantity" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>UOM</label>
-                        <select [(ngModel)]="addData.uom" required>
-                            <option value disabled>Select UOM</option>
-                            <option value="mg">mg</option>
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ton">ton</option>
-                            <option value="tons">tons</option>
-                            <option value="ml">ml</option>
-                            <option value="cl">cl</option>
-                            <option value="dl">dl</option>
-                            <option value="ltr">LTR</option>
-                            <option value="m3">cubic meter (m³)</option>
-                            <option value="mm">mm</option>
-                            <option value="cm">cm</option>
-                            <option value="m">m</option>
-                            <option value="inch">inch</option>
-                            <option value="ft">ft</option>
-                            <option value="yd">yd</option>
-                            <option value="sqm">square meter (m²)</option>
-                            <option value="sqft">square foot (ft²)</option>
-                            <option value="pcs">PCS</option>
-                            <option value="units">Units</option>
-                            <option value="pack">Pack</option>
-                            <option value="box">Box</option>
-                            <option value="bag">Bag</option>
-                            <option value="roll">Roll</option>
-                            <option value="rolls">Rolls</option>
-                            <option value="sheet">Sheet</option>
-                            <option value="sheets">Sheets</option>
-                            <option value="bundle">Bundle</option>
-                            <option value="set">Set</option>
-                            <option value="pair">Pair</option>
-                            <option value="coil">Coil</option>
-                            <option value="coils">Coils</option>
-                            <option value="drum">Drum</option>
-                            <option value="can">Can</option>
-                            <option value="pallet">Pallet</option>
-                            <option value="carton">Carton</option>
-                            <option value="barrel">Barrel</option>
-                            <option value="container">Container</option>
-                            <option value="tray">Tray</option>
-                        </select>
-                    </div>
-
                     <div class="modal-input-group">
                         <label>Origin</label>
                         <select [(ngModel)]="addData.origin" required>
-                            <option value disabled>Select Country</option>
-                            <option value="China">China</option>
-                            <option value="India">India</option>
-                            <option value="UAE">UAE</option>
-                            <option value="Egypt">Egypt</option>
-                            <option value="Germany">Germany</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="Iran">Iran</option>
-                            <option value="USA">USA</option>
-                            <option value="Japan">Japan</option>
-                            <option value="South Korea">South Korea</option>
-                            <option value="France">France</option>
-                            <option value="UK">UK</option>
-                            <option value="Canada">Canada</option>
-                            <option value="Brazil">Brazil</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Russia">Russia</option>
-                            <option value="Netherlands">Netherlands</option>
-                            <option value="Mexico">Mexico</option>
-                            <option value="Australia">Australia</option>
-                            <option value="Saudi Arabia">Saudi Arabia</option>
-
-                            <option value="xl">Italy</option>
+                            <option value="china">china</option>
+                            <option value="india">india</option>
 
                         </select>
                     </div>
@@ -656,17 +649,10 @@
                         <label>Purchase Company</label>
                         <input type="text" [(ngModel)]="addData.purchaseCompany" required />
                     </div>
+
                     <div class="modal-input-group">
                         <label>Contact Person</label>
                         <input type="text" [(ngModel)]="addData.contactPerson" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Paid From</label>
-                        <input type="text" [(ngModel)]="addData.paidFrom" />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Unit Price($)</label>
-                        <input type="number" [(ngModel)]="addData.unitPrice" />
                     </div>
 
                     <div class="modal-input-group">
@@ -675,16 +661,14 @@
                     </div>
                 </div>
 
+                <!-- Other common inputs -->
+
                 <div class="modal-buttons">
                     <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
                     <button (click)="closeAddModal()" class="btn btn-secondary">Cancel</button>
                 </div>
-
             </div>
         </div>
-
-
-
 
     </ng-container>
     <ng-container *ngIf="pageType === 'history'">

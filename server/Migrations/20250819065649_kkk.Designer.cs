@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250819065649_kkk")]
+    partial class kkk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace server.Migrations
                     b.Property<string>("Grn")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ItemQntyUomUnitprice")
+                    b.Property<string>("ItemDescription")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Origin")

@@ -9,11 +9,11 @@ import {
   Inject,
   PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { IntransitFollowupService } from '../../../services/intransit-followup.service';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -45,7 +45,6 @@ export class ReusableTable implements OnInit, OnChanges {
   selectedRow: any = null;
 
   isBrowser: boolean;
-
   pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
   buttonVisibility = { add: true, edit: true, delete: true, detail: true };
 
@@ -63,7 +62,11 @@ export class ReusableTable implements OnInit, OnChanges {
     { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true },
   ];
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, public router: Router) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public router: Router,
+    public intransitService: IntransitFollowupService
+  ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
       this.updatePageTypeAndButtons();
@@ -72,7 +75,7 @@ export class ReusableTable implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.filteredData = [...this.data];
-    if (this.isBrowser) this.setRowsPerPageBasedOnWidth(window.innerWidth);
+    if (this.isBrowser) this.setRowsPerPage(window.innerWidth);
     this.applyFilterAndPagination();
     this.updatePageTypeAndButtons();
   }
@@ -83,10 +86,10 @@ export class ReusableTable implements OnInit, OnChanges {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    if (this.isBrowser) this.setRowsPerPageBasedOnWidth(event.target.innerWidth);
+    if (this.isBrowser) this.setRowsPerPage(event.target.innerWidth);
   }
 
-  private setRowsPerPageBasedOnWidth(width: number) {
+  private setRowsPerPage(width: number) {
     this.rowsPerPage = width <= 480 ? 1 : 13;
     this.currentPage = 1;
   }
@@ -100,17 +103,9 @@ export class ReusableTable implements OnInit, OnChanges {
     return Math.ceil(this.filteredData.length / this.rowsPerPage);
   }
 
-  setPage(page: number): void {
-    this.currentPage = page;
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 1) this.currentPage--;
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) this.currentPage++;
-  }
+  setPage(page: number) { this.currentPage = page; }
+  prevPage() { if (this.currentPage > 1) this.currentPage--; }
+  nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
 
   onSearch(): void {
     const query = this.searchQuery.toLowerCase();
@@ -146,7 +141,7 @@ export class ReusableTable implements OnInit, OnChanges {
   }
 
   // =======================
-  // --- Add Modal (dynamic items, first fixed) ---
+  // --- Add Modal ---
   // =======================
   openAddModal(): void {
     this.addData = {
@@ -157,26 +152,31 @@ export class ReusableTable implements OnInit, OnChanges {
       paidFrom: '',
       origin: '',
       remark: '',
-      items: [
-        { itemDescription: '', quantity: 0, unitPrice: 0, uom: '' } // first fixed item
-      ]
+      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }]
     };
     this.showAddModal = true;
     this.toggleBodyScroll(true);
   }
 
-  addItem(): void {
-    this.addData.items.push({ itemDescription: '', quantity: 0, unitPrice: 0, uom: '' });
+  addItemRow(): void {
+    this.addData.items.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '' });
   }
 
   removeItem(index: number): void {
-    if (index === 0) return; // cannot remove first item
+    if (index === 0) return;
     this.addData.items.splice(index, 1);
   }
 
   saveAddClick(): void {
-    this.add.emit(this.addData);
-    this.closeAddModal();
+    console.log('Sending AddData to backend:', this.addData);
+    this.intransitService.createIntransitData(this.addData).subscribe({
+      next: (res: any) => {
+        console.log('Saved successfully', res);
+        this.add.emit(res);
+        this.closeAddModal();
+      },
+      error: (err: any) => console.error('Error saving', err)
+    });
   }
 
   closeAddModal(): void {
@@ -188,19 +188,28 @@ export class ReusableTable implements OnInit, OnChanges {
   // --- Edit Modal ---
   // =======================
   openEditModal(row: any): void {
-    this.editData = { ...row };
+    this.editData = JSON.parse(JSON.stringify(row));
     this.showEditModal = true;
     this.toggleBodyScroll(true);
   }
 
-  closeEditModal(): void {
-    this.showEditModal = false;
-    this.toggleBodyScroll(false);
+  addEditItem(): void {
+    this.editData.items.push({ itemDescription: '', quantity: 0, unitPrice: 0, uom: '' });
+  }
+
+  removeEditItem(index: number): void {
+    if (index === 0) return;
+    this.editData.items.splice(index, 1);
   }
 
   saveEditClick(): void {
     this.edit.emit(this.editData);
     this.closeEditModal();
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.toggleBodyScroll(false);
   }
 
   // =======================

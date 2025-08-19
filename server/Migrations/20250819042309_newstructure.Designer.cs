@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250819042309_newstructure")]
+    partial class newstructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,12 +115,6 @@ namespace server.Migrations
                     b.Property<string>("ContactPerson")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Grn")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ItemQntyUomUnitprice")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Origin")
                         .HasColumnType("longtext");
 
@@ -133,23 +130,11 @@ namespace server.Migrations
                     b.Property<string>("PurchaseOrder")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("QntyRecived")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("QntyRemaning")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
 
                     b.Property<decimal?>("TotalAmountPaid")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("TotalPaidInPercent")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("TransactionId")
                         .HasColumnType("longtext");
@@ -157,6 +142,39 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("IntransitFollowups");
+                });
+
+            modelBuilder.Entity("server.Models.IntransitItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IntransitFollowupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal?>("TotalPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<decimal?>("UnitPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Uom")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IntransitFollowupId");
+
+                    b.ToTable("IntransitItems");
                 });
 
             modelBuilder.Entity("server.Models.LogisticsFollowup", b =>
@@ -462,6 +480,22 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserLogs");
+                });
+
+            modelBuilder.Entity("server.Models.IntransitItem", b =>
+                {
+                    b.HasOne("server.Models.IntransitFollowup", "IntransitFollowup")
+                        .WithMany("Items")
+                        .HasForeignKey("IntransitFollowupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IntransitFollowup");
+                });
+
+            modelBuilder.Entity("server.Models.IntransitFollowup", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

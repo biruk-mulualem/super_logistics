@@ -20,17 +20,17 @@ export class Intransit implements OnInit, OnDestroy {
     { label: 'Origin', key: 'origin' },
     { label: 'Purchase Date', key: 'purchaseDate' },
     { label: 'Purchase Order', key: 'purchaseOrder' },
-    { label: 'Total Price($)', key: 'totalPrice' },
-    { label: 'Total Amount Paid($)', key: 'totalAmountPaid' },
-    { label: 'Total Paid (%)', key: 'totalPaidInPercent' },
+    { label: 'Total Price($)', key: 'totalPrice', isDecimal: true },
+    { label: 'Total Amount Paid($)', key: 'totalAmountPaid', isDecimal: true  },
+    { label: 'Total Paid (%)', key: 'totalPaidInPercent', isDecimal: true  },
   ];
 
   detailHeaders = [
     { label: 'Paid From', key: 'paidFrom' },
     { label: 'Item Description', key: 'itemDescription' },
     { label: 'UOM', key: 'uom' },
-    { label: 'Quantity', key: 'quantity' },
-    { label: 'Unit Price()', key: 'unitPrice' },
+    { label: 'Quantity', key: 'quantity', isDecimal: true  },
+    { label: 'Unit Price()', key: 'unitPrice', isDecimal: true  },
     { label: 'Purchase Company', key: 'purchaseCompany' },
     { label: 'Contact Person', key: 'contactPerson' },
     { label: 'GRN', key: 'grn' },
@@ -115,7 +115,7 @@ export class Intransit implements OnInit, OnDestroy {
   }
 
  
-  // --- Handle Add/Delete ---
+  // --- Handle Add/Delete/edit ---
   saveAdd(newData: any) {
     const payload = {
       ...newData,
@@ -129,6 +129,27 @@ export class Intransit implements OnInit, OnDestroy {
       error: (err) => console.error('Failed to add:', err)
     });
   }
+
+saveEdit(updatedData: any) {
+  const payload = {
+    ...updatedData,
+    itemQntyUomUnitprice: this.serializeItems(updatedData.items)
+  };
+
+  this.intransitService.updateIntransitData(payload.id, payload).subscribe({
+    next: (res) => {
+      const parsed = { ...res, items: this.parseItems(res.itemQntyUomUnitprice) };
+      const idx = this.tableData.findIndex(r => r.id === res.id);
+      if (idx > -1) this.tableData[idx] = parsed;
+      this.closeEditModal();
+    },
+    error: (err) => console.error('Failed to update:', err)
+  });
+}
+
+
+
+
 
   onDelete(rowData: any) {
     this.intransitService.deleteIntransitData(rowData.id).subscribe({

@@ -98,7 +98,76 @@ public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup foll
     return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
 }
 
+[HttpPut("{id}")]
+public async Task<IActionResult> Update(int id, IntransitFollowup data)
+{
+    if (id != data.Id)
+        return BadRequest("ID mismatch");
 
+    // --- Recalculate total price from serialized items ---
+    if (!string.IsNullOrEmpty(data.ItemQntyUomUnitprice))
+    {
+        decimal totalPrice = 0;
+
+        var items = data.ItemQntyUomUnitprice
+            .Split(';', StringSplitOptions.RemoveEmptyEntries)
+            .Select(item =>
+            {
+                var parts = item.Split('@', StringSplitOptions.TrimEntries);
+                if (parts.Length != 2) return null;
+
+                var descQty = parts[0].Split(':', StringSplitOptions.TrimEntries);
+                if (descQty.Length != 2) return null;
+
+                var quantityUom = descQty[1].Split(' ', StringSplitOptions.TrimEntries);
+                if (quantityUom.Length != 2) return null;
+
+                decimal quantity = decimal.Parse(quantityUom[0]);
+                decimal unitPrice = decimal.Parse(parts[1].Replace("$", "").Trim());
+                string itemDescription = descQty[0];
+
+                totalPrice += quantity * unitPrice;
+
+                // --- Explicit log ---
+                // Console.WriteLine($"Item Description: {itemDescription}, Quantity: {quantity}, Unit Price: {unitPrice}, Running Total: {totalPrice}");
+                return new { itemDescription, quantity, unitPrice };
+            })
+            .Where(x => x != null)
+            .ToList();
+
+        data.TotalPrice = totalPrice;
+        Console.WriteLine($"Calculated Total Price: {data.TotalPrice}");
+    }
+
+    // --- Recalculate total paid in percent ---
+    if (data.TotalPrice > 0)
+    {
+        data.TotalPaidInPercent = (data.TotalAmountPaid / data.TotalPrice) * 100;
+    }
+    else
+    {
+        data.TotalPaidInPercent = 0;
+    }
+
+    // Console.WriteLine($"Total Amount Paid: {data.TotalAmountPaid}, Total Paid (%) : {data.TotalPaidInPercent}");
+
+    _context.Entry(data).State = EntityState.Modified;
+
+    try
+    {
+        await _context.SaveChangesAsync();
+        Console.WriteLine("Update saved successfully.");
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        if (!_context.IntransitFollowups.Any(e => e.Id == id))
+            return NotFound();
+        else
+            throw;
+    }
+
+    return NoContent();
+}
 
 
 

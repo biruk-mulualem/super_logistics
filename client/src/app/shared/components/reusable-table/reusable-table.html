@@ -21,6 +21,7 @@
                 <tr *ngFor="let row of paginatedData">
                     <td *ngFor="let header of headers" [attr.data-label]="header.label">
                         {{ row[header.key] }}
+
                     </td>
                     <td data-label="Actions">
                         <div class="action-buttons">
@@ -469,16 +470,8 @@
                         <textarea [(ngModel)]="editData.remark" id=""></textarea>
 
                     </div>
-
-
                 </div>
                 <!-- Read-only fields -->
-
-
-
-
-
-
                 <!-- Buttons -->
                 <div class="modal-buttons">
                     <button (click)="saveEditClick()" class="btn btn-primary">Save Changes</button>

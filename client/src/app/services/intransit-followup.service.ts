@@ -17,7 +17,6 @@ export class IntransitFollowupService {
   }
     // --- POST a new Intransit row ---
 createIntransitData(data: any): Observable<any> {  
-  console.log('Fetching Intransit data from API:', this.apiUrl);
   return this.http.post<any>(`${this.apiUrl}`, data);
 }
   // --- GET single Intransit row by id ---

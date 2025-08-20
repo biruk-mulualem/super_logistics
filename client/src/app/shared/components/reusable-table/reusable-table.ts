@@ -167,17 +167,11 @@ export class ReusableTable implements OnInit, OnChanges {
     this.addData.items.splice(index, 1);
   }
 
+
   saveAddClick(): void {
-    console.log('Sending AddData to backend:', this.addData);
-    this.intransitService.createIntransitData(this.addData).subscribe({
-      next: (res: any) => {
-        console.log('Saved successfully', res);
-        this.add.emit(res);
-        this.closeAddModal();
-      },
-      error: (err: any) => console.error('Error saving', err)
-    });
-  }
+  this.add.emit(this.addData);
+  this.closeAddModal();
+}
 
   closeAddModal(): void {
     this.showAddModal = false;
@@ -194,19 +188,18 @@ export class ReusableTable implements OnInit, OnChanges {
   }
 
   addEditItem(): void {
-    this.editData.items.push({ itemDescription: '', quantity: 0, unitPrice: 0, uom: '' });
+    this.editData.items.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '' });
   }
 
   removeEditItem(index: number): void {
     if (index === 0) return;
     this.editData.items.splice(index, 1);
   }
-
+  
   saveEditClick(): void {
-    this.edit.emit(this.editData);
-    this.closeEditModal();
-  }
-
+  this.edit.emit(this.editData);  // emit payload to parent
+  this.closeEditModal();
+}
   closeEditModal(): void {
     this.showEditModal = false;
     this.toggleBodyScroll(false);

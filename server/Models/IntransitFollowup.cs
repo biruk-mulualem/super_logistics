@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace server.Models
 {
     public class IntransitFollowup
@@ -15,19 +14,19 @@ namespace server.Models
         public string? ContactPerson { get; set; }
         public string? PaidFrom { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalPrice { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalAmountPaid { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalPaidInPercent { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(25,3)")]
         public decimal? QntyRecived { get; set; }
         
-        [Column(TypeName = "decimal(10,2)")]
+        [Column(TypeName = "decimal(25,3)")]
         public decimal? QntyRemaning { get; set; }
         public string? Grn { get; set; }
         public string? Origin { get; set; }

@@ -23,6 +23,8 @@ export class Intransit implements OnInit, OnDestroy {
     { label: 'Total Price($)', key: 'totalPrice', isDecimal: true },
     { label: 'Total Amount Paid($)', key: 'totalAmountPaid', isDecimal: true  },
     { label: 'Total Paid (%)', key: 'totalPaidInPercent', isDecimal: true  },
+      { label: 'Total Remaning Amount($)', key: 'totalAmountRemaning', isDecimal: true  },
+    { label: 'Total Remaning (%)', key: 'totalRemaningInPercent', isDecimal: true  },
   ];
 
   detailHeaders = [

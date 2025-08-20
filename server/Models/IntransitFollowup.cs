@@ -19,9 +19,15 @@ namespace server.Models
         
         [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalAmountPaid { get; set; }
+
+         [Column(TypeName = "decimal(25,3)")]
+        public decimal? TotalAmountRemaning { get; set; }
         
         [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalPaidInPercent { get; set; }
+
+               [Column(TypeName = "decimal(25,3)")]
+        public decimal? TotalRemaningInPercent { get; set; }
         
         [Column(TypeName = "decimal(25,3)")]
         public decimal? QntyRecived { get; set; }

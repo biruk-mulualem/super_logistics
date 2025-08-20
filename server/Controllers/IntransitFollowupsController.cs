@@ -50,7 +50,7 @@ public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup foll
 
     // --- Generate next TransactionId safely ---
     var lastTransaction = await _context.IntransitFollowups
-        .AsNoTracking() // Prevent EF Core tracking conflicts
+        .AsNoTracking()
         .OrderByDescending(f => f.Id)
         .FirstOrDefaultAsync();
 
@@ -64,39 +64,45 @@ public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup foll
 
     followup.TransactionId = $"SDT{nextNumber.ToString().PadLeft(6, '0')}";
 
-    // --- Serialize items array into a single string ---
+    // --- Serialize items array ---
     if (followup.Items != null && followup.Items.Any())
     {
         followup.ItemQntyUomUnitprice = string.Join("; ", followup.Items.Select(
             it => $"{it.ItemDescription}:{it.Quantity} {it.Uom} @ {it.UnitPrice}$"
         ));
 
-        // Set defaults if null
         followup.TotalAmountPaid ??= 0;
 
-        // Calculate total price of all items
         followup.TotalPrice = followup.Items.Sum(it => it.Quantity * it.UnitPrice);
+        followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
 
-        // Calculate total paid in percent safely
         followup.TotalPaidInPercent = followup.TotalPrice == 0
             ? 0
             : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
+
+        followup.TotalRemaningInPercent = followup.TotalPrice == 0
+            ? 0
+            : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
     }
     else
     {
-        // No items, set totals to 0
         followup.TotalPrice = 0;
         followup.TotalAmountPaid = 0;
+        followup.TotalAmountRemaning = 0;
         followup.TotalPaidInPercent = 0;
+        followup.TotalRemaningInPercent = 0;
         followup.ItemQntyUomUnitprice = string.Empty;
     }
 
-    // --- Add new entity ---
+    // --- Save to DB ---
     _context.IntransitFollowups.Add(followup);
     await _context.SaveChangesAsync();
 
     return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
 }
+
+
+
 
 [HttpPut("{id}")]
 public async Task<IActionResult> Update(int id, IntransitFollowup data)
@@ -124,39 +130,39 @@ public async Task<IActionResult> Update(int id, IntransitFollowup data)
 
                 decimal quantity = decimal.Parse(quantityUom[0]);
                 decimal unitPrice = decimal.Parse(parts[1].Replace("$", "").Trim());
-                string itemDescription = descQty[0];
 
                 totalPrice += quantity * unitPrice;
-
-                // --- Explicit log ---
-                // Console.WriteLine($"Item Description: {itemDescription}, Quantity: {quantity}, Unit Price: {unitPrice}, Running Total: {totalPrice}");
-                return new { itemDescription, quantity, unitPrice };
+                return new { quantity, unitPrice };
             })
             .Where(x => x != null)
             .ToList();
 
         data.TotalPrice = totalPrice;
-        Console.WriteLine($"Calculated Total Price: {data.TotalPrice}");
-    }
-
-    // --- Recalculate total paid in percent ---
-    if (data.TotalPrice > 0)
-    {
-        data.TotalPaidInPercent = (data.TotalAmountPaid / data.TotalPrice) * 100;
     }
     else
     {
-        data.TotalPaidInPercent = 0;
+        data.TotalPrice = 0;
     }
 
-    // Console.WriteLine($"Total Amount Paid: {data.TotalAmountPaid}, Total Paid (%) : {data.TotalPaidInPercent}");
+    // --- Ensure null safety for TotalAmountPaid ---
+    data.TotalAmountPaid ??= 0;
+
+    // --- Recalculate totals ---
+    data.TotalAmountRemaning = data.TotalPrice - data.TotalAmountPaid.Value;
+
+    data.TotalPaidInPercent = data.TotalPrice == 0
+        ? 0
+        : (data.TotalAmountPaid.Value / data.TotalPrice) * 100;
+
+    data.TotalRemaningInPercent = data.TotalPrice == 0
+        ? 0
+        : (data.TotalAmountRemaning / data.TotalPrice) * 100;
 
     _context.Entry(data).State = EntityState.Modified;
 
     try
     {
         await _context.SaveChangesAsync();
-        Console.WriteLine("Update saved successfully.");
     }
     catch (DbUpdateConcurrencyException)
     {

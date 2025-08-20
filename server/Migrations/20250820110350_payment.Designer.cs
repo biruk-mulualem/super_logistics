@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250820110350_payment")]
+    partial class payment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,36 +251,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LogisticsFollowups");
-                });
-
-            modelBuilder.Entity("server.Models.PaymentHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountPaidFrom")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<string>("PaidBy")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateOnly>("PaidDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("TransactionId")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentHistories");
                 });
 
             modelBuilder.Entity("server.Models.RecycleBin", b =>

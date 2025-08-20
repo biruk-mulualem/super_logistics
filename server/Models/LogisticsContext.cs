@@ -13,8 +13,6 @@ namespace server.Models
         public DbSet<User> Users { get; set; }
         public DbSet<RecycleBin> RecycleBins { get; set; }
         public DbSet<IntransitFollowup> IntransitFollowups { get; set; }
-     
-        
-
+         public DbSet<PaymentHistory> PaymentHistories { get; set; }
     }
 }

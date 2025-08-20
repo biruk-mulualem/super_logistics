@@ -17,7 +17,11 @@ export class IntransitFollowupService {
   }
     // --- POST a new Intransit row ---
 createIntransitData(data: any): Observable<any> {  
-  return this.http.post<any>(`${this.apiUrl}`, data);
+  return this.http.post<any>(`http://localhost:5000/api/IntransitFollowups/intransit`, data);
+}
+// --- POST payment terms ---
+createPaymentTerms(data: any): Observable<any> {
+  return this.http.post<any>(`http://localhost:5000/api/IntransitFollowups/payment`, data);
 }
   // --- GET single Intransit row by id ---
   getIntransitDataById(id: number): Observable<any> {

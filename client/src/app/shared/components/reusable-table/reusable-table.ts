@@ -44,6 +44,11 @@ export class ReusableTable implements OnInit, OnChanges {
   deleteRowData: any = null;
   selectedRow: any = null;
 
+ 
+showAddPaymentFields = false;
+activeSection: 'intransit' | 'payment' | null = null;
+
+
   isBrowser: boolean;
   pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
   buttonVisibility = { add: true, edit: true, delete: true, detail: true };
@@ -140,6 +145,10 @@ export class ReusableTable implements OnInit, OnChanges {
     document.body.classList.toggle('modal-open', disable);
   }
 
+  toggleSection(section: 'intransit' | 'payment') {
+  this.activeSection = this.activeSection === section ? null : section;
+}
+
   // =======================
   // --- Add Modal ---
   // =======================
@@ -152,7 +161,8 @@ export class ReusableTable implements OnInit, OnChanges {
       paidFrom: '',
       origin: '',
       remark: '',
-      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }]
+      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }],
+          paymentTerms: []  // <-- add this
     };
     this.showAddModal = true;
     this.toggleBodyScroll(true);
@@ -168,15 +178,98 @@ export class ReusableTable implements OnInit, OnChanges {
   }
 
 
-  saveAddClick(): void {
-  this.add.emit(this.addData);
+// Used in saveAddClick to filter out disabled sections
+// --- Clean filtered payload ---
+getFilteredAddData() {
+  const payload: any = {};
+
+  // --- Intransit section ---
+  if (this.activeSection !== 'intransit') {
+    const validItems = this.addData.items?.filter(
+      (      i: { itemDescription: any; quantity: any; unitPrice: any; uom: any; }) => i.itemDescription || i.quantity || i.unitPrice || i.uom
+    );
+    if (validItems?.length) {
+      payload.items = validItems;
+
+      // Generate serialized string only if items exist
+      payload.itemQntyUomUnitprice = validItems
+        .map((i: { itemDescription: any; quantity: any; uom: any; unitPrice: any; }) => `${i.itemDescription}:${i.quantity} ${i.uom} @ ${i.unitPrice}$`)
+        .join(', ');
+
+      const { purchaseDate, purchaseOrder, purchaseCompany, contactPerson, origin, remark } = this.addData;
+      if (purchaseDate) payload.purchaseDate = purchaseDate;
+      if (purchaseOrder) payload.purchaseOrder = purchaseOrder;
+      if (purchaseCompany) payload.purchaseCompany = purchaseCompany;
+      if (contactPerson) payload.contactPerson = contactPerson;
+      if (origin) payload.origin = origin;
+      if (remark) payload.remark = remark;
+    }
+  }
+
+  // --- Payment section ---
+  if (this.activeSection !== 'payment') {
+    const validPayments = this.addData.paymentTerms?.filter(
+      (      p: { amountPaid: any; paidBy: any; accountPaidFrom: any; paymentDate: any; }) => p.amountPaid || p.paidBy || p.accountPaidFrom || p.paymentDate
+    );
+    if (validPayments?.length) {
+      payload.payment = validPayments;
+    }
+  }
+
+  return payload;
+}
+
+
+
+saveAddClick(): void {
+  const payload = this.getFilteredAddData();
+  this.add.emit({ payload, activeSection: this.activeSection });
   this.closeAddModal();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   closeAddModal(): void {
     this.showAddModal = false;
     this.toggleBodyScroll(false);
   }
+
+  // =======================
+  // --- add payment modal ---
+  // =======================
+
+
+
+// Every click adds a new payment row
+addPaymentTerm() {
+  this.showAddPaymentFields = true; // always show when clicked
+  this.addData.paymentTerms.push({
+    amountPaid: 0,
+    paidBy: '',
+    accountPaidFrom: '',
+    paymentDate: ''
+  });
+}
+
+// Remove a payment row
+removePaymentRow(index: number) {
+  this.addData.paymentTerms.splice(index, 1);
+}
 
   // =======================
   // --- Edit Modal ---

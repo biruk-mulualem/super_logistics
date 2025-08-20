@@ -118,19 +118,59 @@ export class Intransit implements OnInit, OnDestroy {
 
  
   // --- Handle Add/Delete/edit ---
-  saveAdd(newData: any) {
-    const payload = {
-      ...newData,
-      itemQntyUomUnitprice: this.serializeItems(newData.items)
+saveAdd(event: any) {
+  const { payload, activeSection } = event;
+
+  // --- 1️⃣ Handle Intransit section ---
+  if (activeSection !== 'intransit' && payload.items?.length) {
+    const intransitPayload = {
+      ...payload,
+      itemQntyUomUnitprice: this.serializeItems(payload.items)
     };
-    this.intransitService.createIntransitData(payload).subscribe({
+
+    this.intransitService.createIntransitData(intransitPayload).subscribe({
       next: (created) => {
         const parsed = { ...created, items: this.parseItems(created.itemQntyUomUnitprice) };
         this.tableData = [...this.tableData, parsed];
+        console.log('Intransit saved successfully');
+
+        // --- 2️⃣ Handle Payment section (after intransit) ---
+        if (activeSection !== 'payment' && payload.payment?.length) {
+          this.sendPaymentTerms(payload.payment);
+        }
       },
-      error: (err) => console.error('Failed to add:', err)
+      error: (err) => {
+        console.error('Failed to add intransit entry:', err);
+
+        // Still attempt to send payment even if intransit failed
+        if (activeSection !== 'payment' && payload.payment?.length) {
+          this.sendPaymentTerms(payload.payment);
+        }
+      }
     });
+  } else if (activeSection !== 'payment' && payload.payment?.length) {
+    // If intransit is disabled, send payment directly
+    this.sendPaymentTerms(payload.payment);
   }
+}
+
+// --- Utility method to send payment terms independently ---
+private sendPaymentTerms(paymentData: any[]) {
+  const paymentPayload = paymentData.map(pt => ({
+    amountPaid: pt.amountPaid,
+    paidBy: pt.paidBy,
+    accountPaidFrom: pt.accountPaidFrom,
+    paymentDate: pt.paymentDate
+  }));
+
+  this.intransitService.createPaymentTerms(paymentPayload).subscribe({
+    next: () => console.log('Payment terms saved successfully'),
+    error: (err) => console.error('Failed to add payment terms:', err)
+  });
+}
+
+
+
 
 saveEdit(updatedData: any) {
   const payload = {

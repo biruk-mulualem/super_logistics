@@ -41,8 +41,8 @@ namespace server.Controllers
         }
 
   
-  // POST: api/IntransitFollowups
-[HttpPost]
+  // POST: api/IntransitFollowups/intransit
+[HttpPost("intransit")]
 public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup followup)
 {
     if (followup == null)
@@ -100,6 +100,19 @@ public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup foll
 
     return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
 }
+
+[HttpPost("payment")]
+public async Task<ActionResult<PaymentHistory>> CreatePayment([FromBody] PaymentHistory payment)
+{
+    if (payment == null)
+        return BadRequest("Payment data is required.");
+
+    _context.PaymentHistories.Add(payment);
+    await _context.SaveChangesAsync();
+
+    return CreatedAtAction(nameof(CreatePayment), new { id = payment.Id }, payment);
+}
+
 
 
 

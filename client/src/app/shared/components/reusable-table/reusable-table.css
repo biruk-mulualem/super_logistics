@@ -403,10 +403,43 @@ table tbody tr:nth-child(even) {
     margin-bottom: 15px;
 }
 
+
+/* reusable-table.css */
+
+.intransit-div input[readonly],
+.intransit-div select:disabled,
+.intransit-div textarea[readonly] {
+    background-color: #e0e0e0;
+    /* light gray */
+    color: #555;
+    /* optional: darker text */
+    cursor: not-allowed;
+    /* show not-allowed cursor */
+}
+
+
+/* reusable-table.css */
+
+.Payment-div input[readonly],
+.Payment-div select:disabled,
+.Payment-div textarea[readonly] {
+    background-color: #e0e0e0;
+    /* light gray */
+    color: #555;
+    cursor: not-allowed;
+}
+
 span {
     color: black;
     font-weight: bold;
     font-size: 20px;
+}
+
+hr {
+    border: none;
+    height: 3px;
+    background-color: #ddca21;
+    margin: 30px 0;
 }
 
 

@@ -415,7 +415,7 @@
 
                 <!-- Editable metadata -->
                 <span>
-                   Common Data
+                    Common Data
                 </span>
                 <div class="modal-form">
                     <div class="modal-input-group">
@@ -426,8 +426,10 @@
                         <label>Purchase Order</label>
                         <input type="text" [(ngModel)]="editData.purchaseOrder" required />
                     </div>
-
-
+                    <div class="modal-input-group">
+                        <label>Purchase Company:</label>
+                        <input type="text" [(ngModel)]="editData.purchaseCompany" required />
+                    </div>
 
                     <div class="modal-input-group">
                         <label>Origin</label>
@@ -438,10 +440,7 @@
                         </select>
                     </div>
 
-
-
                 </div>
-
 
                 <div class="modal-form">
                     <div class="modal-input-group">
@@ -453,10 +452,7 @@
                         <label>Paid From:</label>
                         <input type="text" [(ngModel)]="editData.paidFrom" required />
                     </div>
-                    <div class="modal-input-group">
-                        <label>Purchase Company:</label>
-                        <input type="text" [(ngModel)]="editData.purchaseCompany" required />
-                    </div>
+
                     <div class="modal-input-group">
                         <label>Contact Person:</label>
                         <input type="text" [(ngModel)]="editData.contactPerson" required />
@@ -464,23 +460,11 @@
                     <div class="modal-input-group">
                         <label>Remark:</label>
 
-                        <textarea [(ngModel)]="editData.remark" id=""></textarea>
+                        <textarea [(ngModel)]="editData.remark" id></textarea>
 
                     </div>
                 </div>
 
-
-                <span>
-                   Payment Detail
-                </span>
-                <div class="modal-form">
-                    <div class="modal-input-group">
-                        <label>Total Amount Paid($)</label>
-                        <input type="number" [(ngModel)]="editData.totalAmountPaid" required />
-                    </div>
-                </div>
-
-                <!-- Read-only fields -->
                 <!-- Buttons -->
                 <div class="modal-buttons">
                     <button (click)="saveEditClick()" class="btn btn-primary">Save Changes</button>
@@ -572,7 +556,6 @@
                     </div>
                 </div>
 
-
                 <span>Payment History</span>
                 <br>
 
@@ -587,80 +570,144 @@
             <div class="modal-content" (click)="$event.stopPropagation()">
                 <!-- Add Row button -->
 
-                <div class="modal-header">
-                    <h3>Add Intransit Entry</h3>
-                    <div class="modal-buttons">
-                        <button (click)="addItemRow()" class="btn btn-success">+
-                            Add Item</button>
+                <div class="intransit-div">
+                    <div class="modal-header">
+                        <h3>Add Intransit Entry</h3>
                     </div>
+                    <hr>
 
-                </div>
-                <div *ngFor="let item of addData.items; let i = index" class="row">
-                    <div class="modal-input-group">
-                        <label>Item Description</label>
-                        <input type="text" [(ngModel)]="item.itemDescription" required />
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>UOM</label>
-                        <select [(ngModel)]="item.uom" required>
-                            <option value="mg">mg</option>
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ton">ton</option>
-                            <option value="pcs">PCS</option>
-                            <option value="box">Box</option>
-                            <option value="roll">Roll</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>Quantity</label>
-                        <input type="number" [(ngModel)]="item.quantity" required />
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>Unit Price ($)</label>
-                        <input type="number" [(ngModel)]="item.unitPrice" required />
-                    </div>
-                    <div class="modal-buttons">
-                        <button type="button" (click)="removeItem(i)" [disabled]="i === 0">
-                            X
+                    <!-- Intransit section -->
+                    <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center;">
+                        <button (click)="addItemRow()" class="btn btn-success" [disabled]="activeSection === 'intransit' || activeSection === 'payment'">
+                            + Add Item
+                        </button>
+                        <button type="button" class="btn btn-secondary" (click)="toggleSection('intransit')">
+                            <i class="fa"
+                                [ngClass]="activeSection === 'intransit' ? 'fa-lock' : 'fa-unlock'"></i>
                         </button>
                     </div>
+
+                    <div *ngFor="let item of addData.items; let i = index" class="row">
+                        <div class="modal-input-group">
+                            <label>Item Description</label>
+                            <input type="text" [(ngModel)]="item.itemDescription" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>UOM</label>
+                            <select [(ngModel)]="item.uom" [disabled]="activeSection === 'intransit'">
+                                <option value="mg">mg</option>
+                                <option value="g">g</option>
+                                <option value="kg">kg</option>
+                                <option value="ton">ton</option>
+                                <option value="pcs">PCS</option>
+                                <option value="box">Box</option>
+                                <option value="roll">Roll</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Quantity</label>
+                            <input type="number" [(ngModel)]="item.quantity" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Unit Price ($)</label>
+                            <input type="number" [(ngModel)]="item.unitPrice" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="button" (click)="removeItem(i)" [disabled]="i === 0 || activeSection === 'intransit'">
+                                X
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="modal-form">
+                        <div class="modal-input-group">
+                            <label>Purchase Order</label>
+                            <input type="text" [(ngModel)]="addData.purchaseOrder" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Purchase Date</label>
+                            <input type="date" [(ngModel)]="addData.purchaseDate" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Origin</label>
+                            <select [(ngModel)]="addData.origin" [disabled]="activeSection === 'intransit'">
+                                <option value="china">china</option>
+                                <option value="india">india</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Purchase Company</label>
+                            <input type="text" [(ngModel)]="addData.purchaseCompany" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Contact Person</label>
+                            <input type="text" [(ngModel)]="addData.contactPerson" [readonly]="activeSection === 'intransit'" />
+                        </div>
+
+                        <div class="modal-input-group">
+                            <label>Remark</label>
+                            <textarea [(ngModel)]="addData.remark" [readonly]="activeSection === 'intransit'"></textarea>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-form">
-                    <div class="modal-input-group">
-                        <label>Purchase Order</label>
-                        <input type="text" [(ngModel)]="addData.purchaseOrder" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Purchase Date</label>
-                        <input type="date" [(ngModel)]="addData.purchaseDate" required />
-                    </div>
-                    <div class="modal-input-group">
-                        <label>Origin</label>
-                        <select [(ngModel)]="addData.origin" required>
-                            <option value="china">china</option>
-                            <option value="india">india</option>
 
-                        </select>
+                <div class="Payment-div">
+                    <!-- Button always visible -->
+                    <!-- Payment section -->
+                    <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" class="btn btn-success" (click)="addPaymentTerm()" [disabled]="activeSection === 'payment'">
+                            <i class="fa fa-credit-card"></i> Add Payment Term
+                        </button>
+
+                        <button type="button" class="btn btn-secondary" (click)="toggleSection('payment')">
+                            <i class="fa"
+                                [ngClass]="activeSection === 'payment' ? 'fa-lock' : 'fa-unlock'"></i>
+                        </button>
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>Purchase Company</label>
-                        <input type="text" [(ngModel)]="addData.purchaseCompany" required />
+                    <!-- Payment fields (appear when at least one row exists) -->
+                    <div *ngFor="let payment of addData.paymentTerms; let j = index" class="payment-row" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center; margin-bottom: 10px;">
+
+                        <div class="modal-input-group" style="flex: 1">
+                            <label>Amount Paid:</label>
+                            <input type="number" [(ngModel)]="payment.amountPaid" [readonly]="activeSection === 'payment'" />
+                        </div>
+
+                        <div class="modal-input-group" style="flex: 1">
+                            <label>Paid By:</label>
+                            <input type="text" [(ngModel)]="payment.paidBy" [readonly]="activeSection === 'payment'" />
+                        </div>
+
+                        <div class="modal-input-group" style="flex: 1">
+                            <label>Account Paid From:</label>
+                            <input type="text" [(ngModel)]="payment.accountPaidFrom" [readonly]="activeSection === 'payment'" />
+                        </div>
+
+                        <div class="modal-input-group" style="flex: 1">
+                            <label>Payment Date:</label>
+                            <input type="date" [(ngModel)]="payment.paymentDate" [readonly]="activeSection === 'payment'" />
+                        </div>
+
+                        <!-- <button type="button" class="btn btn-danger" (click)="removePaymentRow(j)" [disabled]="activeSection === 'payment'">Remove</button> -->
+
+
+                        <div class="modal-buttons">
+                            <button type="button" class="btn btn-danger" (click)="removePaymentRow(j)" [disabled]="activeSection === 'payment'">X</button>
+
+                        </div>
+
                     </div>
 
-                    <div class="modal-input-group">
-                        <label>Contact Person</label>
-                        <input type="text" [(ngModel)]="addData.contactPerson" required />
-                    </div>
-
-                    <div class="modal-input-group">
-                        <label>Remark</label>
-                        <textarea [(ngModel)]="addData.remark"></textarea>
-                    </div>
+                    <hr>
                 </div>
 
                 <!-- Other common inputs -->

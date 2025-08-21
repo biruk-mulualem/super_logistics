@@ -13,8 +13,14 @@ export class IntransitFollowupService {
 
   // --- GET all Intransit rows (filtered) ---
   getIntransitData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`);
+    return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/intransit`);
   }
+
+    // --- GET all Intransit rows (filtered) ---
+// Fetch payments by transactionId
+getPaymentData(transactionId: string): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/payment/${transactionId}`);
+}
     // --- POST a new Intransit row ---
 createIntransitData(data: any): Observable<any> {  
   return this.http.post<any>(`http://localhost:5000/api/IntransitFollowups/intransit`, data);

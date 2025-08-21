@@ -16,34 +16,39 @@ import { IntransitFollowupService } from '../../services/intransit-followup.serv
 export class Intransit implements OnInit, OnDestroy {
   tableHeaders = [
     { label: 'Id', key: 'id' },
-    { label: 'Ref Id', key: 'transactionId' },
-    { label: 'Origin', key: 'origin' },
+    { label: 'Ref NO.', key: 'transactionId' },
+  
     { label: 'Purchase Date', key: 'purchaseDate' },
     { label: 'Purchase Order', key: 'purchaseOrder' },
-    { label: 'Total Price($)', key: 'totalPrice', isDecimal: true },
-    { label: 'Total Amount Paid($)', key: 'totalAmountPaid', isDecimal: true  },
-    { label: 'Total Paid (%)', key: 'totalPaidInPercent', isDecimal: true  },
-      { label: 'Total Remaning Amount($)', key: 'totalAmountRemaning', isDecimal: true  },
-    { label: 'Total Remaning (%)', key: 'totalRemaningInPercent', isDecimal: true  },
+    { label: 'Total Price', key: 'totalPrice', isDecimal: true },
+    { label: 'Total  Paid', key: 'totalAmountPaid', isDecimal: true },
+    { label: 'Total Paid (%)', key: 'totalPaidInPercent', isDecimal: true },
+    { label: 'Total Remaning', key: 'totalAmountRemaning', isDecimal: true },
+    { label: 'Total Remaning (%)', key: 'totalRemaningInPercent', isDecimal: true }
   ];
 
   detailHeaders = [
-    { label: 'Paid From', key: 'paidFrom' },
+  { label: 'Origin', key: 'origin' },
     { label: 'Item Description', key: 'itemDescription' },
     { label: 'UOM', key: 'uom' },
-    { label: 'Quantity', key: 'quantity', isDecimal: true  },
-    { label: 'Unit Price()', key: 'unitPrice', isDecimal: true  },
+    { label: 'Quantity', key: 'quantity', isDecimal: true },
+    { label: 'Unit Price()', key: 'unitPrice', isDecimal: true },
     { label: 'Purchase Company', key: 'purchaseCompany' },
     { label: 'Contact Person', key: 'contactPerson' },
     { label: 'GRN', key: 'grn' },
-    { label: 'Remark', key: 'remark' }
-  ];
+    { label: 'Remark', key: 'remark' },
+  
+  ]; 
 
   tableData: any[] = [];
   editData: any = null;
   showEditModal = false;
-  uomOptions = ['mg','g','kg','ton','pcs','box','roll'];
-  originOptions = ['china','india'];
+  showAddModal = false;
+  showPaymentModal = false;
+  selectedRowForPayment: any = null;
+  addData: any = null;
+  paymentTerms: any[] = [];
+  selectedRowForDetail: any = null;
 
   private routerSub?: Subscription;
 
@@ -95,7 +100,7 @@ export class Intransit implements OnInit, OnDestroy {
           itemDescription,
           quantity: Number(quantityStr),
           uom,
-          unitPrice: Number(pricePart.replace('$','').trim())
+          unitPrice: Number(pricePart.replace('$', '').trim())
         };
       });
   }
@@ -107,7 +112,7 @@ export class Intransit implements OnInit, OnDestroy {
 
   // --- Edit modal ---
   openEditModal(row: any) {
-    this.editData = { ...row, items: JSON.parse(JSON.stringify(row.items)) }; // deep copy
+    this.editData = { ...row, items: JSON.parse(JSON.stringify(row.items)) };
     this.showEditModal = true;
   }
 
@@ -116,89 +121,88 @@ export class Intransit implements OnInit, OnDestroy {
     this.editData = null;
   }
 
- 
-  // --- Handle Add/Delete/edit ---
-saveAdd(event: any) {
-  const { payload, activeSection } = event;
-
-  // --- 1️⃣ Handle Intransit section ---
-  if (activeSection !== 'intransit' && payload.items?.length) {
-    const intransitPayload = {
-      ...payload,
-      itemQntyUomUnitprice: this.serializeItems(payload.items)
+  // --- Add Intransit ---
+  addIntransit() {
+    this.addData = {
+      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }],
+      purchaseOrder: '',
+      purchaseDate: '',
+      origin: '',
+      purchaseCompany: '',
+      contactPerson: '',
+      remark: ''
     };
+    this.showAddModal = true;
+  }
 
-    this.intransitService.createIntransitData(intransitPayload).subscribe({
+  // --- Save Intransit ---
+  saveIntransit(data: any) {
+    const payload = { ...data, itemQntyUomUnitprice: this.serializeItems(data.items) };
+    this.intransitService.createIntransitData(payload).subscribe({
       next: (created) => {
         const parsed = { ...created, items: this.parseItems(created.itemQntyUomUnitprice) };
         this.tableData = [...this.tableData, parsed];
-        console.log('Intransit saved successfully');
-
-        // --- 2️⃣ Handle Payment section (after intransit) ---
-        if (activeSection !== 'payment' && payload.payment?.length) {
-          this.sendPaymentTerms(payload.payment);
-        }
+        this.showAddModal = false;
       },
-      error: (err) => {
-        console.error('Failed to add intransit entry:', err);
-
-        // Still attempt to send payment even if intransit failed
-        if (activeSection !== 'payment' && payload.payment?.length) {
-          this.sendPaymentTerms(payload.payment);
-        }
-      }
+      error: (err) => console.error('Failed to save intransit:', err)
     });
-  } else if (activeSection !== 'payment' && payload.payment?.length) {
-    // If intransit is disabled, send payment directly
-    this.sendPaymentTerms(payload.payment);
   }
-}
 
-// --- Utility method to send payment terms independently ---
-private sendPaymentTerms(paymentData: any[]) {
-  const paymentPayload = paymentData.map(pt => ({
+
+
+
+
+
+
+
+
+  
+
+  // --- Save Payment ---
+savePayment(payload: any) {
+  const mappedPayload = payload.payments.map((pt: any) => ({
+    transactionId: payload.transactionId,
     amountPaid: pt.amountPaid,
     paidBy: pt.paidBy,
     accountPaidFrom: pt.accountPaidFrom,
-    paymentDate: pt.paymentDate
+    paidDate: pt.paidDate // ensure yyyy-MM-dd
   }));
 
-  this.intransitService.createPaymentTerms(paymentPayload).subscribe({
-    next: () => console.log('Payment terms saved successfully'),
-    error: (err) => console.error('Failed to add payment terms:', err)
-  });
-}
-
-
-
-
-saveEdit(updatedData: any) {
-  const payload = {
-    ...updatedData,
-    itemQntyUomUnitprice: this.serializeItems(updatedData.items)
-  };
-
-  this.intransitService.updateIntransitData(payload.id, payload).subscribe({
-    next: (res) => {
-      const parsed = { ...res, items: this.parseItems(res.itemQntyUomUnitprice) };
-      const idx = this.tableData.findIndex(r => r.id === res.id);
-      if (idx > -1) this.tableData[idx] = parsed;
-      this.closeEditModal();
+  this.intransitService.createPaymentTerms(mappedPayload).subscribe({
+    next: () => {
+      console.log('Payment saved successfully');
+      this.loadFollowups();
+      this.showPaymentModal = false;
+      this.selectedRowForPayment = null;
+      this.paymentTerms = [];
     },
-    error: (err) => console.error('Failed to update:', err)
+    error: (err) => console.error('Failed to save payment:', err)
   });
 }
 
 
 
-
-
+  // --- Delete ---
   onDelete(rowData: any) {
     this.intransitService.deleteIntransitData(rowData.id).subscribe({
       next: () => {
         this.tableData = this.tableData.filter(row => row.id !== rowData.id);
       },
       error: (err) => console.error('Failed to delete:', err)
+    });
+  }
+
+  // --- Save Edit ---
+  saveEdit(updatedData: any) {
+    const payload = { ...updatedData, itemQntyUomUnitprice: this.serializeItems(updatedData.items) };
+    this.intransitService.updateIntransitData(payload.id, payload).subscribe({
+      next: (res) => {
+        const parsed = { ...res, items: this.parseItems(res.itemQntyUomUnitprice) };
+        const idx = this.tableData.findIndex(r => r.id === res.id);
+        if (idx > -1) this.tableData[idx] = parsed;
+        this.closeEditModal();
+      },
+      error: (err) => console.error('Failed to update:', err)
     });
   }
 }

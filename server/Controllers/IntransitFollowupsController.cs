@@ -20,11 +20,24 @@ namespace server.Controllers
         }
 
         // GET: api/IntransitFollowups
-        [HttpGet]
+        [HttpGet("intransit")]
         public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetAll()
         {
             return await _context.IntransitFollowups.ToListAsync();
         }
+           // GET: api/IntransitFollowups
+        [HttpGet("payment/{transactionId}")]
+     public async Task<ActionResult<IEnumerable<PaymentHistory>>> GetPaymentsByTransactionId(string transactionId)
+{
+    var payments = await _context.PaymentHistories
+        .Where(p => p.TransactionId == transactionId)
+        .ToListAsync();
+
+    return Ok(payments);
+}
+
+
+
 
         // GET: api/IntransitFollowups/{id}
         [HttpGet("{id}")]
@@ -102,20 +115,60 @@ public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup foll
 }
 
 [HttpPost("payment")]
-public async Task<ActionResult<PaymentHistory>> CreatePayment([FromBody] PaymentHistory payment)
+public async Task<ActionResult> CreatePayment([FromBody] List<PaymentHistory> payments)
 {
-    if (payment == null)
+    if (payments == null || !payments.Any())
         return BadRequest("Payment data is required.");
 
-    _context.PaymentHistories.Add(payment);
+    // 1️⃣ Insert new payments
+    _context.PaymentHistories.AddRange(payments);
     await _context.SaveChangesAsync();
 
-    return CreatedAtAction(nameof(CreatePayment), new { id = payment.Id }, payment);
+    // 2️⃣ Update totals for each transaction
+    var transactionGroups = payments.GroupBy(p => p.TransactionId);
+
+    foreach (var group in transactionGroups)
+    {
+        var transactionId = group.Key?.Trim();
+        if (string.IsNullOrEmpty(transactionId)) continue;
+
+        // Sum all payments for this transaction
+        var totalPaid = await _context.PaymentHistories
+            .Where(p => p.TransactionId == transactionId)
+            .SumAsync(p => p.AmountPaid);
+
+        // Find corresponding IntransitFollowup entry
+        var intransitEntry = await _context.IntransitFollowups
+            .FirstOrDefaultAsync(i => i.TransactionId.Trim() == transactionId);
+
+        if (intransitEntry != null)
+        {
+            intransitEntry.TotalAmountPaid = totalPaid;
+
+            // Recalculate remaining amounts and percentages
+            intransitEntry.TotalAmountRemaning = intransitEntry.TotalPrice - totalPaid;
+
+            // ✅ Set status to 1 if fully paid
+            if (intransitEntry.TotalAmountRemaning == 0)
+            {
+                intransitEntry.status = 1;
+            }
+
+            intransitEntry.TotalPaidInPercent = intransitEntry.TotalPrice == 0
+                ? 0
+                : (totalPaid / intransitEntry.TotalPrice) * 100;
+
+            intransitEntry.TotalRemaningInPercent = intransitEntry.TotalPrice == 0
+                ? 0
+                : (intransitEntry.TotalAmountRemaning / intransitEntry.TotalPrice) * 100;
+        }
+    }
+
+    // 3️⃣ Save updates to IntransitFollowups
+    await _context.SaveChangesAsync();
+
+    return Ok(payments);
 }
-
-
-
-
 
 [HttpPut("{id}")]
 public async Task<IActionResult> Update(int id, IntransitFollowup data)
@@ -189,31 +242,24 @@ public async Task<IActionResult> Update(int id, IntransitFollowup data)
 }
 
 
-
-
-
-
-
-
-
-
-
-
         // DELETE: api/IntransitFollowups/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var followup = await _context.IntransitFollowups.FindAsync(id);
-            if (followup == null)
-            {
-                return NotFound();
-            }
+      [HttpDelete("{id}")]
+public async Task<IActionResult> Delete(int id)
+{
+    var followup = await _context.IntransitFollowups.FindAsync(id);
+    if (followup == null)
+    {
+        return NotFound();
+    }
 
-            _context.IntransitFollowups.Remove(followup);
-            await _context.SaveChangesAsync();
+    // Soft delete: set status to 0
+    followup.status = 0;
+    _context.IntransitFollowups.Update(followup);
+    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+    return NoContent();
+}
+
 
         private bool FollowupExists(int id)
         {

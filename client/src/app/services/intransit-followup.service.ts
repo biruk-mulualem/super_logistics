@@ -12,12 +12,20 @@ export class IntransitFollowupService {
   constructor(private http: HttpClient) { }
 
   // --- GET all Intransit rows (filtered) ---
-  getIntransitData(): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/intransit`);
-  }
+getIntransitStatus0Data(): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/status0`);
+}
+
+getIntransitStatus1Data(): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/status1`);
+}
+
+getIntransitData(): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/statusOther`);
+}
+
 
     // --- GET all Intransit rows (filtered) ---
-// Fetch payments by transactionId
 getPaymentData(transactionId: string): Observable<any[]> {
   return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/payment/${transactionId}`);
 }

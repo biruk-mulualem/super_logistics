@@ -7,8 +7,13 @@ import { Report } from './pages/report/report';
 import { Recyclebin } from './pages/recyclebin/recyclebin';
 import { Setting } from './pages/setting/setting';
 import { Intransit } from './pages/intransit/intransit';
-// import { IntransitHistory } from './pages/history/intransitHistory/intransit-history/intransit-history';
-// import { LogisticsHistory } from './pages/history/logisticsHistory/logistics-history/logistics-history';
+import { DoneintransitHistory } from './pages/history/doneintransit-history/doneintransit-history';
+import { DonelogisticsHistory } from './pages/history/donelogistics-history/donelogistics-history';
+
+
+import { CanclledlogisticsHistory } from './pages/history/canclledlogistics-history/canclledlogistics-history';
+import { CancelledIntransitHistory } from './pages/history/canclledintransit-history/canclledintransit-history';
+
 
 
 export const routes: Routes = [
@@ -16,8 +21,10 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'dashboard', component: Dashboard },
   { path: 'logistics', component: Logistics },
-  // { path: 'intransithistory', component: IntransitHistory },
-  //  { path: 'logisticshistory', component: LogisticsHistory },
+  { path: 'doneintransithistory', component: DoneintransitHistory },
+   { path: 'donelogisticshistory', component: DonelogisticsHistory },
+   { path: 'cancelledintransithistory', component: CancelledIntransitHistory },
+   { path: 'cancelledlogisticshistory', component: CanclledlogisticsHistory },
   { path: 'report', component: Report },
   { path: 'recyclebin', component: Recyclebin },
   { path: 'setting', component: Setting },

@@ -52,13 +52,20 @@ export class ReusableTable implements OnInit, OnChanges {
   selectedRowForPayment: any = null;
 
   isBrowser: boolean;
-  pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
+   pageType: 'logistics' | 'intransit' | 'reports' | 'donelogisticshistory' |'doneintransithistory' |'cancelledintransithistory' |'cancelledlogisticshistory' | null = null;
+ 
+  // pageType: 'logistics' | 'intransit' | 'reports' | 'history' | null = null;
   buttonVisibility = { add: true, edit: true, delete: true, detail: true, payment: true };
   routeConfigs = [
     { match: '/intransit', pageType: 'intransit', add: true, edit: true, delete: true, detail: true, payment: true },
     { match: '/logistics', pageType: 'logistics', add: false, edit: true, delete: true, detail: true, payment: false },
     { match: '/reports', pageType: 'reports', add: false, edit: true, delete: false, detail: true, payment: false },
     { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true, payment: false },
+    { match: '/donelogistics', pageType: 'donelogisticshistory', add: false, edit: false, delete: false, detail: true, payment: false },
+    { match: '/doneintransit', pageType: 'doneintransithistory', add: false, edit: false, delete: false, detail: true, payment: false },
+    { match: '/cancelledintransit', pageType: 'cancelledintransithistory', add: false, edit: false, delete: false, detail: true, payment: false },
+    { match: '/cancelledlogistics', pageType: 'cancelledlogisticshistory', add: false, edit: false, delete: false, detail: true, payment: false },
+ 
   ];
 
   constructor(
@@ -132,7 +139,8 @@ export class ReusableTable implements OnInit, OnChanges {
     const currentRoute = this.router.url;
     const config = this.routeConfigs.find(cfg => currentRoute.includes(cfg.match));
     if (config) {
-      this.pageType = config.pageType as 'logistics' | 'intransit' | 'reports' | 'history';
+      this.pageType = config.pageType as 'logistics' | 'intransit' | 'reports' | 'donelogisticshistory' |'doneintransithistory' |'cancelledintransithistory' |'cancelledlogisticshistory';
+      
       this.buttonVisibility.add = config.add ?? false;
       this.buttonVisibility.edit = config.edit ?? false;
       this.buttonVisibility.delete = config.delete ?? false;

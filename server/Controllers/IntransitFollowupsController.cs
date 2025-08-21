@@ -19,15 +19,40 @@ namespace server.Controllers
             _context = context;
         }
 
-        // GET: api/IntransitFollowups
-        [HttpGet("intransit")]
-        public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetAll()
-        {
-            return await _context.IntransitFollowups.ToListAsync();
-        }
+ // GET /api/IntransitFollowups/status0
+[HttpGet("status0")]
+public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus0()
+{
+    var data = await _context.IntransitFollowups
+        .Where(x => x.status == 0)
+        .ToListAsync();
+    return Ok(data);
+}
+
+// GET /api/IntransitFollowups/status1
+[HttpGet("status1")]
+public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus1()
+{
+    var data = await _context.IntransitFollowups
+        .Where(x => x.status == 1)
+        .ToListAsync();
+    return Ok(data);
+}
+
+// GET /api/IntransitFollowups/statusOther
+[HttpGet("statusOther")]
+public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatusOther()
+{
+    var data = await _context.IntransitFollowups
+        .Where(x => x.status != 0 && x.status != 1)
+        .ToListAsync();
+    return Ok(data);
+}
+
+
            // GET: api/IntransitFollowups
-        [HttpGet("payment/{transactionId}")]
-     public async Task<ActionResult<IEnumerable<PaymentHistory>>> GetPaymentsByTransactionId(string transactionId)
+[HttpGet("payment/{transactionId}")]
+public async Task<ActionResult<IEnumerable<PaymentHistory>>> GetPaymentsByTransactionId(string transactionId)
 {
     var payments = await _context.PaymentHistories
         .Where(p => p.TransactionId == transactionId)
@@ -36,12 +61,9 @@ namespace server.Controllers
     return Ok(payments);
 }
 
-
-
-
-        // GET: api/IntransitFollowups/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IntransitFollowup>> GetById(int id)
+        // GET: api/IntransitFollowups/{id}        
+[HttpGet("{id}")]
+ public async Task<ActionResult<IntransitFollowup>> GetById(int id)
         {
             var followup = await _context.IntransitFollowups.FindAsync(id);
 
@@ -240,10 +262,8 @@ public async Task<IActionResult> Update(int id, IntransitFollowup data)
 
     return NoContent();
 }
-
-
         // DELETE: api/IntransitFollowups/{id}
-      [HttpDelete("{id}")]
+ [HttpDelete("{id}")]
 public async Task<IActionResult> Delete(int id)
 {
     var followup = await _context.IntransitFollowups.FindAsync(id);

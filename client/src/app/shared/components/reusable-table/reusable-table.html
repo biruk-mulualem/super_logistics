@@ -446,7 +446,7 @@
 
                     <div class="modal-form">
                         <div class="modal-input-group">
-                            <label>U.Price($):</label>
+                            <label>U.Price:</label>
                             <input type="number" [(ngModel)]="item.unitPrice" required />
                         </div>
 
@@ -575,7 +575,7 @@
                         <span class="value">{{ item.uom }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">U.Price($):</span>
+                        <span class="label">U.Price:</span>
                         <span class="value">{{ item.unitPrice }}</span>
                     </div>
                 </div>
@@ -725,7 +725,7 @@
                     </div>
 
                     <div class="modal-input-group">
-                        <label>Unit Price ($)</label>
+                        <label>Unit Price </label>
                         <input type="number" [(ngModel)]="item.unitPrice" />
                     </div>
 
@@ -818,7 +818,7 @@
                 <!-- Payment Rows -->
                 <div *ngFor="let payment of paymentTerms; let j = index" class="payment-row" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
                     <div class="modal-input-group" style="flex: 1">
-                        <label>Amount Paid($):</label>
+                        <label>Amount Paid:</label>
                         <input type="number" [(ngModel)]="payment.amountPaid" required />
                     </div>
                     <div class="modal-input-group" style="flex: 1">
@@ -848,95 +848,205 @@
             </div>
         </div>
     </ng-container>
-    <ng-container *ngIf="pageType === 'history'">
+    <ng-container *ngIf="pageType === 'cancelledintransithistory'">
+        <!-- intransit and payment detail -->
         <div class="modal" *ngIf="showDetailModal" (click)="closeDetailModal()">
             <div class="modal-content" (click)="$event.stopPropagation()">
-                <h3>Detail Information</h3>
-                <div class="detail-list">
+                <h2>Intransit Detail</h2>
+                <hr>
 
-                    <!-- Row 1 -->
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <span class="label">Djb-Eta:</span>
-                            <span class="value">{{ selectedRow?.etadjb }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Djb-Arr:</span>
-                            <span class="value">{{ selectedRow?.djbArrived
-                                }}</span>
-                        </div>
+                <!-- Product Detail -->
+                <span>Product Detail</span>
+                <br>
+                <div *ngFor="let item of selectedRow?.items" class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Item:</span>
+                        <span class="value">{{ item.itemDescription }}</span>
                     </div>
 
-                    <!-- Row 2 -->
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <span class="label">Doc-Sent-Djb:</span>
-                            <span class="value">{{ selectedRow?.docSentDjb
-                                }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Doc-Coll:</span>
-                            <span class="value">{{ selectedRow?.docCollected
-                                }}</span>
-                        </div>
+                    <div class="detail-item">
+                        <span class="label">Quantity:</span>
+                        <span class="value">{{ item.quantity }}</span>
                     </div>
-
-                    <!-- Row 3 -->
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <span class="label">Bill-Coll:</span>
-                            <span class="value">{{ selectedRow?.billCollected
-                                }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Tax-Paid:</span>
-                            <span class="value">{{ selectedRow?.taxPaid
-                                }}</span>
-                        </div>
+                    <div class="detail-item">
+                        <span class="label">Uom:</span>
+                        <span class="value">{{ item.uom }}</span>
                     </div>
-
-                    <!-- Row 4 -->
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <span class="label">Djb-Departed:</span>
-                            <span class="value">{{ selectedRow?.djbDeparted
-                                }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Akk-Arr:</span>
-                            <span class="value">{{ selectedRow?.akkArrived
-                                }}</span>
-                        </div>
+                    <div class="detail-item">
+                        <span class="label">U.Price:</span>
+                        <span class="value">{{ item.unitPrice }}</span>
                     </div>
+                </div>
 
-                    <!-- Row 5 -->
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <span class="label">Sdt-Arr:</span>
-                            <span class="value">{{ selectedRow?.sdtArrived
-                                }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Unreturned-Cont:</span>
-                            <span class="value">{{
-                                selectedRow?.empityContainersLeftUnreturned
-                                }}</span>
-                        </div>
+                <br>
+                <!-- Common Data -->
+                <span>Common Data</span>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">GRN:</span>
+                        <span class="value">{{ selectedRow?.grn }}</span>
                     </div>
+                    <div class="detail-item">
+                        <span class="label">Purchase Company:</span>
+                        <span class="value">{{ selectedRow?.purchaseCompany
+                            }}</span>
+                    </div>
+                </div>
 
-                    <!-- Single row for Remark -->
-                    <div class="detail-row">
-                        <div class="detail-item full-width">
-                            <span class="label">Remark:</span>
-                            <span class="value">{{ selectedRow?.remark }}</span>
-                        </div>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Origin:</span>
+                        <span class="value">{{ selectedRow?.origin }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Contact Person:</span>
+                        <span class="value">{{ selectedRow?.contactPerson
+                            }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Remark:</span>
+                        <span class="value">{{ selectedRow?.remark }}</span>
                     </div>
 
                 </div>
 
-                <div class="modal-buttons">
-                    <button (click)="closeDetailModal()">Close</button>
+                <hr>
+                <!-- Payment History -->
+                <div class="modal-buttons" style="margin-bottom: 10px;  justify-content: flex-start;">
+                    <button class="btn btn-success">
+
+                        <span>Payment Detail</span>
+                    </button>
                 </div>
+
+                <br>
+                <div *ngFor="let payment of paymentTerms" class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Date:</span>
+                        <span class="value">{{ payment.paidDate }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Amount:</span>
+                        <span class="value">{{ payment.amountPaid }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Paid By:</span>
+                        <span class="value">{{ payment.paidBy }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Account:</span>
+                        <span class="value">{{ payment.accountPaidFrom }}</span>
+                    </div>
+                </div>
+
+                <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button (click)="closeDetailModal()" class="btn btn-secondary">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="pageType === 'doneintransithistory'">
+        <!-- intransit and payment detail -->
+        <div class="modal" *ngIf="showDetailModal" (click)="closeDetailModal()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <h2>Intransit Detail</h2>
+                <hr>
+
+                <!-- Product Detail -->
+                <span>Product Detail</span>
+                <br>
+                <div *ngFor="let item of selectedRow?.items" class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Item:</span>
+                        <span class="value">{{ item.itemDescription }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="label">Quantity:</span>
+                        <span class="value">{{ item.quantity }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Uom:</span>
+                        <span class="value">{{ item.uom }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">U.Price:</span>
+                        <span class="value">{{ item.unitPrice }}</span>
+                    </div>
+                </div>
+
+                <br>
+                <!-- Common Data -->
+                <span>Common Data</span>
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">GRN:</span>
+                        <span class="value">{{ selectedRow?.grn }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Purchase Company:</span>
+                        <span class="value">{{ selectedRow?.purchaseCompany
+                            }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Origin:</span>
+                        <span class="value">{{ selectedRow?.origin }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Contact Person:</span>
+                        <span class="value">{{ selectedRow?.contactPerson
+                            }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Remark:</span>
+                        <span class="value">{{ selectedRow?.remark }}</span>
+                    </div>
+
+                </div>
+
+                <hr>
+                <!-- Payment History -->
+                <div class="modal-buttons" style="margin-bottom: 10px;  justify-content: flex-start;">
+                    <button class="btn btn-success">
+
+                        <span>Payment Detail</span>
+                    </button>
+                </div>
+
+                <br>
+                <div *ngFor="let payment of paymentTerms" class="detail-row">
+                    <div class="detail-item">
+                        <span class="label">Date:</span>
+                        <span class="value">{{ payment.paidDate }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Amount:</span>
+                        <span class="value">{{ payment.amountPaid }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Paid By:</span>
+                        <span class="value">{{ payment.paidBy }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Account:</span>
+                        <span class="value">{{ payment.accountPaidFrom }}</span>
+                    </div>
+                </div>
+
+                <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button (click)="closeDetailModal()" class="btn btn-secondary">Close</button>
+                </div>
+
             </div>
         </div>
     </ng-container>

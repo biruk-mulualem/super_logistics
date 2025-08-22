@@ -13,6 +13,7 @@ import { DonelogisticsHistory } from './pages/history/donelogistics-history/done
 
 import { CanclledlogisticsHistory } from './pages/history/canclledlogistics-history/canclledlogistics-history';
 import { CancelledIntransitHistory } from './pages/history/canclledintransit-history/canclledintransit-history';
+import { IntransitResolverService } from './services/resolver/intransit-resolver.service';
 
 
 
@@ -22,11 +23,17 @@ export const routes: Routes = [
   { path: 'dashboard', component: Dashboard },
   { path: 'logistics', component: Logistics },
   { path: 'doneintransithistory', component: DoneintransitHistory },
-   { path: 'donelogisticshistory', component: DonelogisticsHistory },
-   { path: 'cancelledintransithistory', component: CancelledIntransitHistory },
-   { path: 'cancelledlogisticshistory', component: CanclledlogisticsHistory },
+  { path: 'donelogisticshistory', component: DonelogisticsHistory },
+  { path: 'cancelledintransithistory', component: CancelledIntransitHistory },
+  { path: 'cancelledlogisticshistory', component: CanclledlogisticsHistory },
   { path: 'report', component: Report },
   { path: 'recyclebin', component: Recyclebin },
   { path: 'setting', component: Setting },
-  { path: 'intransit', component: Intransit },
+
+  // Intransit route with resolver
+  { 
+    path: 'intransit', 
+    component: Intransit,
+    resolve: { tableData: IntransitResolverService }
+  },
 ];

@@ -1,53 +1,73 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators'; // <-- import these
+
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IntransitFollowupService {
-    private apiUrl = 'http://localhost:5000/api/IntransitFollowups'; // Base API URL
+  private apiUrl = 'http://localhost:5000/api/IntransitFollowups'; // Base API URL
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  // --- GET all Intransit rows (filtered) ---
-getIntransitStatus0Data(): Observable<any[]> {
-  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/status0`);
-}
+  // --- GET all Intransit rows by status ---
+  getIntransitStatus0Data(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status0`);
+  }
 
-getIntransitStatus1Data(): Observable<any[]> {
-  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/status1`);
-}
+  getIntransitStatus1Data(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status1`);
+  }
 
-getIntransitData(): Observable<any[]> {
-  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/statusOther`);
-}
+  getIntransitData(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/statusOther`);
+  }
 
+  // --- GET item details for a followup by transactionId ---
+  getIntransitItemsDetailStatus0Data(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status0/${transactionId}`);
+  }
 
-    // --- GET all Intransit rows (filtered) ---
-getPaymentData(transactionId: string): Observable<any[]> {
-  return this.http.get<any[]>(`http://localhost:5000/api/IntransitFollowups/payment/${transactionId}`);
-}
-    // --- POST a new Intransit row ---
-createIntransitData(data: any): Observable<any> {  
-  return this.http.post<any>(`http://localhost:5000/api/IntransitFollowups/intransit`, data);
-}
-// --- POST payment terms ---
-createPaymentTerms(data: any): Observable<any> {
-  return this.http.post<any>(`http://localhost:5000/api/IntransitFollowups/payment`, data);
-}
-  // --- GET single Intransit row by id ---
+  getIntransitItemsDetailStatus1Data(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status1/${transactionId}`);
+  }
+
+  getIntransitItemsDetailData(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/statusOther/${transactionId}`);
+  }
+
+  // --- GET payment history for a transaction ---
+  getPaymentData(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/payment/${transactionId}`);
+  }
+
+  // --- POST a new Intransit followup ---
+  createIntransitData(data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/intransit`, data);
+  }
+
+  // --- POST payment terms ---
+  createPaymentTerms(data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/payment`, data);
+  }
+
+  // --- GET single followup by id ---
   getIntransitDataById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  // --- PUT / update a Intransit row by id ---
-  updateIntransitData(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, data);
-  }
+// Update main followup + items
+updateIntransitData(id: number, data: any): Observable<any> {
+  return this.http.put<any>(`${this.apiUrl}/intransit/${id}`, data);
+}
 
-  // --- DELETE a Intransit row by id ---
+// Update payment table (and trigger recalculation on the backend)
+updatePaymentData(id: number, data: any): Observable<any> {
+  return this.http.put<any>(`${this.apiUrl}/payment/${id}`, data);
+}
+
+  // --- DELETE a followup by id ---
   deleteIntransitData(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }

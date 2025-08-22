@@ -3,8 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ReusableTable } from '../../shared/components/reusable-table/reusable-table';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { IntransitFollowupService } from '../../services/intransit-followup.service';
 
 @Component({
@@ -13,11 +13,12 @@ import { IntransitFollowupService } from '../../services/intransit-followup.serv
   templateUrl: './intransit.html',
   styleUrls: ['./intransit.css']
 })
-export class Intransit implements OnInit, OnDestroy {
+export class Intransit implements OnInit {
+
+  // ---------------- Headers ----------------
   tableHeaders = [
     { label: 'Id', key: 'id' },
     { label: 'Ref NO.', key: 'transactionId' },
-  
     { label: 'Purchase Date', key: 'purchaseDate' },
     { label: 'Purchase Order', key: 'purchaseOrder' },
     { label: 'Total Price', key: 'totalPrice', isDecimal: true },
@@ -28,7 +29,7 @@ export class Intransit implements OnInit, OnDestroy {
   ];
 
   detailHeaders = [
-  { label: 'Origin', key: 'origin' },
+    { label: 'Origin', key: 'origin' },
     { label: 'Item Description', key: 'itemDescription' },
     { label: 'UOM', key: 'uom' },
     { label: 'Quantity', key: 'quantity', isDecimal: true },
@@ -37,91 +38,53 @@ export class Intransit implements OnInit, OnDestroy {
     { label: 'Contact Person', key: 'contactPerson' },
     { label: 'GRN', key: 'grn' },
     { label: 'Remark', key: 'remark' },
-  
-  ]; 
+  ];
 
+  // ---------------- Data ----------------
   tableData: any[] = [];
   editData: any = null;
+  addData: any = null;
+  paymentTerms: any[] = [];
+  selectedRowForPayment: any = null;
   showEditModal = false;
   showAddModal = false;
   showPaymentModal = false;
-  selectedRowForPayment: any = null;
-  addData: any = null;
-  paymentTerms: any[] = [];
-  selectedRowForDetail: any = null;
-
-  private routerSub?: Subscription;
+  editDataForChild: any = {};
 
   constructor(
     private intransitService: IntransitFollowupService,
-    private router: Router
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.loadFollowups();
-
-    this.routerSub = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        if (event.urlAfterRedirects === '/intransit' && this.tableData.length === 0) {
-          this.loadFollowups();
-        }
-      });
+    // Load table data from resolver on page load or refresh
+    this.tableData = this.route.snapshot.data['tableData'] || [];
   }
 
-  ngOnDestroy() {
-    this.routerSub?.unsubscribe();
+  // ---------------- Load Table ----------------
+  async loadFollowups() {
+    try {
+      const data = await firstValueFrom(this.intransitService.getIntransitData());
+      if (!data) { this.tableData = []; return; }
+
+      const tableWithDetails = await Promise.all(
+        data.map(async row => {
+          const [items, payments] = await Promise.all([
+            firstValueFrom(this.intransitService.getIntransitItemsDetailData(row.transactionId)),
+            firstValueFrom(this.intransitService.getPaymentData(row.transactionId))
+          ]);
+          return { ...row, items, payments };
+        })
+      );
+
+      this.tableData = tableWithDetails;
+    } catch (err) {
+      console.error('Failed to load followups:', err);
+      this.tableData = [];
+    }
   }
 
-  // --- Load data from backend ---
-  loadFollowups() {
-    this.intransitService.getIntransitData().subscribe({
-      next: (data) => {
-        this.tableData = data.map(row => ({
-          ...row,
-          items: this.parseItems(row.itemQntyUomUnitprice)
-        }));
-      },
-      error: (err) => console.error('Failed to load followups:', err)
-    });
-  }
-
-  // --- Parse/Serialize utility ---
-  private parseItems(serialized: string | null | undefined): any[] {
-    if (!serialized) return [];
-    return serialized.split(';')
-      .map(item => item.trim())
-      .filter(item => item.length > 0)
-      .map(item => {
-        const [descPart, pricePart] = item.split('@').map(x => x.trim());
-        const [itemDescription, quantityUom] = descPart.split(':').map(x => x.trim());
-        const [quantityStr, uom] = quantityUom.split(' ').map(x => x.trim());
-        return {
-          itemDescription,
-          quantity: Number(quantityStr),
-          uom,
-          unitPrice: Number(pricePart.replace('$', '').trim())
-        };
-      });
-  }
-
-  private serializeItems(items: any[]): string {
-    if (!items || items.length === 0) return '';
-    return items.map(it => `${it.itemDescription}:${it.quantity} ${it.uom} @ ${it.unitPrice}$`).join('; ');
-  }
-
-  // --- Edit modal ---
-  openEditModal(row: any) {
-    this.editData = { ...row, items: JSON.parse(JSON.stringify(row.items)) };
-    this.showEditModal = true;
-  }
-
-  closeEditModal() {
-    this.showEditModal = false;
-    this.editData = null;
-  }
-
-  // --- Add Intransit ---
+  // ---------------- Add ----------------
   addIntransit() {
     this.addData = {
       items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }],
@@ -135,74 +98,79 @@ export class Intransit implements OnInit, OnDestroy {
     this.showAddModal = true;
   }
 
-  // --- Save Intransit ---
-  saveIntransit(data: any) {
-    const payload = { ...data, itemQntyUomUnitprice: this.serializeItems(data.items) };
-    this.intransitService.createIntransitData(payload).subscribe({
-      next: (created) => {
-        const parsed = { ...created, items: this.parseItems(created.itemQntyUomUnitprice) };
-        this.tableData = [...this.tableData, parsed];
-        this.showAddModal = false;
+  async saveIntransit(data: any) {
+    try {
+      await firstValueFrom(this.intransitService.createIntransitData(data));
+      await this.loadFollowups();
+      this.showAddModal = false;
+    } catch (err) {
+      console.error('Failed to save intransit:', err);
+    }
+  }
+
+  // ---------------- Edit ----------------
+  async openEditModal(row: any) {
+    this.showEditModal = true;
+
+    const [items, payments] = await Promise.all([
+      firstValueFrom(this.intransitService.getIntransitItemsDetailData(row.transactionId)),
+      firstValueFrom(this.intransitService.getPaymentData(row.transactionId))
+    ]);
+
+    this.editData = {
+      ...row,
+      items: items.length ? items : [{ itemDescription:'', quantity:'', unitPrice:'', uom:'' }],
+      payments: payments.length ? payments : [{ amountPaid:'', paidBy:'', accountPaidFrom:'', paidDate:'' }]
+    };
+  }
+
+  async saveEdit(updatedData: any) {
+    const payload = { ...updatedData, items: updatedData.items };
+    const paymentPayload = { Payments: updatedData.payments };
+
+    try {
+      await firstValueFrom(this.intransitService.updateIntransitData(payload.id, payload));
+      await firstValueFrom(this.intransitService.updatePaymentData(payload.id, paymentPayload));
+
+      await this.loadFollowups();
+      this.closeEditModal();
+    } catch (err) {
+      console.error('Failed to update intransit or payments:', err);
+    }
+  }
+
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editData = null;
+  }
+
+  // ---------------- Payment ----------------
+  savePayment(payload: any) {
+    const mappedPayload = payload.payments.map((pt: any) => ({
+      transactionId: payload.transactionId,
+      amountPaid: pt.amountPaid,
+      paidBy: pt.paidBy,
+      accountPaidFrom: pt.accountPaidFrom,
+      paidDate: pt.paidDate
+    }));
+
+    this.intransitService.createPaymentTerms(mappedPayload).subscribe({
+      next: () => {
+        this.loadFollowups();
+        this.showPaymentModal = false;
+        this.selectedRowForPayment = null;
+        this.paymentTerms = [];
       },
-      error: (err) => console.error('Failed to save intransit:', err)
+      error: (err) => console.error('Failed to save payment:', err)
     });
   }
 
-
-
-
-
-
-
-
-
-  
-
-  // --- Save Payment ---
-savePayment(payload: any) {
-  const mappedPayload = payload.payments.map((pt: any) => ({
-    transactionId: payload.transactionId,
-    amountPaid: pt.amountPaid,
-    paidBy: pt.paidBy,
-    accountPaidFrom: pt.accountPaidFrom,
-    paidDate: pt.paidDate // ensure yyyy-MM-dd
-  }));
-
-  this.intransitService.createPaymentTerms(mappedPayload).subscribe({
-    next: () => {
-      console.log('Payment saved successfully');
-      this.loadFollowups();
-      this.showPaymentModal = false;
-      this.selectedRowForPayment = null;
-      this.paymentTerms = [];
-    },
-    error: (err) => console.error('Failed to save payment:', err)
-  });
-}
-
-
-
-  // --- Delete ---
+  // ---------------- Delete ----------------
   onDelete(rowData: any) {
     this.intransitService.deleteIntransitData(rowData.id).subscribe({
-      next: () => {
-        this.tableData = this.tableData.filter(row => row.id !== rowData.id);
-      },
+      next: () => this.loadFollowups(),
       error: (err) => console.error('Failed to delete:', err)
     });
   }
 
-  // --- Save Edit ---
-  saveEdit(updatedData: any) {
-    const payload = { ...updatedData, itemQntyUomUnitprice: this.serializeItems(updatedData.items) };
-    this.intransitService.updateIntransitData(payload.id, payload).subscribe({
-      next: (res) => {
-        const parsed = { ...res, items: this.parseItems(res.itemQntyUomUnitprice) };
-        const idx = this.tableData.findIndex(r => r.id === res.id);
-        if (idx > -1) this.tableData[idx] = parsed;
-        this.closeEditModal();
-      },
-      error: (err) => console.error('Failed to update:', err)
-    });
-  }
 }

@@ -33,20 +33,24 @@ export class ReusableTable implements OnInit, OnChanges {
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() addPayment = new EventEmitter<any>();
+@Input() editData: any = {};
+@Input() showEditModal: boolean = false;
 
   filteredData: any[] = [];
   searchQuery: string = '';
   currentPage: number = 1;
   rowsPerPage: number = 13;
+  newPayments: any[] = [];
+
 
   showAddModal = false;
-  showEditModal = false;
+  // showEditModal = false;
   showDeleteModal = false;
   showDetailModal = false;
   showPaymentModal = false;
 
   addData: any = {};
-  editData: any = {};
+  // editData: any = {};
   deleteRowData: any = null;
   selectedRow: any = null;
   selectedRowForPayment: any = null;
@@ -257,10 +261,11 @@ saveAddClick(): void {
   addEditItem(): void { this.addRow(this.editData.items, { itemDescription: '', quantity: '', unitPrice: '', uom: '' }); }
   removeEditItem(index: number): void { this.removeRow(this.editData.items, index); }
 
-  saveEditClick(): void {
-    this.edit.emit(this.editData);
-    this.closeEditModal();
-  }
+saveEditClick(): void {
+  this.edit.emit(this.editData); // editData must contain items and payments
+  this.closeEditModal();
+}
+
 
   closeEditModal(): void {
     this.showEditModal = false;
@@ -320,21 +325,20 @@ openDetailModal(row: any): void {
   // =======================
   // --- Payment Modal ---
   // =======================
-  openPaymentModal(row: any): void {
-    this.selectedRowForPayment = row;
-    this.paymentTerms = row.payments?.length
-      ? [...row.payments]
-      : [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }];
-    this.showPaymentModal = true;
-    this.toggleBodyScroll(true);
-  }
+openPaymentModal(row: any): void {
+  this.selectedRowForPayment = row;
+  this.newPayments = [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }]; // always start fresh
+  this.showPaymentModal = true;
+  this.toggleBodyScroll(true);
+}
 
-  addPaymentRow(): void { this.addRow(this.paymentTerms, { amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }); }
-  removePaymentRow(index: number): void { this.removeRow(this.paymentTerms, index, false); }
+
+addPaymentRow(): void { this.addRow(this.newPayments, { amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }); }
+removePaymentRow(index: number): void { this.removeRow(this.newPayments, index, false); }
 
 submitPayments(): void {
   // Validate all payment rows
-  for (let payment of this.paymentTerms) {
+  for (let payment of this.newPayments) {
     if (
       payment.amountPaid === null || payment.amountPaid === undefined || payment.amountPaid === '' ||
       !payment.paidBy?.trim() ||
@@ -349,7 +353,7 @@ submitPayments(): void {
   // All fields valid → emit payload
   const payload = {
     transactionId: this.selectedRowForPayment?.transactionId,
-    payments: this.paymentTerms
+    payments: this.newPayments
   };
   this.addPayment.emit(payload);
   this.closePaymentModal();
@@ -359,7 +363,7 @@ submitPayments(): void {
   closePaymentModal(): void {
     this.showPaymentModal = false;
     this.selectedRowForPayment = null;
-    this.paymentTerms = [];
+    this.newPayments = [];
     this.toggleBodyScroll(false);
   }
 }

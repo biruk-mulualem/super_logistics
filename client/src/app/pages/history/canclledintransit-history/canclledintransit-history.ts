@@ -3,12 +3,13 @@ import { Header } from '../../../shared/components/header/header';
 import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { ReusableTable } from '../../../shared/components/reusable-table/reusable-table';
 import { IntransitFollowupService } from '../../../services/intransit-followup.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-cancelled-intransit-history',
   imports: [Header, Sidebar, ReusableTable],
-  templateUrl: './canclledintransit-history.html',
-  styleUrls: ['./canclledintransit-history.css'] // <-- fixed typo
+  templateUrl: './canclledintransit-history.html', // <-- fixed typo
+  styleUrls: ['./canclledintransit-history.css']
 })
 export class CancelledIntransitHistory implements OnInit {
   tableHeaders = [
@@ -40,34 +41,28 @@ export class CancelledIntransitHistory implements OnInit {
   constructor(private intransitService: IntransitFollowupService) {}
 
   ngOnInit(): void {
-    this.intransitService.getIntransitStatus0Data().subscribe({
-      next: (data: any[]) => {
-        // Parse item details for each row
-        this.tableData = data.map(row => ({
-          ...row,
-          items: this.parseItems(row.itemQntyUomUnitprice)
-        }));
-      },
-      error: (err: any) => console.error('Error fetching cancelled intransit:', err)
-    });
+    this.loadFollowups();
   }
 
-  // --- Utility to parse serialized items ---
-  private parseItems(serialized: string | null | undefined): any[] {
-    if (!serialized) return [];
-    return serialized.split(';')
-      .map(item => item.trim())
-      .filter(item => item.length > 0)
-      .map(item => {
-        const [descPart, pricePart] = item.split('@').map(x => x.trim());
-        const [itemDescription, quantityUom] = descPart.split(':').map(x => x.trim());
-        const [quantityStr, uom] = quantityUom.split(' ').map(x => x.trim());
-        return {
-          itemDescription,
-          quantity: Number(quantityStr),
-          uom,
-          unitPrice: Number(pricePart.replace('$', '').trim())
-        };
-      });
+  async loadFollowups() {
+    try {
+      // 1️⃣ Fetch all followups with status 0
+      const data = await firstValueFrom(this.intransitService.getIntransitStatus0Data());
+
+      // 2️⃣ Fetch items for each followup in parallel
+      const tableWithItems = await Promise.all(
+        data.map(async row => {
+          const items = await firstValueFrom(
+            this.intransitService.getIntransitItemsDetailStatus0Data(row.transactionId)
+          );
+          return { ...row, items }; // merge items array
+        })
+      );
+
+      // 3️⃣ Assign to tableData
+      this.tableData = tableWithItems;
+    } catch (err) {
+      console.error('Failed to load followups:', err);
+    }
   }
 }

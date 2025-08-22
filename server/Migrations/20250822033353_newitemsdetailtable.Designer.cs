@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250822033353_newitemsdetailtable")]
+    partial class newitemsdetailtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,6 +118,9 @@ namespace server.Migrations
                     b.Property<string>("Grn")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ItemQntyUomUnitprice")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Origin")
                         .HasColumnType("longtext");
 
@@ -169,13 +175,13 @@ namespace server.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(25,3)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("TransactionId")
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(25,3)");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<string>("Uom")
                         .IsRequired()

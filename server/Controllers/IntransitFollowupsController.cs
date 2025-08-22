@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using server.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace server.Controllers
 {
@@ -19,274 +19,334 @@ namespace server.Controllers
             _context = context;
         }
 
- // GET /api/IntransitFollowups/status0
-[HttpGet("status0")]
-public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus0()
-{
-    var data = await _context.IntransitFollowups
-        .Where(x => x.status == 0)
-        .ToListAsync();
-    return Ok(data);
-}
+        // ===========================
+        // GET: Intransit by Status
+        // ===========================
+        [HttpGet("status0")]
+        public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus0()
+        {
+            var data = await _context.IntransitFollowups
+                .Where(x => x.status == 0)
+                .ToListAsync();
+            return Ok(data);
+        }
 
-// GET /api/IntransitFollowups/status1
-[HttpGet("status1")]
-public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus1()
-{
-    var data = await _context.IntransitFollowups
-        .Where(x => x.status == 1)
-        .ToListAsync();
-    return Ok(data);
-}
+        [HttpGet("status0/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<IntransitItemsDetail>>> GetItemDetailstatus0ByTransactionId(string transactionId)
+        {
+            var itemsDetail = await _context.IntransitItemsDetails
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(itemsDetail);
+        }
 
-// GET /api/IntransitFollowups/statusOther
-[HttpGet("statusOther")]
-public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatusOther()
-{
-    var data = await _context.IntransitFollowups
-        .Where(x => x.status != 0 && x.status != 1)
-        .ToListAsync();
-    return Ok(data);
-}
+        [HttpGet("status1")]
+        public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatus1()
+        {
+            var data = await _context.IntransitFollowups
+                .Where(x => x.status == 1)
+                .ToListAsync();
+            return Ok(data);
+        }
 
+        [HttpGet("status1/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<IntransitItemsDetail>>> GetItemDetailstatus1ByTransactionId(string transactionId)
+        {
+            var itemsDetail = await _context.IntransitItemsDetails
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(itemsDetail);
+        }
 
-           // GET: api/IntransitFollowups
-[HttpGet("payment/{transactionId}")]
-public async Task<ActionResult<IEnumerable<PaymentHistory>>> GetPaymentsByTransactionId(string transactionId)
-{
-    var payments = await _context.PaymentHistories
-        .Where(p => p.TransactionId == transactionId)
-        .ToListAsync();
+        [HttpGet("statusOther")]
+        public async Task<ActionResult<IEnumerable<IntransitFollowup>>> GetStatusOther()
+        {
+            var data = await _context.IntransitFollowups
+                .Where(x => x.status != 0 && x.status != 1)
+                .ToListAsync();
+            return Ok(data);
+        }
 
-    return Ok(payments);
-}
+        [HttpGet("statusOther/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<IntransitItemsDetail>>> GetItemDetailstatusOtherByTransactionId(string transactionId)
+        {
+            var itemsDetail = await _context.IntransitItemsDetails
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(itemsDetail);
+        }
 
-        // GET: api/IntransitFollowups/{id}        
-[HttpGet("{id}")]
- public async Task<ActionResult<IntransitFollowup>> GetById(int id)
+        // ===========================
+        // GET: Payments by Transaction
+        // ===========================
+        [HttpGet("payment/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<PaymentHistory>>> GetPaymentsByTransactionId(string transactionId)
+        {
+            var payments = await _context.PaymentHistories
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(payments);
+        }
+
+        // ===========================
+        // GET: Intransit by ID
+        // ===========================
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IntransitFollowup>> GetById(int id)
         {
             var followup = await _context.IntransitFollowups.FindAsync(id);
-
-            if (followup == null)
-            {
-                return NotFound();
-            }
-
+            if (followup == null) return NotFound();
             return followup;
         }
 
-  
-  // POST: api/IntransitFollowups/intransit
-[HttpPost("intransit")]
-public async Task<ActionResult<IntransitFollowup>> Create(IntransitFollowup followup)
-{
-    if (followup == null)
-        return BadRequest("Followup data is required.");
-
-    // --- Generate next TransactionId safely ---
-    var lastTransaction = await _context.IntransitFollowups
-        .AsNoTracking()
-        .OrderByDescending(f => f.Id)
-        .FirstOrDefaultAsync();
-
-    int nextNumber = 1;
-    if (lastTransaction != null && !string.IsNullOrEmpty(lastTransaction.TransactionId))
-    {
-        var numericPart = lastTransaction.TransactionId.Substring(3);
-        if (int.TryParse(numericPart, out int lastNumber))
-            nextNumber = lastNumber + 1;
-    }
-
-    followup.TransactionId = $"SDT{nextNumber.ToString().PadLeft(6, '0')}";
-
-    // --- Serialize items array ---
-    if (followup.Items != null && followup.Items.Any())
-    {
-        followup.ItemQntyUomUnitprice = string.Join("; ", followup.Items.Select(
-            it => $"{it.ItemDescription}:{it.Quantity} {it.Uom} @ {it.UnitPrice}$"
-        ));
-
-        followup.TotalAmountPaid ??= 0;
-
-        followup.TotalPrice = followup.Items.Sum(it => it.Quantity * it.UnitPrice);
-        followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
-
-        followup.TotalPaidInPercent = followup.TotalPrice == 0
-            ? 0
-            : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
-
-        followup.TotalRemaningInPercent = followup.TotalPrice == 0
-            ? 0
-            : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
-    }
-    else
-    {
-        followup.TotalPrice = 0;
-        followup.TotalAmountPaid = 0;
-        followup.TotalAmountRemaning = 0;
-        followup.TotalPaidInPercent = 0;
-        followup.TotalRemaningInPercent = 0;
-        followup.ItemQntyUomUnitprice = string.Empty;
-    }
-
-    // --- Save to DB ---
-    _context.IntransitFollowups.Add(followup);
-    await _context.SaveChangesAsync();
-
-    return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
-}
-
-[HttpPost("payment")]
-public async Task<ActionResult> CreatePayment([FromBody] List<PaymentHistory> payments)
-{
-    if (payments == null || !payments.Any())
-        return BadRequest("Payment data is required.");
-
-    // 1️⃣ Insert new payments
-    _context.PaymentHistories.AddRange(payments);
-    await _context.SaveChangesAsync();
-
-    // 2️⃣ Update totals for each transaction
-    var transactionGroups = payments.GroupBy(p => p.TransactionId);
-
-    foreach (var group in transactionGroups)
-    {
-        var transactionId = group.Key?.Trim();
-        if (string.IsNullOrEmpty(transactionId)) continue;
-
-        // Sum all payments for this transaction
-        var totalPaid = await _context.PaymentHistories
-            .Where(p => p.TransactionId == transactionId)
-            .SumAsync(p => p.AmountPaid);
-
-        // Find corresponding IntransitFollowup entry
-        var intransitEntry = await _context.IntransitFollowups
-            .FirstOrDefaultAsync(i => i.TransactionId.Trim() == transactionId);
-
-        if (intransitEntry != null)
+        // ===========================
+        // POST: Create Intransit Entry
+        // ===========================
+        [HttpPost("intransit")]
+        public async Task<ActionResult<IntransitFollowup>> Create([FromBody] IntransitCreateDto dto)
         {
-            intransitEntry.TotalAmountPaid = totalPaid;
+            if (dto == null)
+                return BadRequest("Payload is required.");
 
-            // Recalculate remaining amounts and percentages
-            intransitEntry.TotalAmountRemaning = intransitEntry.TotalPrice - totalPaid;
+            // Generate unique TransactionId
+            var lastTransaction = await _context.IntransitFollowups
+                .AsNoTracking()
+                .OrderByDescending(f => f.Id)
+                .FirstOrDefaultAsync();
 
-            // ✅ Set status to 1 if fully paid
-            if (intransitEntry.TotalAmountRemaning == 0)
+            int nextNumber = 1;
+            if (lastTransaction != null && !string.IsNullOrEmpty(lastTransaction.TransactionId))
             {
-                intransitEntry.status = 1;
+                var numericPart = lastTransaction.TransactionId.Substring(3);
+                if (int.TryParse(numericPart, out int lastNumber))
+                    nextNumber = lastNumber + 1;
             }
 
-            intransitEntry.TotalPaidInPercent = intransitEntry.TotalPrice == 0
-                ? 0
-                : (totalPaid / intransitEntry.TotalPrice) * 100;
+            string transactionId = $"SDT{nextNumber.ToString().PadLeft(6, '0')}";
 
-            intransitEntry.TotalRemaningInPercent = intransitEntry.TotalPrice == 0
-                ? 0
-                : (intransitEntry.TotalAmountRemaning / intransitEntry.TotalPrice) * 100;
-        }
-    }
+            // --- Calculate total price from items ---
+            decimal totalPrice = dto.Items?.Sum(it => it.Quantity * it.UnitPrice) ?? 0;
 
-    // 3️⃣ Save updates to IntransitFollowups
-    await _context.SaveChangesAsync();
-
-    return Ok(payments);
-}
-
-[HttpPut("{id}")]
-public async Task<IActionResult> Update(int id, IntransitFollowup data)
-{
-    if (id != data.Id)
-        return BadRequest("ID mismatch");
-
-    // --- Recalculate total price from serialized items ---
-    if (!string.IsNullOrEmpty(data.ItemQntyUomUnitprice))
-    {
-        decimal totalPrice = 0;
-
-        var items = data.ItemQntyUomUnitprice
-            .Split(';', StringSplitOptions.RemoveEmptyEntries)
-            .Select(item =>
+            // --- Map DTO to IntransitFollowup ---
+            var followup = new IntransitFollowup
             {
-                var parts = item.Split('@', StringSplitOptions.TrimEntries);
-                if (parts.Length != 2) return null;
+                TransactionId = transactionId,
+                PurchaseDate = dto.PurchaseDate,
+                PurchaseOrder = dto.PurchaseOrder,
+                PurchaseCompany = dto.PurchaseCompany,
+                ContactPerson = dto.ContactPerson,
+                Origin = dto.Origin,
+                Remark = dto.Remark,
+                TotalPrice = totalPrice,
+                TotalAmountPaid = 0,
+                TotalAmountRemaning = totalPrice,
+                TotalPaidInPercent = 0,
+                TotalRemaningInPercent = 100,
+                status = null
+            };
 
-                var descQty = parts[0].Split(':', StringSplitOptions.TrimEntries);
-                if (descQty.Length != 2) return null;
+            _context.IntransitFollowups.Add(followup);
+            await _context.SaveChangesAsync();
 
-                var quantityUom = descQty[1].Split(' ', StringSplitOptions.TrimEntries);
-                if (quantityUom.Length != 2) return null;
+            // --- Map items DTO to IntransitItemsDetail ---
+            if (dto.Items != null && dto.Items.Any())
+            {
+                var items = dto.Items.Select(it => new IntransitItemsDetail
+                {
+                    TransactionId = transactionId,
+                    ItemDescription = it.ItemDescription,
+                    Quantity = it.Quantity,
+                    UnitPrice = it.UnitPrice,
+                    Uom = it.Uom
+                }).ToList();
 
-                decimal quantity = decimal.Parse(quantityUom[0]);
-                decimal unitPrice = decimal.Parse(parts[1].Replace("$", "").Trim());
+                _context.IntransitItemsDetails.AddRange(items);
+                await _context.SaveChangesAsync();
+            }
 
-                totalPrice += quantity * unitPrice;
-                return new { quantity, unitPrice };
-            })
-            .Where(x => x != null)
-            .ToList();
+            return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
+        }
 
-        data.TotalPrice = totalPrice;
-    }
-    else
+        // ===========================
+        // POST: Add Payment(s)
+        // ===========================
+        [HttpPost("payment")]
+        public async Task<ActionResult> CreatePayment([FromBody] List<PaymentHistory> payments)
+        {
+            if (payments == null || !payments.Any())
+                return BadRequest("Payment data is required.");
+
+            _context.PaymentHistories.AddRange(payments);
+            await _context.SaveChangesAsync();
+
+            // Update totals
+            var transactionGroups = payments.GroupBy(p => p.TransactionId);
+            foreach (var group in transactionGroups)
+            {
+                var transactionId = group.Key?.Trim();
+                if (string.IsNullOrEmpty(transactionId)) continue;
+
+                var totalPaid = await _context.PaymentHistories
+                    .Where(p => p.TransactionId == transactionId)
+                    .SumAsync(p => p.AmountPaid);
+
+                var intransitEntry = await _context.IntransitFollowups
+                    .FirstOrDefaultAsync(i => i.TransactionId.Trim() == transactionId);
+
+                if (intransitEntry != null)
+                {
+                    intransitEntry.TotalAmountPaid = totalPaid;
+                    intransitEntry.TotalAmountRemaning = intransitEntry.TotalPrice - totalPaid;
+
+                    if (intransitEntry.TotalAmountRemaning == 0)
+                        intransitEntry.status = 1;
+
+                    intransitEntry.TotalPaidInPercent = intransitEntry.TotalPrice == 0
+                        ? 0
+                        : (totalPaid / intransitEntry.TotalPrice) * 100;
+
+                    intransitEntry.TotalRemaningInPercent = intransitEntry.TotalPrice == 0
+                        ? 0
+                        : (intransitEntry.TotalAmountRemaning / intransitEntry.TotalPrice) * 100;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(payments);
+        }
+
+        // ===========================
+        // PUT: Update Intransit Entry
+        // ===========================
+      [HttpPut("intransit/{id}")]
+public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
+{
+    // 1️⃣ Find the main followup
+    var followup = await _context.IntransitFollowups.FindAsync(id);
+    if (followup == null)
+        return NotFound($"Followup with ID {id} not found.");
+
+    // 2️⃣ Update main fields
+    followup.PurchaseDate = dto.PurchaseDate;
+    followup.PurchaseOrder = dto.PurchaseOrder;
+    followup.PurchaseCompany = dto.PurchaseCompany;
+    followup.ContactPerson = dto.ContactPerson;
+    followup.Origin = dto.Origin;
+    followup.Remark = dto.Remark;
+
+    // 3️⃣ Update items table
+    if (dto.Items != null && dto.Items.Any())
     {
-        data.TotalPrice = 0;
+        // Remove existing items
+        var existingItems = _context.IntransitItemsDetails
+                                    .Where(i => i.TransactionId == followup.TransactionId);
+        _context.IntransitItemsDetails.RemoveRange(existingItems);
+
+        // Add new/updated items
+        var newItems = dto.Items.Select(it => new IntransitItemsDetail
+        {
+            TransactionId = followup.TransactionId,
+            ItemDescription = it.ItemDescription,
+            Quantity = it.Quantity,
+            Uom = it.Uom,
+            UnitPrice = it.UnitPrice
+        }).ToList();
+
+        _context.IntransitItemsDetails.AddRange(newItems);
     }
 
-    // --- Ensure null safety for TotalAmountPaid ---
-    data.TotalAmountPaid ??= 0;
+    // 4️⃣ Recalculate totals based on updated items
+    followup.TotalPrice = dto.Items?.Sum(i => i.Quantity * i.UnitPrice) ?? 0;
 
-    // --- Recalculate totals ---
-    data.TotalAmountRemaning = data.TotalPrice - data.TotalAmountPaid.Value;
-
-    data.TotalPaidInPercent = data.TotalPrice == 0
+    followup.TotalAmountPaid ??= 0;
+    followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
+    followup.TotalPaidInPercent = followup.TotalPrice == 0
         ? 0
-        : (data.TotalAmountPaid.Value / data.TotalPrice) * 100;
-
-    data.TotalRemaningInPercent = data.TotalPrice == 0
+        : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
+    followup.TotalRemaningInPercent = followup.TotalPrice == 0
         ? 0
-        : (data.TotalAmountRemaning / data.TotalPrice) * 100;
+        : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
 
-    _context.Entry(data).State = EntityState.Modified;
-
-    try
-    {
-        await _context.SaveChangesAsync();
-    }
-    catch (DbUpdateConcurrencyException)
-    {
-        if (!_context.IntransitFollowups.Any(e => e.Id == id))
-            return NotFound();
-        else
-            throw;
-    }
+    // 5️⃣ Save changes
+    await _context.SaveChangesAsync();
 
     return NoContent();
 }
-        // DELETE: api/IntransitFollowups/{id}
- [HttpDelete("{id}")]
-public async Task<IActionResult> Delete(int id)
+
+[HttpPut("payment/{id}")]
+public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentUpdateDto dto)
 {
     var followup = await _context.IntransitFollowups.FindAsync(id);
     if (followup == null)
+        return NotFound($"Followup with ID {id} not found.");
+
+    // Remove existing payments for this transaction
+    var existingPayments = _context.PaymentHistories
+                                   .Where(p => p.TransactionId == followup.TransactionId);
+    _context.PaymentHistories.RemoveRange(existingPayments);
+
+    // Add new payment records from DTO
+    if (dto.Payments != null && dto.Payments.Any())
     {
-        return NotFound();
+        var newPayments = dto.Payments.Select(p => new PaymentHistory
+        {
+            TransactionId = followup.TransactionId,
+            AmountPaid = p.AmountPaid,
+            PaidBy = p.PaidBy,
+            AccountPaidFrom = p.AccountPaidFrom,
+            PaidDate = p.PaidDate
+        }).ToList();
+
+        _context.PaymentHistories.AddRange(newPayments);
     }
 
-    // Soft delete: set status to 0
-    followup.status = 0;
-    _context.IntransitFollowups.Update(followup);
+    // Recalculate totals on the followup
+    followup.TotalAmountPaid = _context.PaymentHistories
+                                       .Where(p => p.TransactionId == followup.TransactionId)
+                                       .Sum(p => (decimal?)p.AmountPaid) ?? 0;
+
+    followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
+
+    followup.TotalPaidInPercent = followup.TotalPrice == 0
+        ? 0
+        : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
+
+    followup.TotalRemaningInPercent = followup.TotalPrice == 0
+        ? 0
+        : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
+
+    // Only update status if fully paid
+if (followup.TotalAmountRemaning == 0)
+{
+    followup.status = 1;
+}
+
     await _context.SaveChangesAsync();
 
     return NoContent();
 }
 
 
-        private bool FollowupExists(int id)
+
+        // ===========================
+        // DELETE: Soft delete followup
+        // ===========================
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            return _context.IntransitFollowups.Any(e => e.Id == id);
+            var followup = await _context.IntransitFollowups.FindAsync(id);
+            if (followup == null) return NotFound();
+
+            followup.status = 0;
+            _context.IntransitFollowups.Update(followup);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
+
+        // ===========================
+        // Helper Method
+        // ===========================
+        private bool FollowupExists(int id) => _context.IntransitFollowups.Any(e => e.Id == id);
     }
 }
-
-
-

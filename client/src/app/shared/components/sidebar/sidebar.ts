@@ -19,6 +19,13 @@ export class Sidebar {
   toggleCollapse() {
     this.isCollapsed = !this.isCollapsed;
   }
+
+  dropdowns = { history: false, report: false };
+
+toggleDropdown(name: 'history' | 'report') {
+  this.dropdowns[name] = !this.dropdowns[name];
+}
+
 }
 
 

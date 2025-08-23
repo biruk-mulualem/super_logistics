@@ -23,6 +23,10 @@ public class IntransitItemsDetailDto
     public decimal Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public string Uom { get; set; } = string.Empty;
+         // ✅ Add these two for frontend → API
+        public decimal? LoadedQnty { get; set; } = 0;
+        public decimal? RemainingQnty { get; set; }
+   
 }
     }
 

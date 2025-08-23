@@ -12,6 +12,14 @@ namespace server.Models
         public decimal Quantity { get; set; }
         public string Uom { get; set; } = string.Empty;
 
+
+         [Column(TypeName = "decimal(25,3)")]
+        public decimal? LoadedQnty { get; set; }
+
+         [Column(TypeName = "decimal(25,3)")]
+        public decimal? RemaningQnty { get; set; }
+
+
            [Column(TypeName = "decimal(25,3)")]
         public decimal UnitPrice { get; set; }
     }

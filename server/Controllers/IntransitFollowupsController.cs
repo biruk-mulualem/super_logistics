@@ -218,7 +218,68 @@ namespace server.Controllers
         // ===========================
         // PUT: Update Intransit Entry
         // ===========================
-      [HttpPut("intransit/{id}")]
+//       [HttpPut("intransit/{id}")]
+// public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
+// {
+//     // 1️⃣ Find the main followup
+//     var followup = await _context.IntransitFollowups.FindAsync(id);
+//     if (followup == null)
+//         return NotFound($"Followup with ID {id} not found.");
+
+//     // 2️⃣ Update main fields
+//     followup.PurchaseDate = dto.PurchaseDate;
+//     followup.PurchaseOrder = dto.PurchaseOrder;
+//     followup.PurchaseCompany = dto.PurchaseCompany;
+//     followup.ContactPerson = dto.ContactPerson;
+//     followup.Origin = dto.Origin;
+//     followup.Remark = dto.Remark;
+//     followup.Grn = dto.Grn;   // 👈 Add this line
+
+//     // 3️⃣ Update items table
+//     if (dto.Items != null && dto.Items.Any())
+//     {
+//         //  in IntransitItemsDetails table i added two column RemaningQnty,LoadedQnty and whenver i insert an item data i need to add a feature when i inser into intransit the loading qnty is 0 and the remeaning qnty is eqult to the qnty 
+//         var existingItems = _context.IntransitItemsDetails
+//                                     .Where(i => i.TransactionId == followup.TransactionId);
+//         _context.IntransitItemsDetails.RemoveRange(existingItems);
+
+//         // Add new/updated items
+//         var newItems = dto.Items.Select(it => new IntransitItemsDetail
+//         {
+//             TransactionId = followup.TransactionId,
+//             ItemDescription = it.ItemDescription,
+//             Quantity = it.Quantity,
+//             Uom = it.Uom,
+//             UnitPrice = it.UnitPrice
+//         }).ToList();
+
+//         _context.IntransitItemsDetails.AddRange(newItems);
+//     }
+
+//     // 4️⃣ Recalculate totals based on updated items
+//     followup.TotalPrice = dto.Items?.Sum(i => i.Quantity * i.UnitPrice) ?? 0;
+
+//     followup.TotalAmountPaid ??= 0;
+//     followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
+//     followup.TotalPaidInPercent = followup.TotalPrice == 0
+//         ? 0
+//         : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
+//     followup.TotalRemaningInPercent = followup.TotalPrice == 0
+//         ? 0
+//         : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
+
+//     // 5️⃣ Save changes
+//     await _context.SaveChangesAsync();
+
+//     return NoContent();
+// }
+
+
+
+
+
+
+[HttpPut("intransit/{id}")]
 public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
 {
     // 1️⃣ Find the main followup
@@ -233,24 +294,26 @@ public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
     followup.ContactPerson = dto.ContactPerson;
     followup.Origin = dto.Origin;
     followup.Remark = dto.Remark;
-    followup.Grn = dto.Grn;   // 👈 Add this line
+    followup.Grn = dto.Grn; //  Existing field update
 
-    // 3️⃣ Update items table
+    //  Update items table
     if (dto.Items != null && dto.Items.Any())
     {
-        // Remove existing items
+        // Remove existing items for this transaction
         var existingItems = _context.IntransitItemsDetails
                                     .Where(i => i.TransactionId == followup.TransactionId);
         _context.IntransitItemsDetails.RemoveRange(existingItems);
 
-        // Add new/updated items
+        // Add new/updated items with LoadedQnty = 0, RemainingQnty = Quantity
         var newItems = dto.Items.Select(it => new IntransitItemsDetail
         {
             TransactionId = followup.TransactionId,
             ItemDescription = it.ItemDescription,
             Quantity = it.Quantity,
             Uom = it.Uom,
-            UnitPrice = it.UnitPrice
+            UnitPrice = it.UnitPrice,
+            LoadedQnty = 0,              // Initially 0
+            RemaningQnty = it.Quantity  // Initially equal to Quantity
         }).ToList();
 
         _context.IntransitItemsDetails.AddRange(newItems);
@@ -273,6 +336,7 @@ public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
 
     return NoContent();
 }
+
 
 [HttpPut("payment/{id}")]
 public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentUpdateDto dto)

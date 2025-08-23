@@ -12,8 +12,7 @@ namespace server.Models
         public string? PurchaseOrder { get; set; }
         public string? PurchaseCompany { get; set; }
         public string? ContactPerson { get; set; }
-    
-        
+
         [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalPrice { get; set; }
         
@@ -22,11 +21,12 @@ namespace server.Models
 
          [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalAmountRemaning { get; set; }
-        
-        [Column(TypeName = "decimal(25,3)")]
+
+
+         [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalPaidInPercent { get; set; }
 
-               [Column(TypeName = "decimal(25,3)")]
+         [Column(TypeName = "decimal(25,3)")]
         public decimal? TotalRemaningInPercent { get; set; }
         public string? Grn { get; set; }
         public string? Origin { get; set; }

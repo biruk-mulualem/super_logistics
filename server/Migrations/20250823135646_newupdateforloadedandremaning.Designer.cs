@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Models;
 
@@ -11,9 +12,11 @@ using server.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(LogisticsContext))]
-    partial class LogisticsContextModelSnapshot : ModelSnapshot
+    [Migration("20250823135646_newupdateforloadedandremaning")]
+    partial class newupdateforloadedandremaning
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,6 +118,9 @@ namespace server.Migrations
                     b.Property<string>("Grn")
                         .HasColumnType("longtext");
 
+                    b.Property<decimal?>("LoadedQnty")
+                        .HasColumnType("decimal(25,3)");
+
                     b.Property<string>("Origin")
                         .HasColumnType("longtext");
 
@@ -126,6 +132,9 @@ namespace server.Migrations
 
                     b.Property<string>("PurchaseOrder")
                         .HasColumnType("longtext");
+
+                    b.Property<decimal?>("RemaningQnty")
+                        .HasColumnType("decimal(25,3)");
 
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
@@ -168,13 +177,7 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal?>("LoadedQnty")
-                        .HasColumnType("decimal(25,3)");
-
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(25,3)");
-
-                    b.Property<decimal?>("RemaningQnty")
                         .HasColumnType("decimal(25,3)");
 
                     b.Property<string>("TransactionId")

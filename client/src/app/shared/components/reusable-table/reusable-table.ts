@@ -128,13 +128,28 @@ origins: string[] = [
   prevPage() { if (this.currentPage > 1) this.currentPage--; }
   nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
 
-  onSearch(): void {
-    const query = this.searchQuery.toLowerCase();
-    this.filteredData = this.data.filter(row =>
-      Object.values(row).some(val => String(val).toLowerCase().includes(query))
-    );
-    this.currentPage = 1;
+onSearch(): void {
+  const query = this.searchQuery.toLowerCase();
+
+  // Recursive search function
+  function matchesSearch(value: any): boolean {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string' || typeof value === 'number') {
+      return String(value).toLowerCase().includes(query);
+    }
+    if (Array.isArray(value)) {
+      return value.some(item => matchesSearch(item));
+    }
+    if (typeof value === 'object') {
+      return Object.values(value).some(val => matchesSearch(val));
+    }
+    return false;
   }
+
+  this.filteredData = this.data.filter(row => matchesSearch(row));
+  this.currentPage = 1;
+}
+
 
   private applyFilterAndPagination() {
     this.onSearch();
@@ -198,51 +213,70 @@ origins: string[] = [
   // =======================
   // --- Add Modal ---
   // =======================
-  openAddModal(): void {
-    this.addData = {
-      purchaseDate: '',
-      purchaseOrder: '',
-      purchaseCompany: '',
-      contactPerson: '',
-      paidFrom: '',
-      origin: '',
-      remark: '',
-      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '' }]
-    };
-    this.showAddModal = true;
-    this.toggleBodyScroll(true);
-  }
+openAddModal(): void {
+  this.addData = {
+    purchaseDate: '',
+    purchaseOrder: '',
+    purchaseCompany: '',
+    contactPerson: '',
+    origin: '',
+    remark: '',
+    items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' }]
+  };
+  this.showAddModal = true;
+  this.toggleBodyScroll(true);
+}
 
-  addItemRow(): void { this.addRow(this.addData.items, { itemDescription: '', quantity: '', unitPrice: '', uom: '' }); }
+addItemRow(): void {
+  this.addRow(this.addData.items, {
+    itemDescription: '',
+    quantity: '',
+    unitPrice: '',
+    uom: '',
+    loadedQnty: '',
+    remainingQnty: ''
+  });
+}
+
+
   removeItem(index: number): void { this.removeRow(this.addData.items, index); }
 
 saveAddClick(): void {
-  // Validate main fields
-  if (!this.addData.purchaseOrder?.trim() ||
-      !this.addData.purchaseDate ||
-      !this.addData.origin?.trim() ||
-      !this.addData.purchaseCompany?.trim() ||
-      !this.addData.contactPerson?.trim()) {
-    alert('Please fill out all required fields before saving.');
-    return;
-  }
+  const missingFields: string[] = [];
 
-  // Validate each item row
-  for (let i = 0; i < this.addData.items.length; i++) {
-    const item = this.addData.items[i];
-    if (!item.itemDescription?.trim() ||
-        !item.uom?.trim() ||
-        item.quantity === null || item.quantity === undefined || item.quantity === '' ||
-        item.unitPrice === null || item.unitPrice === undefined || item.unitPrice === '') {
-      alert(`Please fill out all required fields for item #${i + 1}.`);
-      return;
-    }
+  // Validate main fields
+  if (!this.addData.purchaseOrder?.trim()) missingFields.push('Purchase Order');
+  if (!this.addData.purchaseDate) missingFields.push('Purchase Date');
+  if (!this.addData.origin?.trim()) missingFields.push('Origin');
+  if (!this.addData.purchaseCompany?.trim()) missingFields.push('Purchase Company');
+  if (!this.addData.contactPerson?.trim()) missingFields.push('Contact Person');
+
+  // Validate each item row and set defaults
+  this.addData.items.forEach((item: { itemDescription: string; uom: string; quantity: any; unitPrice: any; loadedQnty: number; remainingQnty: number; }, index: number) => {
+    if (!item.itemDescription?.trim()) missingFields.push(`Item #${index + 1} Description`);
+    if (!item.uom?.trim()) missingFields.push(`Item #${index + 1} UOM`);
+    const quantity = Number(item.quantity);
+    const unitPrice = Number(item.unitPrice);
+    if (!quantity || isNaN(quantity)) missingFields.push(`Item #${index + 1} Quantity`);
+    if (!unitPrice || isNaN(unitPrice)) missingFields.push(`Item #${index + 1} Unit Price`);
+
+    // Set defaults for LoadedQnty and RemainingQnty
+    item.loadedQnty = 0;
+    item.remainingQnty = quantity || 0;
+  });
+
+  // Show popup if anything is missing
+  if (missingFields.length > 0) {
+    alert('Please fill out the following fields:\n- ' + missingFields.join('\n- '));
+    return;
   }
 
   // All fields valid → emit
   this.add.emit(this.addData);
   this.closeAddModal();
 }
+
+
 
   closeAddModal(): void {
     this.showAddModal = false;

@@ -1,612 +1,625 @@
-/* ------------------ Base Layout ------------------ */
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 0;
-}
-
-.search-input {
-    flex: 1 1 100px;
-    min-width: 130px;
-    max-width: 20%;
-    margin: 10px 0 0 10px;
-    padding: 8px 14px 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-    border-color: #74d9e8;
-    outline: none;
-}
-
-.add-btn,
-.edit-btn,
-.delete-btn,
-.detail-btn,
-.payment-btn {
-    border: none;
-    color: white;
-    padding: 8px 10px;
-    font-size: 14px;
-    border-radius: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-.add-btn {
-    background-color: #5cb85c;
-}
-
-.add-btn:hover {
-    background-color: #4cae4c;
-}
-
-.edit-btn {
-    background-color: #0eb1f1;
-    margin-right: 5px;
-}
-
-.delete-btn {
-    background-color: #f73403;
-    margin-right: 5px;
-}
-
-.payment-btn {
-    background-color: #096ada;
-    margin-right: 5px;
-}
-
-.detail-btn {
-    background-color: #13f0dd;
-    margin-right: 10px;
-}
-
-#plus_button {
-    background-color: #41dbf7;
-    border: none;
-    color: white;
-    padding: 1px 10px;
-    font-size: 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 20%;
-}
-
-.uom-header {
-    display: flex;
-    align-items: center;
-    gap: 70%;
-}
-
-.main-content {
-    margin-left: 150px;
-    padding: 5px;
-    box-sizing: border-box;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 0;
-}
-
-
-/* ------------------ Table ------------------ */
-
-.table-section {
-    background: white;
-    padding: 10px;
-    border-radius: 2px;
-    border: 1px solid #ddd;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-.table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: auto;
-    font-size: 15px;
-}
-
-thead {
-    background-color: #13a0c4;
-    font-size: 16px;
-    text-align: center;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    white-space: normal;
-    word-wrap: break-word;
-    padding: 5px;
-}
-
-.table-wrapper td input {
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 10px;
-    padding: 2px;
-}
-
-tbody tr:nth-child(odd) {
-    background-color: white;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #d8d7d7;
-}
-
-
-/* ------------------ Pagination ------------------ */
-
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.page-btn {
-    background: #f1f1f1;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 6px 14px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-    background-color: #74d9e8;
-    color: white;
-}
-
-.page-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.page-btn.active {
-    background-color: #337ab7;
-    color: white;
-    border-color: #286090;
-}
-
-
-/* ------------------ Modal ------------------ */
-
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-    padding: 15px;
-    box-sizing: border-box;
-    overflow-y: auto;
-}
-
-.modal-content {
-    background: #fff;
-    width: 850px;
-    max-width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    animation: fadeInUp 0.3s ease;
-}
-
-.modal-content h2,
-.modal-content .section-title,
-.modal-content span {
-    font-size: 16-18px;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.modal-content h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #222;
-    margin-bottom: 8px;
-}
-
-.modal-content hr {
-    border: none;
-    height: 1px;
-    background: #e2e8f0;
-    margin: 15px 0;
-}
-
-
-/* ------------------ Form Layout ------------------ */
-
-.modal-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px 20px;
-    flex: 1;
-}
-
-.modal-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1 1 200px;
-    min-width: 150px;
-    max-width: 280px;
-}
-
-.modal-input-group.full-width {
-    flex: 1 1 100%;
-    max-width: 100%;
-}
-
-.modal-input-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-}
-
-.modal-input-group input,
-.modal-input-group select,
-.modal-input-group textarea {
-    padding: 8px 10px;
-    font-size: 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background: #f9fafb;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-input-group input:focus,
-.modal-input-group select:focus,
-.modal-input-group textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
-}
-
-.modal-input-group textarea {
-    resize: vertical;
-    min-height: 80px;
-    flex: 1 1 100%;
-}
-
-
-/* ------------------ Buttons ------------------ */
-
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.modal-buttons .btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-
-.btn-primary {
-    background: #2563eb;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: #e5e7eb;
-    color: #111;
-}
-
-.btn-secondary:hover {
-    background: #d1d5db;
-}
-
-
-/* ------------------ Detail Items ------------------ */
-
-.detail-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.detail-item {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border: 1px solid #cfd9df;
-    border-radius: 8px;
-    background: #fafafa;
-    transition: all 0.2s ease;
-}
-
-.detail-item:hover {
-    border-color: #74d9e8;
-    background: #f0fcff;
-}
-
-.detail-item .label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #333;
-}
-
-.detail-item .value {
-    font-size: 14px;
-    font-weight: 400;
-    color: #555;
-    text-align: right;
-    word-break: break-word;
-}
-
-.detail-item.full-width {
-    flex: 1 1 100%;
-    justify-content: flex-start;
-    border-style: dashed;
-}
-
-.detail-item.full-width .value {
-    text-align: left;
-    margin-left: 5px;
-}
-
-
-/* ------------------ Misc ------------------ */
-
-hr {
-    border: none;
-    height: 3px;
-    background-color: #ddca21;
-    margin: 30px 0;
-}
-
-.intransit-div input[readonly],
-.intransit-div select:disabled,
-.intransit-div textarea[readonly],
-.Payment-div input[readonly],
-.Payment-div select:disabled,
-.Payment-div textarea[readonly] {
-    background-color: #e0e0e0;
-    color: #555;
-    cursor: not-allowed;
-}
-
-.item-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 50px;
-    margin-bottom: 10px;
-    overflow-x: hidden;
-}
-
-.item-row .modal-input-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.item-row .modal-input-group input,
-.item-row .modal-input-group select {
-    width: 100%;
-    padding: 6px 12px;
-    font-size: 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background: #f9fafb;
-}
-
-.item-row .remove-btn {
-    flex: 0 0 auto;
-}
-
-.item-row .remove-btn button {
-    padding: 8px 12px;
-    width: 40px;
-    background: #e02b2b;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.item-row .remove-btn button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-
-/* ------------------ Animations ------------------ */
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* ------------------ Responsive: Table & Layout ------------------ */
-
-
-/* ✅ Tablet and large phones (<= 1024px) */
-
-@media (max-width: 1024px) {
-    table,
-    thead,
-    tbody,
-    tr,
-    th,
-    td {
-        display: block;
-        width: 100%;
-        font-size: 13px;
-    }
-    thead {
-        display: none;
-    }
-    tr {
-        border: 1px solid #ddd;
-        margin-bottom: 15px;
-        border-radius: 6px;
-        background-color: #fafafa;
-        padding: 10px;
-    }
-    td {
-        position: relative;
-        padding-left: 40%;
-        border: none;
-        border-bottom: 1px solid #eee;
-        box-sizing: border-box;
-        text-align: left;
-    }
-    td::before {
-        content: attr(data-label);
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        width: 35%;
-        font-weight: bold;
-        white-space: nowrap;
-        color: #333;
-    }
-    td:last-child {
-        border-bottom: none;
-    }
+    /* ------------------ Base Layout ------------------ */
+    
     .container {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 0;
     }
-    .search-input,
-    .add-btn {
-        width: 50%;
-        margin-left: 25%;
-    }
+    
     .search-input {
-        max-width: 100%;
-        /* allow full width */
-        flex: 1 1 100%;
-        /* take up full available width */
-        min-width: auto;
-        /* remove the fixed min-width */
+        flex: 1 1 100px;
+        min-width: 130px;
+        max-width: 20%;
+        margin: 10px 0 0 10px;
+        padding: 8px 14px 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border-color 0.3s ease;
     }
-}
-
-
-/* ✅ Small phones (<= 768px) */
-
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 150px;
-        /* same as sidebar width */
-        padding-left: 10px;
-        /* optional, small padding */
+    
+    .search-input:focus {
+        border-color: #74d9e8;
+        outline: none;
     }
-    .table-wrapper {
-        margin-left: 50px;
-    }
-    .search-input {
-        max-width: 100%;
-        /* allow full width */
-        flex: 1 1 100%;
-        /* take up full available width */
-        min-width: auto;
-        /* remove the fixed min-width */
-    }
-    /* Hide all page buttons except first and last (prev and next) */
-    .pagination button.page-btn:not(:first-child):not(:last-child) {
-        display: none;
-    }
-    /* Style prev and next buttons for better tapping */
-    .pagination button.page-btn:first-child,
-    .pagination button.page-btn:last-child {
-        min-width: 44px;
-        height: 44px;
-        font-size: 15px;
-        padding: 0 12px;
-        display: inline-flex;
+    
+    .add-btn,
+    .edit-btn,
+    .delete-btn,
+    .detail-btn,
+    .payment-btn {
+        border: none;
+        color: white;
+        padding: 8px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
     }
-    .pagination {
+    
+    .add-btn {
+        background-color: #5cb85c;
+    }
+    
+    .add-btn:hover {
+        background-color: #4cae4c;
+    }
+    
+    .edit-btn {
+        background-color: #0eb1f1;
+        margin-right: 5px;
+    }
+    
+    .delete-btn {
+        background-color: #f73403;
+        margin-right: 5px;
+    }
+    
+    .payment-btn {
+        background-color: #096ada;
+        margin-right: 5px;
+    }
+    
+    .detail-btn {
+        background-color: #13f0dd;
+        margin-right: 10px;
+    }
+    
+    #plus_button {
+        background-color: #41dbf7;
+        border: none;
+        color: white;
+        padding: 1px 10px;
+        font-size: 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 20%;
+    }
+    
+    .uom-header {
         display: flex;
-        justify-content: center;
-        gap: 8px;
+        align-items: center;
+        gap: 70%;
+    }
+    
+    .main-content {
+        margin-left: 150px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0;
+    }
+    /* ------------------ Table ------------------ */
+    
+    .table-section {
+        background: white;
+        padding: 10px;
+        border-radius: 2px;
+        border: 1px solid #ddd;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
-    .modal-input-group {
-        flex: 1 1 calc(33.333% - 13.33px);
-        /* 3 per row, subtract gap */
-        min-width: 0;
-        /* allow shrinking */
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto;
+        font-size: 15px;
     }
-    /* Keep large fields full width (like textarea for remarks) */
-    .modal-input-group textarea,
+    
+    thead {
+        background-color: #13a0c4;
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    th,
+    td {
+        border: 1px solid #ddd;
+        white-space: normal;
+        word-wrap: break-word;
+        padding: 5px;
+    }
+    
+    .table-wrapper td input {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 10px;
+        padding: 2px;
+    }
+    
+    tbody tr:nth-child(odd) {
+        background-color: white;
+    }
+    
+    tbody tr:nth-child(even) {
+        background-color: #d8d7d7;
+    }
+    /* ------------------ Pagination ------------------ */
+    
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .page-btn {
+        background: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 6px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .page-btn:hover:not(:disabled) {
+        background-color: #74d9e8;
+        color: white;
+    }
+    
+    .page-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .page-btn.active {
+        background-color: #337ab7;
+        color: white;
+        border-color: #286090;
+    }
+    /* ------------------ Modal ------------------ */
+    
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+        padding: 15px;
+        box-sizing: border-box;
+        overflow-y: auto;
+    }
+    
+    .modal-content {
+        background: #fff;
+        width: 850px;
+        max-width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        animation: fadeInUp 0.3s ease;
+    }
+    
+    .modal-content h2,
+    .modal-content .section-title,
+    .modal-content span {
+        font-size: 16-18px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .modal-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 8px;
+    }
+    
+    .modal-content hr {
+        border: none;
+        height: 1px;
+        background: #e2e8f0;
+        margin: 15px 0;
+    }
+    /* ------------------ Form Layout ------------------ */
+    
+    .modal-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px 20px;
+        flex: 1;
+    }
+    
+    .modal-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1 1 200px;
+        min-width: 150px;
+        max-width: 280px;
+    }
+    
     .modal-input-group.full-width {
         flex: 1 1 100%;
-    }
-    label {
-        font-size: 10px;
-    }
-}
-
-
-/* ✅ Extra small phones (<= 480px) */
-
-@media (max-width: 480px) {
-    table,
-    td {
-        font-size: 11px;
-    }
-    td::before {
-        font-size: 11px;
-    }
-    .search-input {
         max-width: 100%;
-        /* allow full width */
-        flex: 1 1 100%;
-        /* take up full available width */
-        min-width: auto;
-        /* remove the fixed min-width */
     }
-}
+    
+    .modal-input-group label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .modal-input-group input,
+    .modal-input-group select,
+    .modal-input-group textarea {
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #f9fafb;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .modal-input-group input:focus,
+    .modal-input-group select:focus,
+    .modal-input-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    }
+    
+    .modal-input-group textarea {
+        resize: vertical;
+        min-height: 80px;
+        flex: 1 1 100%;
+    }
+    /* ------------------ Buttons ------------------ */
+    
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 20px;
+    }
+    
+    .modal-buttons .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: background 0.2s ease, transform 0.1s ease;
+    }
+    
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+        background: #e5e7eb;
+        color: #111;
+    }
+    
+    .btn-secondary:hover {
+        background: #d1d5db;
+    }
+    /* ------------------ Detail Items ------------------ */
+    
+    .detail-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .detail-item {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 14px;
+        border: 1px solid #cfd9df;
+        border-radius: 8px;
+        background: #fafafa;
+        transition: all 0.2s ease;
+    }
+    
+    .detail-item:hover {
+        border-color: #74d9e8;
+        background: #f0fcff;
+    }
+    
+    .detail-item .label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+    }
+    
+    .detail-item .value {
+        font-size: 14px;
+        font-weight: 400;
+        color: #555;
+        text-align: right;
+        word-break: break-word;
+    }
+    
+    .detail-item.full-width {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+        border-style: dashed;
+    }
+    
+    .detail-item.full-width .value {
+        text-align: left;
+        margin-left: 5px;
+    }
+    /* ------------------ Misc ------------------ */
+    
+    hr {
+        border: none;
+        height: 3px;
+        background-color: #ddca21;
+        margin: 30px 0;
+    }
+    
+    .intransit-div input[readonly],
+    .intransit-div select:disabled,
+    .intransit-div textarea[readonly],
+    .Payment-div input[readonly],
+    .Payment-div select:disabled,
+    .Payment-div textarea[readonly] {
+        background-color: #e0e0e0;
+        color: #555;
+        cursor: not-allowed;
+    }
+    
+    .item-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 50px;
+        margin-bottom: 10px;
+        overflow-x: hidden;
+    }
+    
+    .item-row .modal-input-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .item-row .modal-input-group input,
+    .item-row .modal-input-group select {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        background: #f9fafb;
+    }
+    
+    .item-row .remove-btn {
+        flex: 0 0 auto;
+    }
+    
+    .item-row .remove-btn button {
+        padding: 8px 12px;
+        width: 40px;
+        background: #e02b2b;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    
+    .item-row .remove-btn button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    /* ------------------ Animations ------------------ */
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* ------------------ Responsive: Table & Layout ------------------ */
+    /* ✅ Tablet and large phones (<= 1024px) */
+    
+    @media (max-width: 1024px) {
+        table,
+        thead,
+        tbody,
+        tr,
+        th,
+        td {
+            display: block;
+            width: 100%;
+            font-size: 13px;
+        }
+        thead {
+            display: none;
+        }
+        tr {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            background-color: #fafafa;
+            padding: 10px;
+        }
+        td {
+            position: relative;
+            padding-left: 40%;
+            border: none;
+            border-bottom: 1px solid #eee;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 35%;
+            font-weight: bold;
+            white-space: nowrap;
+            color: #333;
+        }
+        td:last-child {
+            border-bottom: none;
+        }
+        .container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .search-input,
+        .add-btn {
+            width: 50%;
+            margin-left: 25%;
+        }
+        .search-input {
+            max-width: 100%;
+            /* allow full width */
+            flex: 1 1 100%;
+            /* take up full available width */
+            min-width: auto;
+            /* remove the fixed min-width */
+        }
+    }
+    /* ✅ Small phones (<= 768px) */
+    
+    @media (max-width: 768px) {
+        .main-content {
+            margin-left: 150px;
+            /* same as sidebar width */
+            padding-left: 10px;
+            /* optional, small padding */
+        }
+        .table-wrapper {
+            margin-left: 50px;
+        }
+        .search-input {
+            max-width: 100%;
+            /* allow full width */
+            flex: 1 1 100%;
+            /* take up full available width */
+            min-width: auto;
+            /* remove the fixed min-width */
+        }
+        /* Hide all page buttons except first and last (prev and next) */
+        .pagination button.page-btn:not(:first-child):not(:last-child) {
+            display: none;
+        }
+        /* Style prev and next buttons for better tapping */
+        .pagination button.page-btn:first-child,
+        .pagination button.page-btn:last-child {
+            min-width: 44px;
+            height: 44px;
+            font-size: 15px;
+            padding: 0 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-input-group {
+            flex: 1 1 calc(33.333% - 13.33px);
+            /* 3 per row, subtract gap */
+            min-width: 0;
+            /* allow shrinking */
+        }
+        /* Keep large fields full width (like textarea for remarks) */
+        .modal-input-group textarea,
+        .modal-input-group.full-width {
+            flex: 1 1 100%;
+        }
+        label {
+            font-size: 10px;
+        }
+    }
+    /* ✅ Extra small phones (<= 480px) */
+    
+    @media (max-width: 480px) {
+        table,
+        td {
+            font-size: 11px;
+        }
+        td::before {
+            font-size: 11px;
+        }
+        .search-input {
+            max-width: 100%;
+            /* allow full width */
+            flex: 1 1 100%;
+            /* take up full available width */
+            min-width: auto;
+            /* remove the fixed min-width */
+        }
+        /* ======================================================================================== */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(250, 128, 128, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+            padding: 15px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 8px;
+            width: 70%;
+            max-width: 900px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            /* title left, buttons right */
+            align-items: center;
+            /* vertically center */
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            box-sizing: border-box;
+            gap: 10px;
+        }
+        .main-modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    }

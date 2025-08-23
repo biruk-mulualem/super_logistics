@@ -1,16 +1,4 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  HostListener,
-  Inject,
-  PLATFORM_ID,
-  ChangeDetectorRef
-} from '@angular/core';
+import {Component,Input,Output,EventEmitter,OnInit,OnChanges,SimpleChanges,HostListener,Inject,PLATFORM_ID,ChangeDetectorRef} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
@@ -42,7 +30,6 @@ export class ReusableTable implements OnInit, OnChanges {
   rowsPerPage: number = 13;
   newPayments: any[] = [];
 
-
   showAddModal = false;
   // showEditModal = false;
   showDeleteModal = false;
@@ -54,6 +41,21 @@ export class ReusableTable implements OnInit, OnChanges {
   deleteRowData: any = null;
   selectedRow: any = null;
   selectedRowForPayment: any = null;
+
+  // component.ts
+uoms: string[] = [
+  "mg","g","kg","ton","lb","oz","ml","l","pcs","box","roll","pack","dozen",
+  "set","bottle","can","bag","sheet","meter","cm","inch","yard","sqft","sqm",
+  "gallon","quart","pint","fluid_oz","tube","carton","crate","pail","jar",
+  "packaging_unit","bundle","lot","pair","reel","sheet_metal","roll_fabric","drum"
+];
+
+origins: string[] = [
+  "china","india","usa","germany","japan","south_korea","france","uk","italy",
+  "canada","mexico","brazil","russia","turkey","australia","singapore",
+  "netherlands","belgium","switzerland","uae","thailand","vietnam",
+  "malaysia","indonesia"
+];
 
   isBrowser: boolean;
    pageType: 'logistics' | 'intransit' | 'reports' | 'donelogisticshistory' |'doneintransithistory' |'cancelledintransithistory' |'cancelledlogisticshistory' | null = null;
@@ -181,7 +183,6 @@ export class ReusableTable implements OnInit, OnChanges {
 
 
 
-
   // =======================
   // --- Generic Add/Remove ---
   // =======================
@@ -243,7 +244,6 @@ saveAddClick(): void {
   this.closeAddModal();
 }
 
-
   closeAddModal(): void {
     this.showAddModal = false;
     this.toggleBodyScroll(false);
@@ -266,7 +266,6 @@ saveEditClick(): void {
   this.closeEditModal();
 }
 
-
   closeEditModal(): void {
     this.showEditModal = false;
     this.toggleBodyScroll(false);
@@ -287,10 +286,15 @@ saveEditClick(): void {
     this.toggleBodyScroll(false);
   }
 
+
   confirmDeleteClick(): void {
-    this.delete.emit(this.deleteRowData);
-    this.closeDeleteModal();
+  if (!this.deleteRowData) {
+    alert('No row selected to delete.');
+    return;
   }
+  this.delete.emit(this.deleteRowData);
+  this.closeModal(); // ✅ close after delete
+}
 
   // =======================
   // --- Detail Modal ---
@@ -300,15 +304,16 @@ openDetailModal(row: any): void {
   this.showDetailModal = true;
   this.toggleBodyScroll(true);
 
-  // Fetch payments after modal opens
   setTimeout(() => {
     this.intransitService.getPaymentData(row.transactionId).subscribe({
       next: (payments) => {
-        this.paymentTerms = payments.length ? payments : [{amountPaid:'', paidBy:'', accountPaidFrom:'', paidDate:''}];
-        this.cdr.detectChanges();
+        this.paymentTerms = payments.length
+          ? payments
+          : [{ amountPaid:'', paidBy:'', accountPaidFrom:'', paidDate:'' }];
+        this.cdr.detectChanges(); // <-- triggers Angular change detection
       },
       error: () => {
-        this.paymentTerms = [{amountPaid:'', paidBy:'', accountPaidFrom:'', paidDate:''}];
+        this.paymentTerms = [{ amountPaid:'', paidBy:'', accountPaidFrom:'', paidDate:'' }];
         this.cdr.detectChanges();
       }
     });
@@ -332,7 +337,6 @@ openPaymentModal(row: any): void {
   this.toggleBodyScroll(true);
 }
 
-
 addPaymentRow(): void { this.addRow(this.newPayments, { amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }); }
 removePaymentRow(index: number): void { this.removeRow(this.newPayments, index, false); }
 
@@ -346,24 +350,72 @@ submitPayments(): void {
       !payment.paidDate
     ) {
       alert('Please fill out all required fields before saving.');
-      return; // stop submission
+      return;
     }
   }
 
-  // All fields valid → emit payload
-  const payload = {
-    transactionId: this.selectedRowForPayment?.transactionId,
-    payments: this.newPayments
-  };
+  const transactionId =
+    this.selectedRowForPayment?.transactionId ?? this.selectedMainRow?.transactionId;
+
+  if (!transactionId) {
+    alert('Missing transaction id for payment.');
+    return;
+  }
+
+  const payload = { transactionId, payments: this.newPayments };
   this.addPayment.emit(payload);
-  this.closePaymentModal();
+
+  // ✅ close modal after successful submit
+  this.closeModal();
+}
+  //from this point down is the ts related to the mainmodal
+// Property to control modal visibility
+showMainModal: boolean = false;
+selectedMainRow: any = null;
+
+activeTab: string = 'detail'; // Default
+
+openMainModal(row: any) {
+  this.selectedMainRow = row;
+  this.selectedRowForPayment = row;
+  this.deleteRowData = row;
+  this.activeTab = 'detail';
+  this.showMainModal = true;
+
+  this.editData = JSON.parse(JSON.stringify(row));
+
+  // ✅ ensure payments are available for detail tab
+  this.paymentTerms = row.payments ?? [];
+
+  if (!this.editData.payments) {
+    this.editData.payments = [];
+  }
 }
 
+setActiveTab(tab: string): void {
+  this.activeTab = tab;
 
-  closePaymentModal(): void {
-    this.showPaymentModal = false;
-    this.selectedRowForPayment = null;
-    this.newPayments = [];
-    this.toggleBodyScroll(false);
+  // If user clicks "detail", populate payments from the selected row
+  if (tab === 'detail' && this.selectedMainRow) {
+    this.paymentTerms = this.selectedMainRow.payments ?? [];
   }
+}
+// Generic close modal function
+closeModal(): void {
+  this.showMainModal = false;
+  this.showAddModal = false;
+  this.showEditModal = false;
+  this.showDeleteModal = false;
+  this.showDetailModal = false;
+  this.showPaymentModal = false;
+
+  this.selectedMainRow = null;
+  this.selectedRow = null;
+  this.selectedRowForPayment = null;
+  this.deleteRowData = null;
+  this.newPayments = [];
+  
+  this.toggleBodyScroll(false);
+}
+
 }

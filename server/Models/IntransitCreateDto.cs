@@ -12,6 +12,7 @@ namespace server.Models
     public string ContactPerson { get; set; } = string.Empty;
     public string Origin { get; set; } = string.Empty;
     public string Remark { get; set; } = string.Empty;
+        public string Grn { get; set; } = string.Empty;
 
     public List<IntransitItemsDetailDto> Items { get; set; } = new();
 }

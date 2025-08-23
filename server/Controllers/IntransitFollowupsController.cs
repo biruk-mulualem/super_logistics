@@ -233,6 +233,7 @@ public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
     followup.ContactPerson = dto.ContactPerson;
     followup.Origin = dto.Origin;
     followup.Remark = dto.Remark;
+    followup.Grn = dto.Grn;   // 👈 Add this line
 
     // 3️⃣ Update items table
     if (dto.Items != null && dto.Items.Any())
@@ -285,10 +286,12 @@ public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentUpdateD
                                    .Where(p => p.TransactionId == followup.TransactionId);
     _context.PaymentHistories.RemoveRange(existingPayments);
 
-    // Add new payment records from DTO
+    // Prepare new payments list
+    List<PaymentHistory> newPayments = new();
+
     if (dto.Payments != null && dto.Payments.Any())
     {
-        var newPayments = dto.Payments.Select(p => new PaymentHistory
+        newPayments = dto.Payments.Select(p => new PaymentHistory
         {
             TransactionId = followup.TransactionId,
             AmountPaid = p.AmountPaid,
@@ -300,31 +303,30 @@ public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentUpdateD
         _context.PaymentHistories.AddRange(newPayments);
     }
 
-    // Recalculate totals on the followup
-    followup.TotalAmountPaid = _context.PaymentHistories
-                                       .Where(p => p.TransactionId == followup.TransactionId)
-                                       .Sum(p => (decimal?)p.AmountPaid) ?? 0;
-
-    followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
+    // Calculate totals from new payments (not from DB)
+    decimal totalPaid = newPayments.Sum(p => p.AmountPaid);
+    followup.TotalAmountPaid = totalPaid;
+    followup.TotalAmountRemaning = followup.TotalPrice - totalPaid;
 
     followup.TotalPaidInPercent = followup.TotalPrice == 0
         ? 0
-        : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
+        : (totalPaid / followup.TotalPrice) * 100;
 
     followup.TotalRemaningInPercent = followup.TotalPrice == 0
         ? 0
         : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
 
-    // Only update status if fully paid
-if (followup.TotalAmountRemaning == 0)
-{
-    followup.status = 1;
-}
+    // Update status if fully paid
+    if (followup.TotalAmountRemaning == 0)
+    {
+        followup.status = 1;
+    }
 
     await _context.SaveChangesAsync();
 
     return NoContent();
 }
+
 
 
 

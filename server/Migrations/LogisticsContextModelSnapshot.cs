@@ -233,6 +233,9 @@ namespace server.Migrations
                     b.Property<DateOnly?>("Etadjb")
                         .HasColumnType("date");
 
+                    b.Property<int?>("LoadedOnfcl")
+                        .HasColumnType("int");
+
                     b.Property<DateOnly?>("LoadingDate")
                         .HasColumnType("date");
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { LogisticsFollowupService } from '../../services/logistics-followup.service';
 import { Header } from '../../shared/components/header/header';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
@@ -41,6 +41,8 @@ export class Logistics implements OnInit {
   editDataForChild: any = {};
   showEditModal = false;
 
+
+
   addData: any = {
     items: [
       {
@@ -57,7 +59,11 @@ export class Logistics implements OnInit {
   intransitOptions: any[] = []; // all TransactionIds + Items from backend
   editData: any;
 
-  constructor(private logisticsService: LogisticsFollowupService) {}
+  constructor(
+    private logisticsService: LogisticsFollowupService,
+    private cdr: ChangeDetectorRef,
+
+  ) {}
 
   ngOnInit(): void {
     this.fetchIntransitOptions();
@@ -108,11 +114,14 @@ onAddLogistics() {
   });
 }
 
- onRemoveLogistics(index: number) {
-  if (this.editData.items && this.editData.items.length > 1) {
-    this.editData.items.splice(index, 1);
+onRemoveLogistics(index: number): void {
+  if (this.addData?.items?.length > index) {
+    this.addData.items.splice(index, 1);
+    this.cdr.detectChanges(); // ✅ Ensure UI reflects the change
   }
 }
+
+
 
 
   saveLogisticsEdit(event: any) {
@@ -132,4 +141,6 @@ onAddLogistics() {
   closeLogisticsEditModal() {
     this.showEditModal = false;
   }
+
+
 }

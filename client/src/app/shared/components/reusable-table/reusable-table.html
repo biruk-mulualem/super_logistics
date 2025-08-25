@@ -184,63 +184,81 @@
 
     </ng-container>
     <!-- ================= ADD MODAL (Logistics) ================= -->
+    <!-- Logistics Add Modal (shown when pageType === 'logistics') -->
     <ng-container *ngIf="pageType === 'logistics'">
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h3>Add logistics Entry</h3>
+        <h3>Add Logistics Entry</h3>
       </div>
       <hr>
 
       <!-- Add Item Button -->
-   <!-- Add Item Button -->
-<div class="modal-buttons" style="display: flex; gap: 10px; align-items: center;">
-  <button (click)="addLogistics()" class="btn btn-success">+ Add Item</button>
-</div>
+      <div class="modal-buttons"
+        style="display: flex; gap: 10px; align-items: center;">
+        <button (click)="addLogistics()" class="btn btn-success">+ Add
+          Item</button>
+      </div>
 
       <!-- Item Rows -->
-<div *ngFor="let item of addData.items; let i = index" class="item-row">
-  <div class="modal-input-group">
-    <label>Reference Number</label>
-    <select [(ngModel)]="item.transactionId">
-      <option *ngFor="let trx of intransitOptions" [value]="trx.TransactionId">{{ trx.TransactionId }}</option>
-    </select>
-  </div>
+      <div *ngFor="let item of addData.items; let i = index" class="item-row">
 
-<div class="modal-input-group">
-  <label>Reference Number</label>
-  <select [(ngModel)]="item.transactionId">
-    <option 
-      *ngFor="let trx of intransitOptions" 
-      [value]="trx.TransactionId" 
-      [ngStyle]="{ 'color': trx.TransactionId === item.transactionId ? 'red' : 'black' }">
-      {{ trx.TransactionId }}
-    </option>
-  </select>
-</div>
+        <!-- Transaction ID Selector -->
+        <div class="modal-input-group">
+          <label>Transaction ID</label>
+          <select [(ngModel)]="item.transactionId"
+            (ngModelChange)="onTransactionChange(item)">
+            <option *ngFor="let trx of intransitOptions"
+              [value]="trx.transactionId">
+              {{ trx.transactionId }}
+            </option>
+          </select>
+        </div>
 
+        <!-- Item Description Selector -->
+        <div class="modal-input-group">
+          <label>Item Description</label>
+          <select [(ngModel)]="item.selectedItem"
+            (ngModelChange)="onItemChange(item)">
+            <option *ngFor="let itm of item.availableItems" [ngValue]="itm">
+              {{ itm.itemDescription }}
+            </option>
+          </select>
+        </div>
 
-  <div class="modal-input-group">
-    <label>UOM</label>
-    <select [(ngModel)]="item.uom">
-      <option *ngFor="let uom of ['mg', 'g', 'kg', 'ton', 'lb', 'oz', 'reel', 'drum']" [value]="uom">{{ uom }}</option>
-    </select>
-  </div>
+        <!-- Auto-filled UOM -->
+        <div class="modal-input-group">
+          <label>UOM</label>
+          <input type="text" [(ngModel)]="item.uom" readonly />
+        </div>
 
-  <div class="modal-input-group">
-    <label>Loaded Amount</label>
-    <input type="number" [(ngModel)]="item.LoadedQnty" />
-  </div>
+        <!-- Editable Loaded Quantity -->
+        <div class="modal-input-group">
+          <label
+            style="display: flex; justify-content: space-between; width: 100%;">
+            <span> Qnty</span>
+            <span style="color: rgb(217, 24, 24); font-weight: normal;">(Available: {{
+              item.quantity || 0 }})</span>
+          </label>
 
-  <div class="modal-input-group remove-btn">
-    <button type="button" (click)="removeLogistics(i)" [disabled]="i === 0">X</button>
-  </div>
-</div>
+          <input
+            type="number"
+            [value]="item.LoadedQnty"
+            (input)="onLoadedQntyInput($event, item)"
+            min="0" />
 
+        </div>
+
+        <!-- Remove Button -->
+        <div class="modal-input-group remove-btn">
+          <button type="button" (click)="removeLogistics(i)">X</button>
+        </div>
+
+      </div>
 
       <hr>
 
-      <!-- Main Form Fields -->
+      <!-- Main Logistics Form -->
       <div class="modal-form">
         <div class="modal-input-group">
           <label>No-Cont</label>
@@ -262,18 +280,17 @@
           <textarea [(ngModel)]="addData.remark"></textarea>
         </div>
       </div>
-
       <hr>
-
       <!-- Modal Actions -->
       <div class="modal-buttons"
         style="margin-top: 10px; display: flex; gap: 10px;">
-        <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
+        <!-- <button (click)="saveAddClick()" class="btn btn-primary">Save</button> -->
         <button (click)="closeModal('add')"
           class="btn btn-secondary">Cancel</button>
       </div>
 
     </ng-container>
+
   </div>
 </div>
 <!-- ================= MAIN MODAL ================= -->

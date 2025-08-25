@@ -86,7 +86,7 @@ updateIntransitOptions(newOptions: any[]) {
     'mg', 'g', 'kg', 'ton', 'lb', 'oz', 'ml', 'l', 'pcs', 'box', 'roll', 'pack',
     'dozen', 'set', 'bottle', 'can', 'bag', 'sheet', 'meter', 'cm', 'inch',
     'yard', 'sqft', 'sqm', 'gallon', 'quart', 'pint', 'fluid_oz', 'tube',
-    'carton', 'crate', 'pail', 'jar', 'packaging_unit', 'bundle', 'lot', 'pair',
+    'carton', 'crate', 'pail', 'jar', 'packaging_unit', 'bundle', 'set', 'pair',
     'reel', 'sheet_metal', 'roll_fabric', 'drum'
   ];
 
@@ -328,18 +328,31 @@ updateIntransitOptions(newOptions: any[]) {
   // ============================================================
   // ------------------------ Add / Edit -----------------------
   // ============================================================
-  openAddModal() {
-    this.addData = {
-      purchaseDate: '',
-      purchaseOrder: '',
-      purchaseCompany: '',
-      contactPerson: '',
-      origin: '',
-      remark: '',
-      items: [{ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' }],
-    };
-    this.openModal('add');
-  }
+openAddModal() {
+  this.addData = {
+    ...this.addData,
+    purchaseDate: '',
+    purchaseOrder: '',
+    purchaseCompany: '',
+    contactPerson: '',
+    origin: '',
+    remark: '',
+    containerType: '',
+    LoadedOnfcl: '',
+    items: [{
+      transactionId: '',
+      availableItems: [],
+      selectedItem: null,
+      itemDescription: '',
+      uom: '',
+      quantity: '',
+      LoadedQnty: ''
+    }]
+  };
+
+  this.openModal('add');
+}
+
 
   addItem(target: 'add' | 'edit') {
     const arr = target === 'add' ? this.addData.items : this.editData.items;
@@ -394,9 +407,9 @@ updateIntransitOptions(newOptions: any[]) {
   // ------------------------- Delete --------------------------
   // ============================================================
   openDeleteModal(row: any) {
-    this.selectedRow = row;       
-    this.activeTab = 'delete';    
-    this.showModal.main = true;   
+    this.selectedRow = row;
+    this.activeTab = 'delete';
+    this.showModal.main = true;
   }
 
   confirmDeleteClick(): void {
@@ -404,8 +417,8 @@ updateIntransitOptions(newOptions: any[]) {
       alert('No row selected!');
       return;
     }
-    this.delete.emit(this.selectedRow);  
-    this.closeModal('main');             
+    this.delete.emit(this.selectedRow);
+    this.closeModal('main');
   }
 
   // ============================================================
@@ -443,14 +456,73 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // Triggered when "+ Add Item" is clicked in logistics modal
-  addLogistics() {
-    this.logisticsAdd.emit();
+addLogistics() {
+  if (!this.addData.items) this.addData.items = [];
+
+  this.addData.items.push({
+    transactionId: '',
+    availableItems: [],
+    selectedItem: null,
+    itemDescription: '',
+    uom: '',
+    quantity: '',
+    LoadedQnty: ''
+  });
+}
+
+onLoadedQntyInput(event: Event, item: any) {
+  const input = event.target as HTMLInputElement;
+  let value = parseInt(input.value, 10);
+
+  if (isNaN(value) || value < 0) {
+    value = 0;
+  } else if (value > item.quantity) {
+    value = item.quantity;
   }
 
+  // Update model
+  item.LoadedQnty = value;
+
+  // Update visible input value to reflect corrected number
+  input.value = String(value);
+}
+
+
+
   // Triggered when removing an item in logistics modal
-  removeLogistics(index: number) {
-    this.logisticsRemove.emit(index);
+removeLogistics(index: number) {
+  if (index === 0) return; // Don't allow removing the first row
+  if (this.addData?.items?.length > index) {
+    this.addData.items.splice(index, 1);
   }
+}
+
+
+
+
+onTransactionChange(item: any) {
+  const selectedTransaction = this.intransitOptions.find(
+    opt => opt.transactionId === item.transactionId
+  );
+
+  item.availableItems = selectedTransaction ? selectedTransaction.items : [];
+  item.selectedItem = null;
+  item.itemDescription = '';
+  item.uom = '';
+  item.quantity = '';
+}
+
+
+
+onItemChange(itemRow: any) {
+  const selected = itemRow.selectedItem;
+  if (selected) {
+    itemRow.itemDescription = selected.itemDescription;
+    itemRow.uom = selected.uom;
+    itemRow.quantity = selected.quantity;
+  }
+}
+
 
 
 

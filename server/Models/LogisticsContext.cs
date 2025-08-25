@@ -15,5 +15,6 @@ namespace server.Models
         public DbSet<IntransitFollowup> IntransitFollowups { get; set; }
         public DbSet<PaymentHistory> PaymentHistories { get; set; }
         public DbSet<IntransitItemsDetail> IntransitItemsDetails { get; set; }
+         public DbSet<logisticsItemsDetail> logisticsItemsDetails { get; set; }
     }
 }

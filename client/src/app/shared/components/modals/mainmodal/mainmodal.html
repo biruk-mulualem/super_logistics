@@ -1,0 +1,43 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Intransit Details</h3>
+    <hr>
+
+    <div class="modal-tabs">
+      <button [class.active]="activeTab==='detail'" (click)="switchTab('detail')">Detail</button>
+      <button [class.active]="activeTab==='edit'" (click)="switchTab('edit')">Edit</button>
+      <button [class.active]="activeTab==='payment'" (click)="switchTab('payment')">Payment</button>
+      <button [class.active]="activeTab==='delete'" (click)="switchTab('delete')">Delete</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="activeTab==='detail'">
+        <pre>{{ data | json }}</pre>
+      </div>
+
+      <div *ngIf="activeTab==='edit'">
+        <input [(ngModel)]="data.purchaseOrder" placeholder="Purchase Order">
+        <input [(ngModel)]="data.purchaseDate" type="date" placeholder="Purchase Date">
+        <!-- add other editable fields as needed -->
+        <button (click)="saveEditedData()">Save Changes</button>
+      </div>
+
+      <div *ngIf="activeTab==='payment'">
+        <div *ngFor="let payment of data.payments; let i = index">
+          <input [(ngModel)]="payment.amountPaid" placeholder="Amount Paid" type="number">
+          <input [(ngModel)]="payment.paidBy" placeholder="Paid By">
+          <input [(ngModel)]="payment.accountPaidFrom" placeholder="Account">
+          <input [(ngModel)]="payment.paidDate" type="date">
+        </div>
+        <button (click)="savePaymentData()">Save Payment</button>
+      </div>
+
+      <div *ngIf="activeTab==='delete'">
+        <p>Are you sure you want to delete this entry?</p>
+        <button (click)="confirmDelete()">Yes, Delete</button>
+      </div>
+    </div>
+
+    <button (click)="closeModal()">Close</button>
+  </div>
+</div>

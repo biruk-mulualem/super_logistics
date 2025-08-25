@@ -7,10 +7,8 @@ namespace server.Models
     { 
           public int Id { get; set; } // DB auto-increment
        public string? TransactionId { get; set; } // "SDT000001" etc.
-        public string? ItemDescription { get; set; }
-        public string? Uom { get; set; }
-     [Column(TypeName = "decimal(10,2)")]
-    public decimal? TotalPaidInPercent { get; set; }
+    
+   
         public int? LoadedOnfcl { get; set; }
         public string? ContainerType { get; set; }
         public string? BillNo { get; set; }

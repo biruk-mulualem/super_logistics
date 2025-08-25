@@ -1,418 +1,579 @@
 <div class="table-section">
-    <style>
-        .modal-actions button {
-            padding: 6px 12px;
-            margin-right: 5px;
-            border-radius: 4px;
-            border: 1px solid;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        /* Detail button */
-        
-        .btn-detail {
-            border-color: #264ea5;
-            background-color: #264ea5;
-            color: black;
-        }
-        
-        .btn-detail.active {
-            background-color: #28a745;
-        }
-        /* Edit button */
-        
-        .btn-edit {
-            border-color: #264ea5;
-            background-color: #264ea5;
-        }
-        
-        .btn-edit.active {
-            background-color: #28a745;
-        }
-        /* Payment button */
-        
-        .btn-payment {
-            border-color: #264ea5;
-            background-color: #264ea5;
-        }
-        
-        .btn-payment.active {
-            background-color: #28a745;
-        }
-        /* Delete button */
-        
-        .btn-delete {
-            border-color: #264ea5;
-            background-color: #264ea5;
-        }
-        
-        .btn-delete.active {
-            background-color: #28a745;
-        }
-    </style>
-    <div class="container">
-        <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
+  <style>
+    .modal-actions button {
+      padding: 6px 12px;
+      margin-right: 5px;
+      border-radius: 4px;
+      border: 1px solid;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
 
-        <button *ngIf="buttonVisibility.add" class="add-btn" title="Add" (click)="openAddModal()">
-            <i class="fas fa-plus"></i>
-        </button>
-    </div>
-    <!-- Table -->
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th *ngFor="let header of headers">{{ header.label }}</th>
-                    <th *ngIf="buttonVisibility.edit || buttonVisibility.delete || buttonVisibility.detail ">Actions</th>
+    .btn-detail { border-color: #264ea5; background-color: #264ea5; color: black; }
+    .btn-detail.active { background-color: #28a745; }
 
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of paginatedData">
-                    <td *ngFor="let header of headers" [attr.data-label]="header.label">
-                        {{ row[header.key] }}
+    .btn-edit { border-color: #264ea5; background-color: #264ea5; }
+    .btn-edit.active { background-color: #28a745; }
 
-                    </td>
-                    <td data-label="Actions">
-                        <div class="action-buttons">
+    .btn-payment { border-color: #264ea5; background-color: #264ea5; }
+    .btn-payment.active { background-color: #28a745; }
 
-                            <button class="detail-btn" title="MainModal" (click)="openMainModal(row)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </td>
+    .btn-delete { border-color: #264ea5; background-color: #264ea5; }
+    .btn-delete.active { background-color: #28a745; }
+  </style>
 
-                </tr>
-            </tbody>
+  <div class="container">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (input)="onSearch()"
+      class="search-input"
+      placeholder="Search..." />
 
-        </table>
-    </div>
-    <!-- Pagination -->
-    <div class="pagination">
-        <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
-            &lt;
-        </button>
-        <button class="page-btn" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
-            {{ i + 1 }}
-        </button>
-        <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
-            &gt;
-        </button>
-    </div>
+    <button
+      *ngIf="buttonVisibility.add"
+      class="add-btn"
+      title="Add"
+      (click)="openAddModal()">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
 
-    <!-- Main Modal -->
-    <div class="modal" *ngIf="showMainModal" (click)="closeModal()">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-
-            <!-- Tab Buttons -->
-            <div class="modal-actions">
-                <h3 class="main-modal-title">Main Modal</h3>
-                <button class="btn-detail" [class.active]="activeTab === 'detail'" (click)="setActiveTab('detail')">Detail</button>
-                <button class="btn-edit" [class.active]="activeTab === 'edit'" (click)="setActiveTab('edit')">Edit</button>
-                <button class="btn-payment" [class.active]="activeTab === 'payment'" (click)="setActiveTab('payment')">Payment</button>
-                <button class="btn-delete" [class.active]="activeTab === 'delete'" (click)="setActiveTab('delete')">Delete</button>
+  <!-- Table -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th *ngFor="let header of headers">{{ header.label }}</th>
+          <th *ngIf="hasAnyActionButton()">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of paginatedData">
+          <td *ngFor="let header of headers" [attr.data-label]="header.label">{{
+            row[header.key] }}</td>
+          <td *ngIf="hasAnyActionButton()" data-label="Actions">
+            <div class="action-buttons">
+              <button
+                *ngIf="buttonVisibility.detail || buttonVisibility.edit || buttonVisibility.payment || buttonVisibility.delete"
+                class="detail-btn"
+                (click)="openMainModal(row)">
+                <i class="fas fa-eye"></i>
+              </button>
             </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-            <hr>
-            <div class="main-modal-body">
+  <!-- Pagination -->
+  <div class="pagination">
+    <button class="page-btn" (click)="prevPage()"
+      [disabled]="currentPage === 1">&lt;</button>
+    <button
+      class="page-btn"
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      [class.active]="currentPage === i + 1"
+      (click)="setPage(i + 1)">
+      {{ i + 1 }}
+    </button>
+    <button class="page-btn" (click)="nextPage()"
+      [disabled]="currentPage === totalPages">&gt;</button>
+  </div>
+</div>
 
-                <!-- ========================= -->
-                <!-- DETAIL TAB -->
-                <!-- ========================= -->
-                <div *ngIf="activeTab === 'detail'">
-                    <span>Product Detail</span>
-                    <div *ngIf="selectedMainRow?.items?.length; else noItems">
-                        <div *ngFor="let item of selectedMainRow.items" class="detail-row">
-                            <div class="detail-item"><span class="label">Item:</span> <span class="value">{{item.itemDescription}}</span></div>
-                            <div class="detail-item"><span class="label">Quantity:</span> <span class="value">{{item.quantity}}</span></div>
-                            <div class="detail-item"><span class="label">Uom:</span> <span class="value">{{item.uom}}</span></div>
-                            <div class="detail-item"><span class="label">U.Price:</span> <span class="value">{{item.unitPrice}}</span></div>
-                        </div>
-                    </div>
-                    <ng-template #noItems>
-                        <p>No product details available.</p>
-                    </ng-template>
+<!-- ================= ADD MODAL ================= -->
+<div class="modal" *ngIf="showModal.add" (click)="closeModal('add')">
+  <div class="modal-content" (click)="$event.stopPropagation()">
 
-                    <span>Common Data</span>
-                    <div class="detail-row">
-                        <div class="detail-item"><span class="label">GRN:</span>
-                            <span class="value">{{selectedMainRow?.grn}}</span></div>
-                        <div class="detail-item"><span class="label">Purchase
-                                Company:</span> <span class="value">{{selectedMainRow?.purchaseCompany}}</span></div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-item"><span class="label">Origin:</span> <span class="value">{{selectedMainRow?.origin}}</span></div>
-                        <div class="detail-item"><span class="label">Contact
-                                Person:</span> <span class="value">{{selectedMainRow?.contactPerson}}</span></div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-item"><span class="label">Remark:</span> <span class="value">{{selectedMainRow?.remark}}</span></div>
-                    </div>
+    <!-- ================= ADD MODAL (Intransit) ================= -->
+    <ng-container *ngIf="pageType === 'intransit'">
 
-                    <hr>
-                    <span>Payment History</span>
-                    <div *ngIf="paymentTerms?.length; else noPayments">
-                        <div *ngFor="let payment of paymentTerms" class="detail-row">
-                            <div class="detail-item"><span class="label">Date:</span> <span class="value">{{payment.paidDate}}</span></div>
-                            <div class="detail-item"><span class="label">Amount:</span> <span class="value">{{payment.amountPaid}}</span></div>
-                            <div class="detail-item"><span class="label">Paid
-                                    By:</span> <span class="value">{{payment.paidBy}}</span></div>
-                            <div class="detail-item"><span class="label">Account:</span> <span class="value">{{payment.accountPaidFrom}}</span></div>
-                        </div>
-                    </div>
-                    <ng-template #noPayments>
-                        <p>No payment records available.</p>
-                    </ng-template>
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3>Add Intransit Entry</h3>
+      </div>
+      <hr>
 
-                    <div class="modal-buttons">
-                        <button (click)="closeModal()" class="btn btn-secondary">Close</button>
-                    </div>
-                </div>
+      <!-- Add Item Button -->
+      <div class="modal-buttons"
+        style="display: flex; gap: 10px; align-items: center;">
+        <button (click)="addItem('add')" class="btn btn-success">+ Add
+          Item</button>
+      </div>
 
-                <!-- ========================= -->
-                <!-- EDIT TAB -->
-                <!-- ========================= -->
-                <div *ngIf="activeTab === 'edit'">
-                    <span>Product Detail</span>
-                    <div *ngFor="let item of editData.items; let i = index" class="detail-row">
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Item:</label>
-                                <input type="text" [(ngModel)]="item.itemDescription" required />
-                            </div>
-                        </div>
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Quantity:</label>
-                                <input type="number" [(ngModel)]="item.quantity" required />
-                            </div>
-                        </div>
-                        <div class="modal-input-group">
-                            <label>UOM</label>
-                            <select [(ngModel)]="item.uom" required>
-                                <option *ngFor="let u of uoms" [value]="u">{{ u
-                                    }}</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>U.Price:</label>
-                                <input type="number" [(ngModel)]="item.unitPrice" required />
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-                    <span>Common Data</span>
-                    <div class="modal-form">
-                        <div class="modal-input-group">
-                            <label>Purchase Date:</label>
-                            <input type="date" [(ngModel)]="editData.purchaseDate" required />
-                        </div>
-                        <div class="modal-input-group">
-                            <label>Purchase Order:</label>
-                            <input type="text" [(ngModel)]="editData.purchaseOrder" required />
-                        </div>
-                        <div class="modal-input-group">
-                            <label>Purchase Company:</label>
-                            <input type="text" [(ngModel)]="editData.purchaseCompany" required />
-                        </div>
-                        <div class="modal-input-group">
-                            <label>Origin:</label>
-                            <select [(ngModel)]="editData.origin" required>
-                                <option *ngFor="let o of origins" [value]="o">{{
-                                    o | titlecase }}</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-input-group">
-                            <label>GRN:</label>
-                            <input type="text" [(ngModel)]="editData.grn" required />
-                        </div>
-                        <div class="modal-input-group">
-                            <label>Contact Person:</label>
-                            <input type="text" [(ngModel)]="editData.contactPerson" required />
-                        </div>
-                        <div class="modal-input-group full-width">
-                            <label>Remark:</label>
-                            <textarea [(ngModel)]="editData.remark"></textarea>
-                        </div>
-                    </div>
-
-                    <hr>
-                    <span>Payment Detail</span>
-                    <div *ngFor="let payment of editData.payments; let i = index" class="detail-row">
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Amount Paid:</label>
-                                <input type="number" [(ngModel)]="payment.amountPaid" required />
-                            </div>
-                        </div>
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Paid By:</label>
-                                <input type="text" [(ngModel)]="payment.paidBy" required />
-                            </div>
-                        </div>
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Account Paid From:</label>
-                                <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
-                            </div>
-                        </div>
-                        <div class="modal-form">
-                            <div class="modal-input-group">
-                                <label>Paid Date:</label>
-                                <input type="date" [(ngModel)]="payment.paidDate" required />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button (click)="saveEditClick();  closeModal()" class="btn btn-primary">Save Changes</button>
-                        <button (click)="closeModal()" class="btn btn-secondary">Cancel</button>
-                    </div>
-                </div>
-                <!-- ========================= -->
-                <!-- PAYMENT TAB -->
-                <!-- ========================= -->
-                <div *ngIf="activeTab === 'payment'">
-                    <div class="modal-header">
-                        <h3>Add Payment for {{ selectedMainRow?.transactionId }}
-                        </h3>
-
-                    </div>
-
-                    <div class="modal-buttons" style="margin-bottom: 10px;">
-                        <button class="btn btn-success" (click)="addPaymentRow()">+ Add Payment</button>
-                    </div>
-
-                    <div *ngFor="let payment of newPayments; let j = index" class="payment-row" style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                        <div class="modal-input-group" style="flex: 1">
-                            <label>Amount Paid:</label>
-                            <input type="number" [(ngModel)]="payment.amountPaid" required />
-                        </div>
-                        <div class="modal-input-group" style="flex: 1">
-                            <label>Paid By:</label>
-                            <input type="text" [(ngModel)]="payment.paidBy" required />
-                        </div>
-                        <div class="modal-input-group" style="flex: 1">
-                            <label>Account Paid From:</label>
-                            <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
-                        </div>
-                        <div class="modal-input-group" style="flex: 1">
-                            <label>Payment Date:</label>
-                            <input type="date" [(ngModel)]="payment.paidDate" required />
-                        </div>
-                        <div class="modal-buttons">
-                            <button class="btn btn-danger" (click)="removePaymentRow(j)" [disabled]="j===0">X</button>
-                        </div>
-                    </div>
-
-                    <div class="modal-buttons" style="margin-top:10px; display:flex; gap:10px;">
-                        <button class="btn btn-primary" (click)="submitPayments(); closeModal()">Save</button>
-                        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-                    </div>
-                </div>
-
-                <!-- ========================= -->
-                <!-- DELETE TAB -->
-                <!-- ========================= -->
-                <div *ngIf="activeTab === 'delete'">
-                    <p>Are you sure you want to delete transaction: {{selectedMainRow?.transactionId}}?
-                    </p>
-                    <div class="modal-buttons">
-                        <button class="btn btn-danger" (click)="confirmDeleteClick(); closeModal()">Delete</button>
-                        <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-                    </div>
-                </div>
-
-            </div>
+      <!-- Item Rows -->
+      <div *ngFor="let item of addData.items; let i = index" class="item-row">
+        <div class="modal-input-group">
+          <label>Item Description</label>
+          <input type="text" [(ngModel)]="item.itemDescription" />
         </div>
+
+        <div class="modal-input-group">
+          <label>UOM</label>
+          <select [(ngModel)]="item.uom" required>
+            <option *ngFor="let u of uoms" [value]="u">{{ u }}</option>
+          </select>
+        </div>
+
+        <div class="modal-input-group">
+          <label>Quantity</label>
+          <input type="number" [(ngModel)]="item.quantity" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Unit Price</label>
+          <input type="number" [(ngModel)]="item.unitPrice" />
+        </div>
+
+        <div class="modal-input-group remove-btn">
+          <button type="button" (click)="removeItem('add', i)"
+            [disabled]="i === 0">X</button>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Main Form Fields -->
+      <div class="modal-form">
+        <div class="modal-input-group">
+          <label>Purchase Order</label>
+          <input type="text" [(ngModel)]="addData.purchaseOrder" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Purchase Date</label>
+          <input type="date" [(ngModel)]="addData.purchaseDate" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Origin</label>
+          <select [(ngModel)]="addData.origin" required>
+            <option *ngFor="let o of origins" [value]="o">{{ o | titlecase
+              }}</option>
+          </select>
+        </div>
+
+        <div class="modal-input-group">
+          <label>Purchase Company</label>
+          <input type="text" [(ngModel)]="addData.purchaseCompany" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Contact Person</label>
+          <input type="text" [(ngModel)]="addData.contactPerson" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Remark</label>
+          <textarea [(ngModel)]="addData.remark"></textarea>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Modal Actions -->
+      <div class="modal-buttons"
+        style="margin-top: 10px; display: flex; gap: 10px;">
+        <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
+        <button (click)="closeModal('add')"
+          class="btn btn-secondary">Cancel</button>
+      </div>
+
+    </ng-container>
+    <!-- ================= ADD MODAL (Logistics) ================= -->
+    <ng-container *ngIf="pageType === 'logistics'">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h3>Add logistics Entry</h3>
+      </div>
+      <hr>
+
+      <!-- Add Item Button -->
+   <!-- Add Item Button -->
+<div class="modal-buttons" style="display: flex; gap: 10px; align-items: center;">
+  <button (click)="addLogistics()" class="btn btn-success">+ Add Item</button>
+</div>
+
+      <!-- Item Rows -->
+<div *ngFor="let item of addData.items; let i = index" class="item-row">
+  <div class="modal-input-group">
+    <label>Reference Number</label>
+    <select [(ngModel)]="item.transactionId">
+      <option *ngFor="let trx of intransitOptions" [value]="trx.TransactionId">{{ trx.TransactionId }}</option>
+    </select>
+  </div>
+
+<div class="modal-input-group">
+  <label>Reference Number</label>
+  <select [(ngModel)]="item.transactionId">
+    <option 
+      *ngFor="let trx of intransitOptions" 
+      [value]="trx.TransactionId" 
+      [ngStyle]="{ 'color': trx.TransactionId === item.transactionId ? 'red' : 'black' }">
+      {{ trx.TransactionId }}
+    </option>
+  </select>
+</div>
+
+
+  <div class="modal-input-group">
+    <label>UOM</label>
+    <select [(ngModel)]="item.uom">
+      <option *ngFor="let uom of ['mg', 'g', 'kg', 'ton', 'lb', 'oz', 'reel', 'drum']" [value]="uom">{{ uom }}</option>
+    </select>
+  </div>
+
+  <div class="modal-input-group">
+    <label>Loaded Amount</label>
+    <input type="number" [(ngModel)]="item.LoadedQnty" />
+  </div>
+
+  <div class="modal-input-group remove-btn">
+    <button type="button" (click)="removeLogistics(i)" [disabled]="i === 0">X</button>
+  </div>
+</div>
+
+
+      <hr>
+
+      <!-- Main Form Fields -->
+      <div class="modal-form">
+        <div class="modal-input-group">
+          <label>No-Cont</label>
+          <input type="number" [(ngModel)]="addData.LoadedOnfcl" />
+        </div>
+
+        <div class="modal-input-group">
+          <label>Cont-Type</label>
+          <select [(ngModel)]="addData.containerType" required>
+            <option value="20ft">20ft</option>
+            <option value="40ft">40ft</option>
+            <option value="40ft_HC">40ft HC</option>
+            <option value="45ft_HC">45ft HC</option>
+          </select>
+        </div>
+
+        <div class="modal-input-group">
+          <label>Remark</label>
+          <textarea [(ngModel)]="addData.remark"></textarea>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Modal Actions -->
+      <div class="modal-buttons"
+        style="margin-top: 10px; display: flex; gap: 10px;">
+        <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
+        <button (click)="closeModal('add')"
+          class="btn btn-secondary">Cancel</button>
+      </div>
+
+    </ng-container>
+  </div>
+</div>
+<!-- ================= MAIN MODAL ================= -->
+<div class="modal" *ngIf="showModal.main" (click)="closeModal('main')">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <!-- Modal Actions -->
+    <div class="modal-actions">
+      <h3 class="main-modal-title">
+        {{ pageType === 'intransit' ? 'Intransit' : 'Logistics' }} Main Modal
+      </h3>
+
+      <button class="btn-detail"
+        *ngIf="buttonVisibility.detail"
+        [class.active]="activeTab === 'detail'"
+        (click)="setActiveTab('detail')">Detail</button>
+
+      <button class="btn-edit"
+        *ngIf="buttonVisibility.edit"
+        [class.active]="activeTab === 'edit'"
+        (click)="setActiveTab('edit')">Edit</button>
+
+      <button class="btn-payment"
+        *ngIf="buttonVisibility.payment"
+        [class.active]="activeTab === 'payment'"
+        (click)="setActiveTab('payment')">Payment</button>
+
+      <button class="btn-delete"
+        *ngIf="buttonVisibility.delete"
+        [class.active]="activeTab === 'delete'"
+        (click)="setActiveTab('delete')">Delete</button>
     </div>
-
-    <!-- add  intransit modal -->
-    <div class="modal" *ngIf="showAddModal" (click)="closeModal()">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-                <h3>Add Intransit Entry</h3>
+    <hr />
+    <!-- Modal Body -->
+    <div class="main-modal-body">
+      <!-- DETAIL TAB -->
+      <ng-container *ngIf="activeTab === 'detail' && buttonVisibility.detail">
+        <ng-container *ngIf="pageType === 'intransit'">
+          <span>Product Detail</span>
+          <div *ngIf="selectedRow?.items?.length; else noItems">
+            <div *ngFor="let item of selectedRow.items" class="detail-row">
+              <div class="detail-item"><span class="label">Item:</span> <span
+                  class="value">{{item.itemDescription}}</span></div>
+              <div class="detail-item"><span class="label">Quantity:</span>
+                <span class="value">{{item.quantity}}</span></div>
+              <div class="detail-item"><span class="label">Uom:</span> <span
+                  class="value">{{item.uom}}</span></div>
+              <div class="detail-item"><span class="label">U.Price:</span> <span
+                  class="value">{{item.unitPrice}}</span></div>
             </div>
-            <hr>
+          </div>
+          <ng-template #noItems>
+            <p>No product details available.</p>
+          </ng-template>
 
-            <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center;">
-                <button (click)="addItemRow()" class="btn btn-success">+ Add
-                    Item</button>
+          <span>Common Data</span>
+          <div class="detail-row">
+            <div class="detail-item"><span class="label">GRN:</span>
+              <span class="value">{{selectedRow?.grn}}</span></div>
+            <div class="detail-item"><span class="label">Purchase
+                Company:</span> <span
+                class="value">{{selectedRow?.purchaseCompany}}</span></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item"><span class="label">Origin:</span> <span
+                class="value">{{selectedRow?.origin}}</span></div>
+            <div class="detail-item"><span class="label">Contact
+                Person:</span> <span
+                class="value">{{selectedRow?.contactPerson}}</span></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item"><span class="label">Remark:</span> <span
+                class="value">{{selectedRow?.remark}}</span></div>
+          </div>
+
+          <hr>
+          <span>Payment History</span>
+          <div *ngIf="paymentTerms?.length; else noPayments">
+            <div *ngFor="let payment of paymentTerms" class="detail-row">
+              <div class="detail-item"><span class="label">Date:</span> <span
+                  class="value">{{payment.paidDate}}</span></div>
+              <div class="detail-item"><span class="label">Amount:</span> <span
+                  class="value">{{payment.amountPaid}}</span></div>
+              <div class="detail-item"><span class="label">Paid
+                  By:</span> <span class="value">{{payment.paidBy}}</span></div>
+              <div class="detail-item"><span class="label">Account:</span> <span
+                  class="value">{{payment.accountPaidFrom}}</span></div>
             </div>
+          </div>
+          <ng-template #noPayments>
+            <p>No payment records available.</p>
+          </ng-template>
 
-            <div *ngFor="let item of addData.items; let i = index" class="item-row">
-                <div class="modal-input-group">
-                    <label>Item Description</label>
-                    <input type="text" [(ngModel)]="item.itemDescription" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>UOM</label>
-                    <select [(ngModel)]="item.uom" required>
-                        <option *ngFor="let u of uoms" [value]="u">{{ u
-                            }}</option>
-                    </select>
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Quantity</label>
-                    <input type="number" [(ngModel)]="item.quantity" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Unit Price </label>
-                    <input type="number" [(ngModel)]="item.unitPrice" />
-                </div>
-
-                <div class="modal-input-group remove-btn">
-                    <button type="button" (click)="removeItem(i)" [disabled]="i === 0">X</button>
-                </div>
-            </div>
-
-            <hr>
+          <div class="modal-buttons">
+            <button (click)="closeModal()"
+              class="btn btn-secondary">Close</button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="pageType === 'logistics'">
+          <span>Logistics Detail Content</span>
+        </ng-container>
+      </ng-container>
+      <!-- EDIT TAB -->
+      <ng-container *ngIf="activeTab === 'edit' && buttonVisibility.edit">
+        <ng-container *ngIf="pageType === 'intransit'">
+          <span>Product Detail</span>
+          <div *ngFor="let item of editData.items; let i = index"
+            class="detail-row">
             <div class="modal-form">
-                <div class="modal-input-group">
-                    <label>Purchase Order</label>
-                    <input type="text" [(ngModel)]="addData.purchaseOrder" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Purchase Date</label>
-                    <input type="date" [(ngModel)]="addData.purchaseDate" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Origin:</label>
-               <select [(ngModel)]="addData.origin" required>
-  <option *ngFor="let o of origins" [value]="o">{{ o | titlecase }}</option>
-</select>
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Purchase Company</label>
-                    <input type="text" [(ngModel)]="addData.purchaseCompany" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Contact Person</label>
-                    <input type="text" [(ngModel)]="addData.contactPerson" />
-                </div>
-
-                <div class="modal-input-group">
-                    <label>Remark</label>
-                    <textarea [(ngModel)]="addData.remark"></textarea>
-                </div>
+              <div class="modal-input-group">
+                <label>Item:</label>
+                <input type="text" [(ngModel)]="item.itemDescription"
+                  required />
+              </div>
             </div>
-            <hr>
-            <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px;">
-                <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
-                <button (click)="closeModal()" class="btn btn-secondary">Cancel</button>
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Quantity:</label>
+                <input type="number" [(ngModel)]="item.quantity" required />
+              </div>
             </div>
-        </div>
+            <div class="modal-input-group">
+              <label>UOM</label>
+              <select [(ngModel)]="item.uom" required>
+                <option *ngFor="let u of uoms" [value]="u">{{ u
+                  }}</option>
+              </select>
+            </div>
+
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>U.Price:</label>
+                <input type="number" [(ngModel)]="item.unitPrice" required />
+              </div>
+            </div>
+          </div>
+
+          <hr>
+          <span>Common Data</span>
+          <div class="modal-form">
+            <div class="modal-input-group">
+              <label>Purchase Date:</label>
+              <input type="date" [(ngModel)]="editData.purchaseDate" required />
+            </div>
+            <div class="modal-input-group">
+              <label>Purchase Order:</label>
+              <input type="text" [(ngModel)]="editData.purchaseOrder"
+                required />
+            </div>
+            <div class="modal-input-group">
+              <label>Purchase Company:</label>
+              <input type="text" [(ngModel)]="editData.purchaseCompany"
+                required />
+            </div>
+            <div class="modal-input-group">
+              <label>Origin:</label>
+              <select [(ngModel)]="editData.origin" required>
+                <option *ngFor="let o of origins" [value]="o">{{
+                  o | titlecase }}</option>
+              </select>
+            </div>
+
+            <div class="modal-input-group">
+              <label>GRN:</label>
+              <input type="text" [(ngModel)]="editData.grn" required />
+            </div>
+            <div class="modal-input-group">
+              <label>Contact Person:</label>
+              <input type="text" [(ngModel)]="editData.contactPerson"
+                required />
+            </div>
+            <div class="modal-input-group full-width">
+              <label>Remark:</label>
+              <textarea [(ngModel)]="editData.remark"></textarea>
+            </div>
+          </div>
+
+          <hr>
+          <span>Payment Detail</span>
+          <div *ngFor="let payment of editData.payments; let i = index"
+            class="detail-row">
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Amount Paid:</label>
+                <input type="number" [(ngModel)]="payment.amountPaid"
+                  required />
+              </div>
+            </div>
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Paid By:</label>
+                <input type="text" [(ngModel)]="payment.paidBy" required />
+              </div>
+            </div>
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Account Paid From:</label>
+                <input type="text" [(ngModel)]="payment.accountPaidFrom"
+                  required />
+              </div>
+            </div>
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Paid Date:</label>
+                <input type="date" [(ngModel)]="payment.paidDate" required />
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-buttons">
+            <button (click)="saveEditClick();  closeModal()"
+              class="btn btn-primary">Save Changes</button>
+            <button (click)="closeModal()"
+              class="btn btn-secondary">Cancel</button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="pageType === 'logistics'">
+          <span>Edit Logistics Data</span>
+        </ng-container>
+      </ng-container>
+
+      <!-- PAYMENT TAB -->
+      <ng-container *ngIf="activeTab === 'payment' && buttonVisibility.payment">
+
+        <ng-container *ngIf="pageType === 'intransit'">
+          <div class="modal-header">
+            <h3>Add Payment for {{ selectedRow?.transactionId }}
+            </h3>
+
+          </div>
+
+          <div class="modal-buttons" style="margin-bottom: 10px;">
+            <button class="btn btn-success" (click)="addPaymentRow()">+ Add
+              Payment</button>
+          </div>
+
+          <div *ngFor="let payment of newPayments; let j = index"
+            class="payment-row"
+            style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+            <div class="modal-input-group" style="flex: 1">
+              <label>Amount Paid:</label>
+              <input type="number" [(ngModel)]="payment.amountPaid" required />
+            </div>
+            <div class="modal-input-group" style="flex: 1">
+              <label>Paid By:</label>
+              <input type="text" [(ngModel)]="payment.paidBy" required />
+            </div>
+            <div class="modal-input-group" style="flex: 1">
+              <label>Account Paid From:</label>
+              <input type="text" [(ngModel)]="payment.accountPaidFrom"
+                required />
+            </div>
+            <div class="modal-input-group" style="flex: 1">
+              <label>Payment Date:</label>
+              <input type="date" [(ngModel)]="payment.paidDate" required />
+            </div>
+            <div class="modal-buttons">
+              <button class="btn btn-danger" (click)="removePaymentRow(j)"
+                [disabled]="j===0">X</button>
+            </div>
+          </div>
+
+          <div class="modal-buttons"
+            style="margin-top:10px; display:flex; gap:10px;">
+            <button class="btn btn-primary"
+              (click)="submitPayments(); closeModal()">Save</button>
+            <button class="btn btn-secondary"
+              (click)="closeModal()">Cancel</button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="pageType === 'logistics'">
+          <p>Logistics Payment Form goes here</p>
+        </ng-container>
+      </ng-container>
+
+      <!-- DELETE TAB -->
+      <ng-container *ngIf="activeTab === 'delete' && buttonVisibility.delete">
+        <ng-container *ngIf="pageType === 'intransit'">
+          <p>Are you sure you want to delete transaction:
+            {{selectedRow?.transactionId}}?
+          </p>
+          <div class="modal-buttons">
+            <button class="btn btn-danger"
+              (click)="confirmDeleteClick(); closeModal()">Delete</button>
+            <button class="btn btn-secondary"
+              (click)="closeModal()">Cancel</button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="pageType === 'logistics'">
+          <p>Are you sure you want to delete this Logistics transaction: {{
+            selectedRow?.transactionId }}?</p>
+          <div class="modal-buttons">
+            <button class="btn btn-danger"
+              (click)="confirmDeleteClick(); closeModal('main')">Delete</button>
+            <button class="btn btn-secondary"
+              (click)="closeModal('main')">Cancel</button>
+          </div>
+        </ng-container>
+      </ng-container>
     </div>
+  </div>
+</div>

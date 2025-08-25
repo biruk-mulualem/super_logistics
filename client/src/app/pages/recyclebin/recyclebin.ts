@@ -6,7 +6,7 @@ import { Header } from '../../shared/components/header/header';
 
 @Component({
   selector: 'app-recyclebin',
-  imports: [ReusableTable,Sidebar,Header],
+  imports: [ReusableTable,Sidebar,Header,FormsModule],
   templateUrl: './recyclebin.html',
   styleUrl: './recyclebin.css'
 })

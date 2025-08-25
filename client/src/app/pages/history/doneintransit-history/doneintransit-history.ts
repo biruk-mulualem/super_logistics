@@ -5,6 +5,10 @@ import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { ReusableTable } from '../../../shared/components/reusable-table/reusable-table';
 import { IntransitFollowupService } from '../../../services/intransit-followup.service';
 import { firstValueFrom } from 'rxjs';
+
+
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-doneintransit-history',
    imports: [Header, Sidebar, ReusableTable],

@@ -6,7 +6,7 @@ import { Header } from '../../shared/components/header/header';
 
 @Component({
   selector: 'app-report',
-  imports: [ReusableTable,Sidebar,Header],
+  imports: [ReusableTable,Sidebar,Header,FormsModule],
   templateUrl: './report.html',
   styleUrl: './report.css'
 })

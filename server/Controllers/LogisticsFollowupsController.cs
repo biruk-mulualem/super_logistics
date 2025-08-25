@@ -14,87 +14,22 @@ namespace server.Controllers
         {
             _context = context;
         }
-
-        // GET: api/logisticsfollowups
-   [HttpGet("logistics")]
-public async Task<ActionResult<IEnumerable<LogisticsFollowup>>> GetLogisticsFollowups()
+[HttpGet("IntransitData")]
+public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
 {
-    var filtered = await _context.LogisticsFollowups
-        .Where(f => f.EmpityContainersLeftUnreturned != 0)
-        .ToListAsync();
-
-    return filtered;
+    var data = await _context.IntransitFollowups
+        .Select(f => new 
+        {
+            f.TransactionId,
+            Items = _context.IntransitItemsDetails
+                .Where(i => i.TransactionId == f.TransactionId)
+                .Select(i => new { i.ItemDescription, i.Uom, i.Quantity })
+                .ToList()
+        }).ToListAsync();
+     
+    return Ok(data);
+    
 }
-
-// For History page: show rows where containers have been returned
-[HttpGet("history")]
-public async Task<ActionResult<IEnumerable<LogisticsFollowup>>> GetHistoryFollowups()
-{
-    var filtered = await _context.LogisticsFollowups
-        .Where(f => f.EmpityContainersLeftUnreturned == 0)
-        .ToListAsync();
-
-    return filtered;
-}
-
-        // GET: api/logisticsfollowups/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LogisticsFollowup>> GetLogisticsFollowup(int id)
-        {
-            var logisticsFollowup = await _context.LogisticsFollowups.FindAsync(id);
-
-            if (logisticsFollowup == null)
-            {
-                return NotFound();
-            }
-
-            return logisticsFollowup;
-        }
-
-
-
-        // PUT: api/logisticsfollowups/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLogisticsFollowup(int id, LogisticsFollowup logisticsFollowup)
-        {
-            if (id != logisticsFollowup.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(logisticsFollowup).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LogisticsFollowupExists(id))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/logisticsfollowups/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLogisticsFollowup(int id)
-        {
-            var logisticsFollowup = await _context.LogisticsFollowups.FindAsync(id);
-            if (logisticsFollowup == null)
-            {
-                return NotFound();
-            }
-
-            _context.LogisticsFollowups.Remove(logisticsFollowup);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
 
         private bool LogisticsFollowupExists(int id)
         {

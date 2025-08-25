@@ -7,7 +7,7 @@ import { Header } from '../../shared/components/header/header';
 @Component({
   selector: 'app-setting',
 
-   imports: [ReusableTable,Sidebar,Header],
+   imports: [ReusableTable,Sidebar,Header,FormsModule],
  
   templateUrl: './setting.html',
   styleUrl: './setting.css'

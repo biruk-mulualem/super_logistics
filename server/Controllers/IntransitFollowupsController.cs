@@ -102,70 +102,71 @@ namespace server.Controllers
         // ===========================
         // POST: Create Intransit Entry
         // ===========================
-        [HttpPost("intransit")]
-        public async Task<ActionResult<IntransitFollowup>> Create([FromBody] IntransitCreateDto dto)
+ [HttpPost("intransit")]
+public async Task<ActionResult<IntransitFollowup>> Create([FromBody] IntransitCreateDto dto)
+{
+    if (dto == null)
+        return BadRequest("Payload is required.");
+
+    // Generate unique TransactionId starting from SIF1
+    var lastTransaction = await _context.IntransitFollowups
+        .AsNoTracking()
+        .OrderByDescending(f => f.Id)
+        .FirstOrDefaultAsync();
+
+    int nextNumber = 1;
+    if (lastTransaction != null && !string.IsNullOrEmpty(lastTransaction.TransactionId))
+    {
+        var numericPart = lastTransaction.TransactionId.Substring(3); // Remove "SIF"
+        if (int.TryParse(numericPart, out int lastNumber))
+            nextNumber = lastNumber + 1;
+    }
+
+    string transactionId = $"SIF{nextNumber}"; // No padding
+
+    // --- Calculate total price from items ---
+    decimal totalPrice = dto.Items?.Sum(it => it.Quantity * it.UnitPrice) ?? 0;
+
+    // --- Map DTO to IntransitFollowup ---
+    var followup = new IntransitFollowup
+    {
+        TransactionId = transactionId,
+        PurchaseDate = dto.PurchaseDate,
+        PurchaseOrder = dto.PurchaseOrder,
+        PurchaseCompany = dto.PurchaseCompany,
+        ContactPerson = dto.ContactPerson,
+        Origin = dto.Origin,
+        Remark = dto.Remark,
+        TotalPrice = totalPrice,
+        TotalAmountPaid = 0,
+        TotalAmountRemaning = totalPrice,
+        TotalPaidInPercent = 0,
+        TotalRemaningInPercent = 100,
+        status = null
+    };
+
+    _context.IntransitFollowups.Add(followup);
+    await _context.SaveChangesAsync();
+
+    // --- Map items DTO to IntransitItemsDetail ---
+    if (dto.Items != null && dto.Items.Any())
+    {
+        var items = dto.Items.Select(it => new IntransitItemsDetail
         {
-            if (dto == null)
-                return BadRequest("Payload is required.");
+            TransactionId = transactionId,
+            ItemDescription = it.ItemDescription,
+            Quantity = it.Quantity,
+            UnitPrice = it.UnitPrice,
+            Uom = it.Uom
+        }).ToList();
 
-            // Generate unique TransactionId
-            var lastTransaction = await _context.IntransitFollowups
-                .AsNoTracking()
-                .OrderByDescending(f => f.Id)
-                .FirstOrDefaultAsync();
+        _context.IntransitItemsDetails.AddRange(items);
+        await _context.SaveChangesAsync();
+    }
 
-            int nextNumber = 1;
-            if (lastTransaction != null && !string.IsNullOrEmpty(lastTransaction.TransactionId))
-            {
-                var numericPart = lastTransaction.TransactionId.Substring(3);
-                if (int.TryParse(numericPart, out int lastNumber))
-                    nextNumber = lastNumber + 1;
-            }
+    return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
+}
 
-            string transactionId = $"SDT{nextNumber.ToString().PadLeft(6, '0')}";
-
-            // --- Calculate total price from items ---
-            decimal totalPrice = dto.Items?.Sum(it => it.Quantity * it.UnitPrice) ?? 0;
-
-            // --- Map DTO to IntransitFollowup ---
-            var followup = new IntransitFollowup
-            {
-                TransactionId = transactionId,
-                PurchaseDate = dto.PurchaseDate,
-                PurchaseOrder = dto.PurchaseOrder,
-                PurchaseCompany = dto.PurchaseCompany,
-                ContactPerson = dto.ContactPerson,
-                Origin = dto.Origin,
-                Remark = dto.Remark,
-                TotalPrice = totalPrice,
-                TotalAmountPaid = 0,
-                TotalAmountRemaning = totalPrice,
-                TotalPaidInPercent = 0,
-                TotalRemaningInPercent = 100,
-                status = null
-            };
-
-            _context.IntransitFollowups.Add(followup);
-            await _context.SaveChangesAsync();
-
-            // --- Map items DTO to IntransitItemsDetail ---
-            if (dto.Items != null && dto.Items.Any())
-            {
-                var items = dto.Items.Select(it => new IntransitItemsDetail
-                {
-                    TransactionId = transactionId,
-                    ItemDescription = it.ItemDescription,
-                    Quantity = it.Quantity,
-                    UnitPrice = it.UnitPrice,
-                    Uom = it.Uom
-                }).ToList();
-
-                _context.IntransitItemsDetails.AddRange(items);
-                await _context.SaveChangesAsync();
-            }
-
-            return CreatedAtAction(nameof(GetById), new { id = followup.Id }, followup);
-        }
 
         // ===========================
         // POST: Add Payment(s)
@@ -215,64 +216,7 @@ namespace server.Controllers
             return Ok(payments);
         }
 
-        // ===========================
-        // PUT: Update Intransit Entry
-        // ===========================
-//       [HttpPut("intransit/{id}")]
-// public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
-// {
-//     // 1️⃣ Find the main followup
-//     var followup = await _context.IntransitFollowups.FindAsync(id);
-//     if (followup == null)
-//         return NotFound($"Followup with ID {id} not found.");
 
-//     // 2️⃣ Update main fields
-//     followup.PurchaseDate = dto.PurchaseDate;
-//     followup.PurchaseOrder = dto.PurchaseOrder;
-//     followup.PurchaseCompany = dto.PurchaseCompany;
-//     followup.ContactPerson = dto.ContactPerson;
-//     followup.Origin = dto.Origin;
-//     followup.Remark = dto.Remark;
-//     followup.Grn = dto.Grn;   // 👈 Add this line
-
-//     // 3️⃣ Update items table
-//     if (dto.Items != null && dto.Items.Any())
-//     {
-//         //  in IntransitItemsDetails table i added two column RemaningQnty,LoadedQnty and whenver i insert an item data i need to add a feature when i inser into intransit the loading qnty is 0 and the remeaning qnty is eqult to the qnty 
-//         var existingItems = _context.IntransitItemsDetails
-//                                     .Where(i => i.TransactionId == followup.TransactionId);
-//         _context.IntransitItemsDetails.RemoveRange(existingItems);
-
-//         // Add new/updated items
-//         var newItems = dto.Items.Select(it => new IntransitItemsDetail
-//         {
-//             TransactionId = followup.TransactionId,
-//             ItemDescription = it.ItemDescription,
-//             Quantity = it.Quantity,
-//             Uom = it.Uom,
-//             UnitPrice = it.UnitPrice
-//         }).ToList();
-
-//         _context.IntransitItemsDetails.AddRange(newItems);
-//     }
-
-//     // 4️⃣ Recalculate totals based on updated items
-//     followup.TotalPrice = dto.Items?.Sum(i => i.Quantity * i.UnitPrice) ?? 0;
-
-//     followup.TotalAmountPaid ??= 0;
-//     followup.TotalAmountRemaning = followup.TotalPrice - followup.TotalAmountPaid.Value;
-//     followup.TotalPaidInPercent = followup.TotalPrice == 0
-//         ? 0
-//         : (followup.TotalAmountPaid.Value / followup.TotalPrice) * 100;
-//     followup.TotalRemaningInPercent = followup.TotalPrice == 0
-//         ? 0
-//         : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
-
-//     // 5️⃣ Save changes
-//     await _context.SaveChangesAsync();
-
-//     return NoContent();
-// }
 
 
 

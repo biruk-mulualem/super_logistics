@@ -17,7 +17,7 @@ export class Intransit implements OnInit {
 
   // ---------------- Headers ----------------
   tableHeaders = [
-    { label: 'Id', key: 'id' },
+    // { label: 'Id', key: 'id' },
     { label: 'Ref NO.', key: 'transactionId' },
     { label: 'Purchase Date', key: 'purchaseDate' },
     { label: 'Purchase Order', key: 'purchaseOrder' },

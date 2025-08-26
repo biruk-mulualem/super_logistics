@@ -13,7 +13,8 @@ import { firstValueFrom } from 'rxjs';
 })
 export class Logistics implements OnInit {
   logisticsHeaders = [
-    { label: 'Id', key: 'id' },
+      //  { label: 'Id', key: 'id' },
+     { label: 'Ref NO.', key: 'transactionId' },
     { label: 'No-Cont', key: 'loadedOnfcl' },
     { label: 'Cont-Type', key: 'containerType' },
     { label: 'Bill-No', key: 'billNo' },
@@ -53,6 +54,7 @@ export class Logistics implements OnInit {
 
   ngOnInit(): void {
     this.fetchIntransitOptions();
+     this.loadLogisticsData();
   }
 
   fetchIntransitOptions() {
@@ -182,10 +184,17 @@ onAddLogistics(payload: any) {
   });
 }
 
-
-
-
-
+loadLogisticsData() {
+  this.logisticsService.getLogisticsData().subscribe({
+    next: data => {
+      console.log('✅ Data received in component:', data);
+      this.tableData = data;
+    },
+    error: err => {
+      console.error('❌ Error fetching data:', err);
+    }
+  });
+}
 
 
 

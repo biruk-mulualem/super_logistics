@@ -32,6 +32,57 @@ public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
     
 }
 
+// GET: api/logisticsfollowups/with-items
+[HttpGet("LogisticsData")]
+public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
+{
+    var data = await _context.LogisticsFollowups
+        .Select(lf => new 
+        {
+            lf.TransactionId,
+            lf.LoadedOnfcl,
+            lf.ContainerType,
+            lf.BillNo,
+            lf.truckWayBill,
+            lf.DocOwner,
+            lf.Shipper,
+            lf.Transitor,
+            lf.Etadjb,
+            lf.LoadingDate,
+            lf.DjbArrived,
+            lf.DocSentDjb,
+            lf.DocCollected,
+            lf.BillCollected,
+            lf.TaxPaid,
+            lf.DjbDeparted,
+            lf.AkkArrived,
+            lf.SdtArrived,
+            lf.EmpityContainersLeftUnreturned,
+            lf.Origin,
+            lf.Remark,
+            lf.status,
+            Items = _context.logisticsItemsDetails
+                .Where(item => item.TransactionId == lf.TransactionId)
+                .Select(item => new 
+                {
+                    item.Id,
+                    item.ItemDescription,
+                    item.Uom,
+                    item.Quantity,
+                    item.LoadedQnty,
+                    item.RemaningQnty,
+                    item.TotalQnty,
+                    item.Date,
+                    item.status,
+                    item.IntransitId
+                })
+                .ToList() // ✅ convert IQueryable to List
+        })
+        .ToListAsync(); // outer ToListAsync
+
+    return Ok(data);
+}
+
 
 
 

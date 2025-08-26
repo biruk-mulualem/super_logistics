@@ -7,6 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class IntransitFollowupService {
+  addLogistics(): Observable<unknown> {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = 'http://localhost:5000/api/IntransitFollowups'; // Base API URL
 
   constructor(private http: HttpClient) {}

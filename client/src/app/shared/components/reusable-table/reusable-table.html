@@ -390,7 +390,80 @@
           </div>
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
-          <span>Logistics Detail Content</span>
+               <span>Product Detail</span>
+                      <div >
+            <div  class="detail-row">
+              <div class="detail-item"><span class="label">itemDescription:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">uom:</span>
+                <span class="value"></span></div>
+              <div class="detail-item"><span class="label"> Loaded quantity:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">remaning quantity:</span> <span
+                  class="value"></span></div>
+            </div>
+          </div>
+            <span>Common Data</span>
+          <div >
+            <div  class="detail-row">
+              <div class="detail-item"><span class="label">etadjb:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">loadingDate:</span>
+                <span class="value"></span></div>
+              <div class="detail-item"><span class="label">djbArrived:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">docSentDjb:</span> <span
+                  class="value"></span></div>
+            </div>
+          </div>
+
+         
+
+
+
+            
+          <div class="detail-row">
+            <div class="detail-item"><span class="label">billCollected:</span>
+              <span class="value"></span></div>
+            <div class="detail-item"><span class="label">taxPaid
+                :</span> <span
+                class="value"></span></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item"><span class="label">djbDeparted:</span> <span
+                class="value"></span></div>
+            <div class="detail-item"><span class="label">akkArrived
+                Person:</span> <span
+                class="value"></span></div>
+          </div>
+          
+
+          <hr>
+          <!-- <span>Payment History</span> -->
+          <div >
+            <div  class="detail-row">
+              <div class="detail-item"><span class="label">empityContainersLeftUnreturned:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">origin:</span> <span
+                  class="value"></span></div>
+              <div class="detail-item"><span class="label">remark
+                  By:</span> <span class="value"></span></div>
+             <div class="detail-item"><span class="label">sdtArrived:</span> <span
+                class="value"></span></div>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            
+                 <div class="detail-item"><span class="label">status:</span> <span
+                  class="value"></span></div>
+          </div>
+        
+
+          <div class="modal-buttons">
+            <button (click)="closeModal()"
+              class="btn btn-secondary">Close</button>
+          </div>
         </ng-container>
       </ng-container>
       <!-- EDIT TAB -->

@@ -11,24 +11,14 @@ export class LogisticsFollowupService {
 
   constructor(private http: HttpClient) { }
 
-  // Add a new logistics entry
-  addLogistics(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/AddLogistics`, data).pipe(
-      tap((response) => {
-        console.log('Logistics added successfully:', response);
-      })
-    );
-  }
+  // --- GET all logistics rows (filtered) ---
+getIntransitDataForLogistics(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/IntransitData`).pipe(
+    tap((response) => {
+      console.log('Received intransit data:', JSON.stringify(response, null, 2)); // Pretty print the response
+    })
+  );
+}
 
-  // Get intransit data for dropdowns or selection
-  getIntransitDataForLogistics(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/IntransitData`).pipe(
-      tap((response) => {
-        console.log('Received intransit data:', JSON.stringify(response, null, 2));
-      })
-    );
-  }
-
-  
 
 }

@@ -16,6 +16,8 @@ import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { IntransitFollowupService } from '../../../services/intransit-followup.service';
+import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
+
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -25,7 +27,7 @@ import { IntransitFollowupService } from '../../../services/intransit-followup.s
 })
 export class ReusableTable implements OnInit, OnChanges {
   // ============================================================
-  // ---------------------- Inputs / Outputs -------------------
+  // ---------------------- Inputs / Outputs --------------------
   // ============================================================
   @Input() headers: { label: string; key: string }[] = [];
   @Input() data: any[] = [];
@@ -33,37 +35,37 @@ export class ReusableTable implements OnInit, OnChanges {
   @Input() paymentTerms: any[] = [];
   @Input() editData: any = {};
   @Input() showEditModal: boolean = false;
-@Input() intransitOptions: any[] = []; // all TransactionIds + Items
+  @Input() intransitOptions: any[] = []; // all TransactionIds + Items
 
   @Output() add = new EventEmitter<any>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() addPayment = new EventEmitter<any>();
-  @Output() transactionChange = new EventEmitter<any>(); // emits when transaction is selected
-@Output() itemChange = new EventEmitter<any>();        // emits when item is selected
-@Output() addItemEvent = new EventEmitter<void>();     // add a new item row
-@Output() removeItemEvent = new EventEmitter<number>(); // remove item row by index
-@Output() intransitOptionsChange = new EventEmitter<any[]>();
 
-// Inside ReusableTable component /logistics related codes
-@Output() logisticsAdd = new EventEmitter<any>();
-@Output() logisticsRemove = new EventEmitter<any>();
+  // Intransit & Logistics shared events
+  @Output() transactionChange = new EventEmitter<any>();
+  @Output() itemChange = new EventEmitter<any>();
+  @Output() addItemEvent = new EventEmitter<void>();
+  @Output() removeItemEvent = new EventEmitter<number>();
+  @Output() intransitOptionsChange = new EventEmitter<any[]>();
 
-updateIntransitOptions(newOptions: any[]) {
-  this.intransitOptionsChange.emit(newOptions);
-}
+  // Logistics-specific
+  @Output() logisticsAdd = new EventEmitter<any>();
+  @Output() logisticsRemove = new EventEmitter<any>();
+
+ 
+  updateIntransitOptions(newOptions: any[]) {
+    this.intransitOptionsChange.emit(newOptions);
+  }
 
   // ============================================================
-  // ---------------- Table & Pagination -----------------------
+  // ---------------- Common State / Constants ------------------
   // ============================================================
   filteredData: any[] = [];
   searchQuery: string = '';
   currentPage: number = 1;
   rowsPerPage: number = 13;
 
-  // ============================================================
-  // ---------------------- Modals -----------------------------
-  // ============================================================
   showModal = {
     add: false,
     edit: false,
@@ -73,15 +75,12 @@ updateIntransitOptions(newOptions: any[]) {
     main: false,
   };
 
-  selectedRow: any = null;   // unified selected row
+  selectedRow: any = null;
   newPayments: any[] = [];
   addData: any = {};
   deleteRowData: any = null;
-  activeTab: string = 'detail'; // main modal default tab
+  activeTab: string = 'detail';
 
-  // ============================================================
-  // ------------------------ Constants ------------------------
-  // ============================================================
   uoms: string[] = [
     'mg', 'g', 'kg', 'ton', 'lb', 'oz', 'ml', 'l', 'pcs', 'box', 'roll', 'pack',
     'dozen', 'set', 'bottle', 'can', 'bag', 'sheet', 'meter', 'cm', 'inch',
@@ -119,12 +118,14 @@ updateIntransitOptions(newOptions: any[]) {
   ];
 
   // ============================================================
-  // ---------------------- Constructor ------------------------
+  // ---------------------- Constructor -------------------------
   // ============================================================
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     public router: Router,
     public intransitService: IntransitFollowupService,
+    private logisticsService: LogisticsFollowupService,
+
     private cdr: ChangeDetectorRef
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -138,16 +139,14 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // ============================================================
-  // ---------------------- Lifecycle Hooks --------------------
+  // ---------------------- Lifecycle Hooks ---------------------
   // ============================================================
-  ngOnInit(): void {
-    this.filteredData = [...this.data];
+ngOnInit(): void {
+    this.filteredData = Array.isArray(this.data) ? [...this.data] : [];
     if (this.isBrowser) this.setRowsPerPage(window.innerWidth);
     this.applyFilterAndPagination();
     this.updatePageTypeAndButtons();
-
-      console.log('intransitOptions in ngOnInit:', this.intransitOptions);
-  }
+}
 
   ngOnChanges(changes: SimpleChanges): void {
     this.applyFilterAndPagination();
@@ -160,7 +159,7 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // ============================================================
-  // ---------------------- Window Resize ----------------------
+  // ------------------- Common Utilities -----------------------
   // ============================================================
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -172,9 +171,6 @@ updateIntransitOptions(newOptions: any[]) {
     this.currentPage = 1;
   }
 
-  // ============================================================
-  // ---------------------- Pagination -------------------------
-  // ============================================================
   get paginatedData(): any[] {
     const start = (this.currentPage - 1) * this.rowsPerPage;
     return this.filteredData.slice(start, start + this.rowsPerPage);
@@ -184,36 +180,30 @@ updateIntransitOptions(newOptions: any[]) {
     return Math.ceil(this.filteredData.length / this.rowsPerPage);
   }
 
-  setPage(page: number) {
-    this.currentPage = page;
-  }
-  prevPage() {
-    if (this.currentPage > 1) this.currentPage--;
-  }
-  nextPage() {
-    if (this.currentPage < this.totalPages) this.currentPage++;
-  }
+  setPage(page: number) { this.currentPage = page; }
+  prevPage() { if (this.currentPage > 1) this.currentPage--; }
+  nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
 
-  // ============================================================
-  // ------------------------- Search --------------------------
-  // ============================================================
-  onSearch(): void {
-    const query = this.searchQuery.toLowerCase();
+onSearch(): void {
+  const query = this.searchQuery.toLowerCase();
 
-    const matchesSearch = (value: any): boolean => {
-      if (value === null || value === undefined) return false;
-      if (typeof value === 'string' || typeof value === 'number')
-        return String(value).toLowerCase().includes(query);
-      if (Array.isArray(value))
-        return value.some((item) => matchesSearch(item));
-      if (typeof value === 'object')
-        return Object.values(value).some((val) => matchesSearch(val));
-      return false;
-    };
+  const matchesSearch = (value: any): boolean => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string' || typeof value === 'number')
+      return String(value).toLowerCase().includes(query);
+    if (Array.isArray(value))
+      return value.some((item) => matchesSearch(item));
+    if (typeof value === 'object')
+      return Object.values(value).some((val) => matchesSearch(val));
+    return false;
+  };
 
-    this.filteredData = this.data.filter((row) => matchesSearch(row));
-    this.currentPage = 1;
-  }
+  // Ensure data is always an array
+  const sourceData = Array.isArray(this.data) ? this.data : [];
+  this.filteredData = sourceData.filter((row) => matchesSearch(row));
+  this.currentPage = 1;
+}
+
 
   private applyFilterAndPagination() {
     this.onSearch();
@@ -221,9 +211,6 @@ updateIntransitOptions(newOptions: any[]) {
       this.currentPage = this.totalPages || 1;
   }
 
-  // ============================================================
-  // ------------------ Page / Buttons Logic -------------------
-  // ============================================================
   hasAnyActionButton(): boolean {
     return (
       this.buttonVisibility.detail ||
@@ -258,7 +245,7 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // ============================================================
-  // -------------------- Modals & Scroll ----------------------
+  // ------------------- Modals & Scroll ------------------------
   // ============================================================
   openModal(modal: keyof typeof this.showModal, row?: any) {
     this.showModal[modal] = true;
@@ -282,7 +269,7 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // ============================================================
-  // ------------------------ Payments -------------------------
+  // ---------------------- Payments ----------------------------
   // ============================================================
   private fetchPayments(transactionId: string): void {
     this.intransitService.getPaymentData(transactionId).subscribe({
@@ -326,33 +313,43 @@ updateIntransitOptions(newOptions: any[]) {
   }
 
   // ============================================================
-  // ------------------------ Add / Edit -----------------------
+  // -------------------- Intransit Related ---------------------
   // ============================================================
 openAddModal() {
-  this.addData = {
-    ...this.addData,
-    purchaseDate: '',
-    purchaseOrder: '',
-    purchaseCompany: '',
-    contactPerson: '',
-    origin: '',
-    remark: '',
-    containerType: '',
-    LoadedOnfcl: '',
-    items: [{
-      transactionId: '',
-      availableItems: [],
-      selectedItem: null,
-      itemDescription: '',
-      uom: '',
-      quantity: '',
-      LoadedQnty: ''
-    }]
-  };
+  if (this.pageType === 'intransit') {
+    this.addData = {
+      purchaseDate: '',
+      purchaseOrder: '',
+      purchaseCompany: '',
+      contactPerson: '',
+      origin: '',
+      remark: '',
+      items: [
+        { itemDescription: '', uom: '', quantity: '', unitPrice: '' }
+      ]
+    };
+  } else if (this.pageType === 'logistics') {
+    this.addData = {
+      LoadedOnfcl: '',
+      containerType: '',
+      remark: '',
+      items: [
+        {
+          transactionId: '',
+          availableItems: [],
+          selectedItem: null,
+          itemDescription: '',
+          uom: '',
+          quantity: 0,
+          LoadedQnty: 0
+        }
+      ]
+    };
+  }
 
+  // console.log('Modal addData initializedfffffffffffffffff:', this.addData); // ✅ log here
   this.openModal('add');
 }
-
 
   addItem(target: 'add' | 'edit') {
     const arr = target === 'add' ? this.addData.items : this.editData.items;
@@ -392,6 +389,9 @@ openAddModal() {
     this.closeModal('add');
   }
 
+  // ============================================================
+  // ------------------- Edit / Delete / Main -------------------
+  // ============================================================
   openEditModal(row: any) {
     this.editData = JSON.parse(JSON.stringify(row));
     this.openModal('edit', row);
@@ -403,9 +403,6 @@ openAddModal() {
     this.closeModal('edit');
   }
 
-  // ============================================================
-  // ------------------------- Delete --------------------------
-  // ============================================================
   openDeleteModal(row: any) {
     this.selectedRow = row;
     this.activeTab = 'delete';
@@ -421,9 +418,6 @@ openAddModal() {
     this.closeModal('main');
   }
 
-  // ============================================================
-  // ----------------------- Main Modal ------------------------
-  // ============================================================
   openMainModal(row: any) {
     this.selectedRow = row;
     this.editData = JSON.parse(JSON.stringify(row));
@@ -438,92 +432,97 @@ openAddModal() {
     if (tab === 'detail') this.paymentTerms = this.selectedRow?.payments ?? [];
   }
 
-
-
-
   // ============================================================
-  // ----------------------- Logistics related -----------------
+  // ------------------- Logistics Related ----------------------
   // ============================================================
-
-  // Triggered when a transaction is selected
   onTransactionSelect(row: any) {
-    this.transactionChange.emit(row); // parent will update available items
+    this.transactionChange.emit(row);
   }
 
-  // Triggered when an item is selected
   onItemSelect(row: any) {
-    this.itemChange.emit(row); // parent will update UOM and total quantity
+    this.itemChange.emit(row);
   }
 
-  // Triggered when "+ Add Item" is clicked in logistics modal
-addLogistics() {
-  if (!this.addData.items) this.addData.items = [];
+  addLogistics() {
+    if (!this.addData.items) this.addData.items = [];
 
-  this.addData.items.push({
-    transactionId: '',
-    availableItems: [],
-    selectedItem: null,
-    itemDescription: '',
-    uom: '',
-    quantity: '',
-    LoadedQnty: ''
-  });
-}
-
-onLoadedQntyInput(event: Event, item: any) {
-  const input = event.target as HTMLInputElement;
-  let value = parseInt(input.value, 10);
-
-  if (isNaN(value) || value < 0) {
-    value = 0;
-  } else if (value > item.quantity) {
-    value = item.quantity;
+    this.addData.items.push({
+      transactionId: '',
+      availableItems: [],
+      selectedItem: null,
+      itemDescription: '',
+      uom: '',
+      quantity: '',
+      LoadedQnty: ''
+    });
   }
 
-  // Update model
-  item.LoadedQnty = value;
+  onLoadedQntyInput(event: Event, item: any) {
+    const input = event.target as HTMLInputElement;
+    let value = parseInt(input.value, 10);
 
-  // Update visible input value to reflect corrected number
-  input.value = String(value);
-}
+    if (isNaN(value) || value < 0) {
+      value = 0;
+    } else if (value > item.quantity) {
+      value = item.quantity;
+    }
 
-
-
-  // Triggered when removing an item in logistics modal
-removeLogistics(index: number) {
-  if (index === 0) return; // Don't allow removing the first row
-  if (this.addData?.items?.length > index) {
-    this.addData.items.splice(index, 1);
+    item.LoadedQnty = value;
+    input.value = String(value);
   }
-}
 
-
-
-
-onTransactionChange(item: any) {
-  const selectedTransaction = this.intransitOptions.find(
-    opt => opt.transactionId === item.transactionId
-  );
-
-  item.availableItems = selectedTransaction ? selectedTransaction.items : [];
-  item.selectedItem = null;
-  item.itemDescription = '';
-  item.uom = '';
-  item.quantity = '';
-}
-
-
-
-onItemChange(itemRow: any) {
-  const selected = itemRow.selectedItem;
-  if (selected) {
-    itemRow.itemDescription = selected.itemDescription;
-    itemRow.uom = selected.uom;
-    itemRow.quantity = selected.quantity;
+  removeLogistics(index: number) {
+    if (index === 0) return;
+    if (this.addData?.items?.length > index) {
+      this.addData.items.splice(index, 1);
+    }
   }
+
+  onTransactionChange(item: any) {
+    const selectedTransaction = this.intransitOptions.find(
+      opt => opt.transactionId === item.transactionId
+    );
+
+    item.availableItems = selectedTransaction ? selectedTransaction.items : [];
+    item.selectedItem = null;
+    item.itemDescription = '';
+    item.uom = '';
+    item.quantity = '';
+  }
+
+  onItemChange(itemRow: any) {
+    const selected = itemRow.selectedItem;
+    if (selected) {
+      itemRow.itemDescription = selected.itemDescription;
+      itemRow.uom = selected.uom;
+      itemRow.quantity = selected.quantity;
+    }
+  }
+
+
+saveAddLogsticsClick() {
+  // Build a clean payload
+  const payload = {
+    LoadedOnfcl: Number(this.addData.LoadedOnfcl), // ensure numeric
+    containerType: this.addData.containerType,
+    remark: this.addData.remark,
+    items: this.addData.items.map((item: { transactionId: any; itemDescription: any; uom: any; LoadedQnty: any; quantity:any; }) => ({
+      transactionId: item.transactionId,
+      itemDescription: item.itemDescription,
+      uom: item.uom,
+      quantity: item.LoadedQnty ,  // Send the actual loaded quantity
+
+        totalQuantity: item.quantity    // send the original available quantity too
+    }))
+  };
+
+  console.log("🚀 Clean Logistics payload emitted:", payload);
+
+  // Emit payload to parent
+  this.logisticsAdd.emit(payload);
+
+  this.closeModal('add'); // close modal if needed
 }
-
-
 
 
 }

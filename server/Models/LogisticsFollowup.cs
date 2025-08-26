@@ -29,5 +29,6 @@ namespace server.Models
         public int? EmpityContainersLeftUnreturned { get; set; }
           public string? Origin { get; set; }
         public string? Remark { get; set; }
+            public string? status { get; set; }
     }
 }

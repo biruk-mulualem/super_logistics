@@ -3,6 +3,7 @@ import { LogisticsFollowupService } from '../../services/logistics-followup.serv
 import { Header } from '../../shared/components/header/header';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { ReusableTable } from '../../shared/components/reusable-table/reusable-table';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   imports: [Header, Sidebar, ReusableTable],
@@ -22,47 +23,32 @@ export class Logistics implements OnInit {
     { label: 'Transitor', key: 'transitor' },
   ];
 
-  logisticsData = [
-    { label: 'Loading-Date', key: 'loadingDate' },
-    { label: 'Djb-Eta', key: 'etadjb' },
-    { label: 'Djb-Arr', key: 'djbArrived' },
-    { label: 'Doc-Sent-Djb', key: 'docSentDjb' },
-    { label: 'Doc-Coll', key: 'docCollected' },
-    { label: 'Bill-Coll', key: 'billCollected' },
-    { label: 'Tax-Paid', key: 'taxPaid' },
-    { label: 'Djb-Departed', key: 'djbDeparted' },
-    { label: 'Akk-Arr', key: 'akkArrived' },
-    { label: 'Sdt-Arr', key: 'sdtArrived' },
-    { label: 'Unreturned-Cont', key: 'empityContainersLeftUnreturned' },
-    { label: 'Remark', key: 'remark' },
-  ];
-
   tableData: any[] = [];
-  editDataForChild: any = {};
-  showEditModal = false;
-
-
 
   addData: any = {
+    LoadedOnfcl: '',
+    containerType: '',
+    remark: '',
     items: [
       {
         transactionId: '',
+        selectedItem: null,
         itemDescription: '',
         uom: '',
-        LoadedQnty: '',
-        totalQuantity: '',
+        quantity: 0,
+        LoadedQnty: 0,
         availableItems: [],
       },
     ],
   };
 
-  intransitOptions: any[] = []; // all TransactionIds + Items from backend
-  editData: any;
+  editData: any = {};
+  showEditModal = false;
+  intransitOptions: any[] = []; // options from backend
 
   constructor(
     private logisticsService: LogisticsFollowupService,
-    private cdr: ChangeDetectorRef,
-
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -76,71 +62,155 @@ export class Logistics implements OnInit {
     });
   }
 
-  onTransactionChange(row: any) {
-    const trx = this.intransitOptions.find(
-      (t) => t.transactionId === row.transactionId
-    );
-    row.availableItems = trx ? trx.items : [];
-    row.itemDescription = '';
-    row.uom = '';
-    row.totalQuantity = '';
-    row.LoadedQnty = '';
+  // ---------------- Transaction / Item Changes ----------------
+  onTransactionChange(item: any) {
+    const trx = this.intransitOptions.find(t => t.transactionId === item.transactionId);
+    item.availableItems = trx ? trx.items : [];
+    item.selectedItem = null;
+    item.itemDescription = '';
+    item.uom = '';
+    item.quantity = 0;
+    item.LoadedQnty = 0;
   }
 
-  onItemChange(row: any) {
-    const selected = row.availableItems.find(
-      (i: { itemDescription: any }) => i.itemDescription === row.itemDescription
-    );
+  onItemChange(item: any) {
+    const selected = item.selectedItem;
     if (selected) {
-      row.uom = selected.uom;
-      row.totalQuantity = selected.quantity;
-      row.LoadedQnty = '';
+      item.itemDescription = selected.itemDescription;
+      item.uom = selected.uom;
+      item.quantity = selected.quantity;
+      item.LoadedQnty = 0;
     } else {
-      row.uom = '';
-      row.totalQuantity ='';
+      item.uom = '';
+      item.quantity = 0;
+      item.LoadedQnty = 0;
     }
   }
 
-  // ------------------- Methods called from logistics.html -------------------
-onAddLogistics() {
-  if (!this.editData.items) this.editData.items = [];
-  this.editData.items.push({
-    itemDescription: '',
-    quantity: '',
-    unitPrice: '',
-    uom: '',
-    loadedQnty: '',
-    remainingQnty: ''
-  });
-}
 
-onRemoveLogistics(index: number): void {
-  if (this.addData?.items?.length > index) {
-    this.addData.items.splice(index, 1);
-    this.cdr.detectChanges(); // ✅ Ensure UI reflects the change
+
+  onRemoveLogistics(index: number) {
+    if (this.addData.items?.length > index) {
+      this.addData.items.splice(index, 1);
+      this.cdr.detectChanges();
+    }
   }
-}
+
+  onLoadedQntyInput(event: Event, item: any) {
+    const input = event.target as HTMLInputElement;
+    let value = parseInt(input.value, 10);
+    if (isNaN(value) || value < 0) value = 0;
+    if (value > item.quantity) value = item.quantity;
+    item.LoadedQnty = value;
+    input.value = String(value);
+  }
+
+  // ---------------- Save Logistics (using your subscription) ----------------
 
 
+  resetAddData() {
+    this.addData = {
+      LoadedOnfcl: '',
+      containerType: '',
+      remark: '',
+      items: [
+        {
+          transactionId: '',
+          selectedItem: null,
+          itemDescription: '',
+          uom: '',
+          quantity: 0,
+          LoadedQnty: 0,
+          availableItems: [],
+        },
+      ],
+    };
+  }
 
-
+  // ---------------- Edit / Delete / Payment ----------------
   saveLogisticsEdit(event: any) {
-    this.editDataForChild = event;
-    // optionally update tableData here
+    this.editData = event;
   }
 
   onLogisticsDelete(event: any) {
-    const idx = this.tableData.findIndex((row) => row.id === event.id);
+    const idx = this.tableData.findIndex(row => row.id === event.id);
     if (idx > -1) this.tableData.splice(idx, 1);
   }
 
   saveLogisticsPayment(event: any) {
-    console.log('Logistics payment saved:', event);
+    console.log('Payment saved:', event);
   }
 
-  closeLogisticsEditModal() {
-    this.showEditModal = false;
+  
+
+
+
+onAddLogistics(payload: any) {
+  console.log("Received payload from child:", payload);
+
+  if (!payload || !payload.items || payload.items.length === 0) {
+    alert("No items to save.");
+    return;
   }
+
+  this.logisticsService.addLogistics(payload).subscribe({
+    next: res => {
+      console.log('✅ Logistics saved successfully:', res);
+
+      // Add new row to table for UI
+      const newId = this.tableData.length + 1;
+      this.tableData.push({
+        id: newId,
+        loadedOnfcl: payload.LoadedOnfcl,
+        containerType: payload.containerType,
+        remark: payload.remark,
+        items: payload.items.map((i: any) => ({
+          transactionId: i.transactionId,
+          itemDescription: i.itemDescription,
+          uom: i.uom,
+          quantity: i.LoadedQnty || i.quantity
+        }))
+      });
+
+      // Reset modal data
+      this.resetAddData();
+    },
+    error: err => {
+      console.error('❌ Failed to save logistics:', err);
+      alert('Failed to save logistics.');
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

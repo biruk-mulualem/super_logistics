@@ -14,17 +14,18 @@
 
 <app-reusable-table
   [headers]="logisticsHeaders"
-  [data]="logisticsData"
+  [data]="tableData"
   [editData]="editData"
   [showEditModal]="showEditModal"
-   [intransitOptions]="intransitOptions"
-  (logisticsAdd)="onAddLogistics()"
+  [intransitOptions]="intransitOptions"
+  (logisticsAdd)="onAddLogistics($event)"
   (logisticsRemove)="onRemoveLogistics($event)"
   (logisticsEdit)="saveLogisticsEdit($event)"
   (logisticsDelete)="onLogisticsDelete($event)"
   (logisticsAddPayment)="saveLogisticsPayment($event)"
 >
 </app-reusable-table>
+
 
 
 

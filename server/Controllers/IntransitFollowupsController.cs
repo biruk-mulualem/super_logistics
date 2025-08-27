@@ -156,7 +156,10 @@ public async Task<ActionResult<IntransitFollowup>> Create([FromBody] IntransitCr
             TransactionId = transactionId,
             ItemDescription = it.ItemDescription,
             Quantity = it.Quantity,
+               RemaningQnty = it.Quantity,   // 👈 Set RemainingQnty = Quantity
+               LoadedQnty = 0,   // 👈 Set RemainingQnty = Quantity
             UnitPrice = it.UnitPrice,
+    
             Uom = it.Uom
         }).ToList();
 

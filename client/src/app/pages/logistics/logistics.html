@@ -19,10 +19,10 @@
   [showEditModal]="showEditModal"
   [intransitOptions]="intransitOptions"
   (logisticsAdd)="onAddLogistics($event)"
-  (logisticsRemove)="onRemoveLogistics($event)"
-  (logisticsEdit)="saveLogisticsEdit($event)"
+
+  (edit)="saveLogisticsEdit($event)"
   (logisticsDelete)="onLogisticsDelete($event)"
-  (logisticsAddPayment)="saveLogisticsPayment($event)"
+
 >
 </app-reusable-table>
 

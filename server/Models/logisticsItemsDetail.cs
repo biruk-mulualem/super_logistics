@@ -7,8 +7,8 @@ namespace server.Models
         public int Id { get; set; } // DB auto-increment
         public string? TransactionId { get; set; } // "SLF000001" etc.
         public string? ItemDescription { get; set; } = string.Empty;
-           [Column(TypeName = "decimal(25,3)")]
-        public decimal? Quantity { get; set; }
+         
+
         public string? Uom { get; set; } = string.Empty;
          [Column(TypeName = "decimal(25,3)")]
         public decimal? LoadedQnty { get; set; }

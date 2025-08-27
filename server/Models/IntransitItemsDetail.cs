@@ -17,11 +17,18 @@ namespace server.Models
         public decimal? LoadedQnty { get; set; }
 
          [Column(TypeName = "decimal(25,3)")]
-        public decimal? RemaningQnty { get; set; }
+        public decimal RemaningQnty { get; set; }
 
 
            [Column(TypeName = "decimal(25,3)")]
         public decimal UnitPrice { get; set; }
+
+
+
+
+
+
+        
     }
 }
 

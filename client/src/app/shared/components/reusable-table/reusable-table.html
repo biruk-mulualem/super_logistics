@@ -10,32 +10,48 @@
       transition: all 0.2s ease;
     }
 
-    .btn-detail { border-color: #264ea5; background-color: #264ea5; color: black; }
-    .btn-detail.active { background-color: #28a745; }
+    .btn-detail {
+      border-color: #264ea5;
+      background-color: #264ea5;
+      color: black;
+    }
 
-    .btn-edit { border-color: #264ea5; background-color: #264ea5; }
-    .btn-edit.active { background-color: #28a745; }
+    .btn-detail.active {
+      background-color: #28a745;
+    }
 
-    .btn-payment { border-color: #264ea5; background-color: #264ea5; }
-    .btn-payment.active { background-color: #28a745; }
+    .btn-edit {
+      border-color: #264ea5;
+      background-color: #264ea5;
+    }
 
-    .btn-delete { border-color: #264ea5; background-color: #264ea5; }
-    .btn-delete.active { background-color: #28a745; }
+    .btn-edit.active {
+      background-color: #28a745;
+    }
+
+    .btn-payment {
+      border-color: #264ea5;
+      background-color: #264ea5;
+    }
+
+    .btn-payment.active {
+      background-color: #28a745;
+    }
+
+    .btn-delete {
+      border-color: #264ea5;
+      background-color: #264ea5;
+    }
+
+    .btn-delete.active {
+      background-color: #28a745;
+    }
   </style>
 
   <div class="container">
-    <input
-      type="text"
-      [(ngModel)]="searchQuery"
-      (input)="onSearch()"
-      class="search-input"
-      placeholder="Search..." />
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
 
-    <button
-      *ngIf="buttonVisibility.add"
-      class="add-btn"
-      title="Add"
-      (click)="openAddModal()">
+    <button *ngIf="buttonVisibility.add" class="add-btn" title="Add" (click)="openAddModal()">
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -51,14 +67,17 @@
       </thead>
       <tbody>
         <tr *ngFor="let row of paginatedData">
-          <td *ngFor="let header of headers" [attr.data-label]="header.label">{{
-            row[header.key] }}</td>
+          <td *ngFor="let header of headers" [attr.data-label]="header.label">
+            {{ row[header.key] }}
+          </td>
           <td *ngIf="hasAnyActionButton()" data-label="Actions">
             <div class="action-buttons">
-              <button
-                *ngIf="buttonVisibility.detail || buttonVisibility.edit || buttonVisibility.payment || buttonVisibility.delete"
-                class="detail-btn"
-                (click)="openMainModal(row)">
+              <button *ngIf="
+                  buttonVisibility.detail ||
+                  buttonVisibility.edit ||
+                  buttonVisibility.payment ||
+                  buttonVisibility.delete
+                " class="detail-btn" (click)="openMainModal(row)">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
@@ -70,38 +89,35 @@
 
   <!-- Pagination -->
   <div class="pagination">
-    <button class="page-btn" (click)="prevPage()"
-      [disabled]="currentPage === 1">&lt;</button>
-    <button
-      class="page-btn"
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      [class.active]="currentPage === i + 1"
-      (click)="setPage(i + 1)">
+    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+      &lt;
+    </button>
+    <button class="page-btn" *ngFor="let page of [].constructor(totalPages); let i = index"
+      [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
       {{ i + 1 }}
     </button>
-    <button class="page-btn" (click)="nextPage()"
-      [disabled]="currentPage === totalPages">&gt;</button>
+    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      &gt;
+    </button>
   </div>
 </div>
 
 <!-- ================= ADD MODAL ================= -->
 <div class="modal" *ngIf="showModal.add" (click)="closeModal('add')">
   <div class="modal-content" (click)="$event.stopPropagation()">
-
     <!-- ================= ADD MODAL (Intransit) ================= -->
     <ng-container *ngIf="pageType === 'intransit'">
-
       <!-- Modal Header -->
       <div class="modal-header">
         <h3>Add Intransit Entry</h3>
       </div>
-      <hr>
+      <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons"
-        style="display: flex; gap: 10px; align-items: center;">
-        <button (click)="addItem('add')" class="btn btn-success">+ Add
-          Item</button>
+      <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center">
+        <button (click)="addRow('add')" class="btn btn-success">
+          + Add Item
+        </button>
       </div>
 
       <!-- Item Rows -->
@@ -129,12 +145,13 @@
         </div>
 
         <div class="modal-input-group remove-btn">
-          <button type="button" (click)="removeItem('add', i)"
-            [disabled]="i === 0">X</button>
+          <button type="button" (click)="removeRow('add', i)" [disabled]="i === 0">
+            X
+          </button>
         </div>
       </div>
 
-      <hr>
+      <hr />
 
       <!-- Main Form Fields -->
       <div class="modal-form">
@@ -151,8 +168,9 @@
         <div class="modal-input-group">
           <label>Origin</label>
           <select [(ngModel)]="addData.origin" required>
-            <option *ngFor="let o of origins" [value]="o">{{ o | titlecase
-              }}</option>
+            <option *ngFor="let o of origins" [value]="o">
+              {{ o | titlecase }}
+            </option>
           </select>
         </div>
 
@@ -172,44 +190,39 @@
         </div>
       </div>
 
-      <hr>
+      <hr />
 
       <!-- Modal Actions -->
-      <div class="modal-buttons"
-        style="margin-top: 10px; display: flex; gap: 10px;">
-        <button (click)="saveAddClick()" class="btn btn-primary">Save</button>
-        <button (click)="closeModal('add')"
-          class="btn btn-secondary">Cancel</button>
+      <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
+        <button (click)="AddIntransitData()" class="btn btn-primary">Save</button>
+        <button (click)="closeModal('add')" class="btn btn-secondary">
+          Cancel
+        </button>
       </div>
-
     </ng-container>
     <!-- ================= ADD MODAL (Logistics) ================= -->
-    <!-- Logistics Add Modal (shown when pageType === 'logistics') -->
-    <ng-container *ngIf="pageType === 'logistics'">
 
+    <ng-container *ngIf="pageType === 'logistics'">
       <!-- Modal Header -->
       <div class="modal-header">
         <h3>Add Logistics Entry</h3>
       </div>
-      <hr>
+      <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons"
-        style="display: flex; gap: 10px; align-items: center;">
-        <button (click)="addLogistics()" class="btn btn-success">+ Add
-          Item</button>
+      <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center">
+        <button (click)="addRow('logistics')" class="btn btn-success">
+          + Add Item
+        </button>
       </div>
 
       <!-- Item Rows -->
       <div *ngFor="let item of addData.items; let i = index" class="item-row">
-
         <!-- Transaction ID Selector -->
         <div class="modal-input-group">
           <label>Transaction ID</label>
-          <select [(ngModel)]="item.transactionId"
-            (ngModelChange)="onTransactionChange(item)">
-            <option *ngFor="let trx of intransitOptions"
-              [value]="trx.transactionId">
+          <select [(ngModel)]="item.transactionId" (ngModelChange)="onTransactionChange(item)">
+            <option *ngFor="let trx of intransitOptions" [value]="trx.transactionId">
               {{ trx.transactionId }}
             </option>
           </select>
@@ -218,8 +231,7 @@
         <!-- Item Description Selector -->
         <div class="modal-input-group">
           <label>Item Description</label>
-          <select [(ngModel)]="item.selectedItem"
-            (ngModelChange)="onItemChange(item)">
+          <select [(ngModel)]="item.selectedItem" (ngModelChange)="onItemChange(item)">
             <option *ngFor="let itm of item.availableItems" [ngValue]="itm">
               {{ itm.itemDescription }}
             </option>
@@ -234,29 +246,22 @@
 
         <!-- Editable Loaded Quantity -->
         <div class="modal-input-group">
-          <label
-            style="display: flex; justify-content: space-between; width: 100%;">
+          <label style="display: flex; justify-content: space-between; width: 100%">
             <span> Qnty</span>
-            <span style="color: rgb(217, 24, 24); font-weight: normal;">(Available: {{
-              item.quantity || 0 }})</span> 
+            <span style="color: rgb(217, 24, 24); font-weight: normal">(Available:
+              {{ item.quantity || 0 }})</span>
           </label>
 
-          <input
-            type="number"
-            [value]="item.LoadedQnty"
-            (input)="onLoadedQntyInput($event, item)"
-            min="0" />
-
+          <input type="number" [value]="item.LoadedQnty" (input)="onLoadedQntyInput($event, item)" min="0" />
         </div>
 
         <!-- Remove Button -->
         <div class="modal-input-group remove-btn">
-          <button type="button" (click)="removeLogistics(i)">X</button>
+          <button type="button" (click)="removeRow('logistics', i)">X</button>
         </div>
-
       </div>
 
-      <hr>
+      <hr />
 
       <!-- Main Logistics Form -->
       <div class="modal-form">
@@ -268,10 +273,8 @@
         <div class="modal-input-group">
           <label>Cont-Type</label>
           <select [(ngModel)]="addData.containerType" required>
-            <option value="20ft">20ft</option>
-            <option value="40ft">40ft</option>
-            <option value="40ft_HC">40ft HC</option>
-            <option value="45ft_HC">45ft HC</option>
+            <option *ngFor="let c of containerTypes" [value]="c">{{ c
+              }}</option>
           </select>
         </div>
 
@@ -280,48 +283,47 @@
           <textarea [(ngModel)]="addData.remark"></textarea>
         </div>
       </div>
-      <hr>
+      <hr />
       <!-- Modal Actions -->
-      <div class="modal-buttons"
-        style="margin-top: 10px; display: flex; gap: 10px;">
-           <button (click)="saveAddLogsticsClick()" class="btn btn-primary">Save</button>
-        <button (click)="closeModal('add')"
-          class="btn btn-secondary">Cancel</button>
+      <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
+        <button (click)="saveAddLogsticsData()" class="btn btn-primary">
+          Save
+        </button>
+        <button (click)="closeModal('add')" class="btn btn-secondary">
+          Cancel
+        </button>
       </div>
-
     </ng-container>
-
   </div>
 </div>
 <!-- ================= MAIN MODAL ================= -->
 <div class="modal" *ngIf="showModal.main" (click)="closeModal('main')">
   <div class="modal-content" (click)="$event.stopPropagation()">
-
     <!-- Modal Actions -->
     <div class="modal-actions">
       <h3 class="main-modal-title">
-        {{ pageType === 'intransit' ? 'Intransit' : 'Logistics' }} Main Modal
+        {{ pageType === "intransit" ? "Intransit" : "Logistics" }} Main Modal
       </h3>
 
-      <button class="btn-detail"
-        *ngIf="buttonVisibility.detail"
-        [class.active]="activeTab === 'detail'"
-        (click)="setActiveTab('detail')">Detail</button>
+      <button class="btn-detail" *ngIf="buttonVisibility.detail" [class.active]="activeTab === 'detail'"
+        (click)="setActiveTab('detail')">
+        Detail
+      </button>
 
-      <button class="btn-edit"
-        *ngIf="buttonVisibility.edit"
-        [class.active]="activeTab === 'edit'"
-        (click)="setActiveTab('edit')">Edit</button>
+      <button class="btn-edit" *ngIf="buttonVisibility.edit" [class.active]="activeTab === 'edit'"
+        (click)="setActiveTab('edit')">
+        Edit
+      </button>
 
-      <button class="btn-payment"
-        *ngIf="buttonVisibility.payment"
-        [class.active]="activeTab === 'payment'"
-        (click)="setActiveTab('payment')">Payment</button>
+      <button class="btn-payment" *ngIf="buttonVisibility.payment" [class.active]="activeTab === 'payment'"
+        (click)="setActiveTab('payment')">
+        Payment
+      </button>
 
-      <button class="btn-delete"
-        *ngIf="buttonVisibility.delete"
-        [class.active]="activeTab === 'delete'"
-        (click)="setActiveTab('delete')">Delete</button>
+      <button class="btn-delete" *ngIf="buttonVisibility.delete" [class.active]="activeTab === 'delete'"
+        (click)="setActiveTab('delete')">
+        Delete
+      </button>
     </div>
     <hr />
     <!-- Modal Body -->
@@ -332,14 +334,22 @@
           <span>Product Detail</span>
           <div *ngIf="selectedRow?.items?.length; else noItems">
             <div *ngFor="let item of selectedRow.items" class="detail-row">
-              <div class="detail-item"><span class="label">Item:</span> <span
-                  class="value">{{item.itemDescription}}</span></div>
-              <div class="detail-item"><span class="label">Quantity:</span>
-                <span class="value">{{item.quantity}}</span></div>
-              <div class="detail-item"><span class="label">Uom:</span> <span
-                  class="value">{{item.uom}}</span></div>
-              <div class="detail-item"><span class="label">U.Price:</span> <span
-                  class="value">{{item.unitPrice}}</span></div>
+              <div class="detail-item">
+                <span class="label">Item:</span>
+                <span class="value">{{ item.itemDescription }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Quantity:</span>
+                <span class="value">{{ item.quantity }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Uom:</span>
+                <span class="value">{{ item.uom }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">U.Price:</span>
+                <span class="value">{{ item.unitPrice }}</span>
+              </div>
             </div>
           </div>
           <ng-template #noItems>
@@ -348,36 +358,52 @@
 
           <span>Common Data</span>
           <div class="detail-row">
-            <div class="detail-item"><span class="label">GRN:</span>
-              <span class="value">{{selectedRow?.grn}}</span></div>
-            <div class="detail-item"><span class="label">Purchase
-                Company:</span> <span
-                class="value">{{selectedRow?.purchaseCompany}}</span></div>
+            <div class="detail-item">
+              <span class="label">GRN:</span>
+              <span class="value">{{ selectedRow?.grn }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Purchase Company:</span>
+              <span class="value">{{ selectedRow?.purchaseCompany }}</span>
+            </div>
           </div>
           <div class="detail-row">
-            <div class="detail-item"><span class="label">Origin:</span> <span
-                class="value">{{selectedRow?.origin}}</span></div>
-            <div class="detail-item"><span class="label">Contact
-                Person:</span> <span
-                class="value">{{selectedRow?.contactPerson}}</span></div>
+            <div class="detail-item">
+              <span class="label">Origin:</span>
+              <span class="value">{{ selectedRow?.origin }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact Person:</span>
+              <span class="value">{{ selectedRow?.contactPerson }}</span>
+            </div>
           </div>
           <div class="detail-row">
-            <div class="detail-item"><span class="label">Remark:</span> <span
-                class="value">{{selectedRow?.remark}}</span></div>
+            <div class="detail-item">
+              <span class="label">Remark:</span>
+              <span class="value">{{ selectedRow?.remark }}</span>
+            </div>
           </div>
 
-          <hr>
+          <hr />
           <span>Payment History</span>
           <div *ngIf="paymentTerms?.length; else noPayments">
             <div *ngFor="let payment of paymentTerms" class="detail-row">
-              <div class="detail-item"><span class="label">Date:</span> <span
-                  class="value">{{payment.paidDate}}</span></div>
-              <div class="detail-item"><span class="label">Amount:</span> <span
-                  class="value">{{payment.amountPaid}}</span></div>
-              <div class="detail-item"><span class="label">Paid
-                  By:</span> <span class="value">{{payment.paidBy}}</span></div>
-              <div class="detail-item"><span class="label">Account:</span> <span
-                  class="value">{{payment.accountPaidFrom}}</span></div>
+              <div class="detail-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ payment.paidDate }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Amount:</span>
+                <span class="value">{{ payment.amountPaid }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Paid By:</span>
+                <span class="value">{{ payment.paidBy }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Account:</span>
+                <span class="value">{{ payment.accountPaidFrom }}</span>
+              </div>
             </div>
           </div>
           <ng-template #noPayments>
@@ -385,84 +411,108 @@
           </ng-template>
 
           <div class="modal-buttons">
-            <button (click)="closeModal()"
-              class="btn btn-secondary">Close</button>
+            <button (click)="closeModal()" class="btn btn-secondary">
+              Close
+            </button>
           </div>
         </ng-container>
-        <ng-container *ngIf="pageType === 'logistics'">
-               <span>Product Detail</span>
-                      <div >
-            <div  class="detail-row">
-              <div class="detail-item"><span class="label">itemDescription:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">uom:</span>
-                <span class="value"></span></div>
-              <div class="detail-item"><span class="label"> Loaded quantity:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">remaning quantity:</span> <span
-                  class="value"></span></div>
-            </div>
-          </div>
-            <span>Common Data</span>
-          <div >
-            <div  class="detail-row">
-              <div class="detail-item"><span class="label">etadjb:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">loadingDate:</span>
-                <span class="value"></span></div>
-              <div class="detail-item"><span class="label">djbArrived:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">docSentDjb:</span> <span
-                  class="value"></span></div>
+        <ng-container *ngIf="pageType === 'logistics' && selectedRow">
+          <!-- Product Detail -->
+          <span>Product Detail</span>
+          <div *ngFor="let item of selectedRow.items">
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="label">Item Description:</span>
+                <span class="value">{{ item.itemDescription }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">UOM:</span>
+                <span class="value">{{ item.uom }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Loaded Quantity:</span>
+                <span class="value">{{ item.loadedQnty }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Remaining Quantity:</span>
+                <span class="value">{{ item.remaningQnty }}</span>
+              </div>
             </div>
           </div>
 
-         
-
-
-
-            
+          <!-- Common Data -->
+          <span>Common Data</span>
           <div class="detail-row">
-            <div class="detail-item"><span class="label">billCollected:</span>
-              <span class="value"></span></div>
-            <div class="detail-item"><span class="label">taxPaid
-                :</span> <span
-                class="value"></span></div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-item"><span class="label">djbDeparted:</span> <span
-                class="value"></span></div>
-            <div class="detail-item"><span class="label">akkArrived
-                Person:</span> <span
-                class="value"></span></div>
-          </div>
-          
-
-          <hr>
-          <!-- <span>Payment History</span> -->
-          <div >
-            <div  class="detail-row">
-              <div class="detail-item"><span class="label">empityContainersLeftUnreturned:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">origin:</span> <span
-                  class="value"></span></div>
-              <div class="detail-item"><span class="label">remark
-                  By:</span> <span class="value"></span></div>
-             <div class="detail-item"><span class="label">sdtArrived:</span> <span
-                class="value"></span></div>
+            <div class="detail-item">
+              <span class="label">ETADJB:</span>
+              <span class="value">{{ selectedRow.etadjb }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Loading Date:</span>
+              <span class="value">{{ selectedRow.loadingDate }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">DJB Arrived:</span>
+              <span class="value">{{ selectedRow.djbArrived }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Doc Sent DJB:</span>
+              <span class="value">{{ selectedRow.docSentDjb }}</span>
             </div>
           </div>
 
           <div class="detail-row">
-            
-                 <div class="detail-item"><span class="label">status:</span> <span
-                  class="value"></span></div>
+            <div class="detail-item">
+              <span class="label">Bill Collected:</span>
+              <span class="value">{{ selectedRow.billCollected }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Tax Paid:</span>
+              <span class="value">{{ selectedRow.taxPaid }}</span>
+            </div>
           </div>
-        
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="label">DJB Departed:</span>
+              <span class="value">{{ selectedRow.djbDeparted }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">AKK Arrived:</span>
+              <span class="value">{{ selectedRow.akkArrived }}</span>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="label">Unreturned Containers:</span>
+              <span class="value">{{
+                selectedRow.empityContainersLeftUnreturned
+                }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Origin:</span>
+              <span class="value">{{ selectedRow.origin }}</span>
+            </div>
+
+            <div class="detail-item">
+              <span class="label">SDT Arrived:</span>
+              <span class="value">{{ selectedRow.sdtArrived }}</span>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-item">
+              <span class="label">Remark:</span>
+              <span class="value">{{ selectedRow.remark }}</span>
+            </div>
+          </div>
 
           <div class="modal-buttons">
-            <button (click)="closeModal()"
-              class="btn btn-secondary">Close</button>
+            <button (click)="closeModal()" class="btn btn-secondary">
+              Close
+            </button>
           </div>
         </ng-container>
       </ng-container>
@@ -470,13 +520,11 @@
       <ng-container *ngIf="activeTab === 'edit' && buttonVisibility.edit">
         <ng-container *ngIf="pageType === 'intransit'">
           <span>Product Detail</span>
-          <div *ngFor="let item of editData.items; let i = index"
-            class="detail-row">
+          <div *ngFor="let item of editData.items; let i = index" class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Item:</label>
-                <input type="text" [(ngModel)]="item.itemDescription"
-                  required />
+                <input type="text" [(ngModel)]="item.itemDescription" required />
               </div>
             </div>
             <div class="modal-form">
@@ -488,8 +536,7 @@
             <div class="modal-input-group">
               <label>UOM</label>
               <select [(ngModel)]="item.uom" required>
-                <option *ngFor="let u of uoms" [value]="u">{{ u
-                  }}</option>
+                <option *ngFor="let u of uoms" [value]="u">{{ u }}</option>
               </select>
             </div>
 
@@ -501,7 +548,7 @@
             </div>
           </div>
 
-          <hr>
+          <hr />
           <span>Common Data</span>
           <div class="modal-form">
             <div class="modal-input-group">
@@ -510,19 +557,18 @@
             </div>
             <div class="modal-input-group">
               <label>Purchase Order:</label>
-              <input type="text" [(ngModel)]="editData.purchaseOrder"
-                required />
+              <input type="text" [(ngModel)]="editData.purchaseOrder" required />
             </div>
             <div class="modal-input-group">
               <label>Purchase Company:</label>
-              <input type="text" [(ngModel)]="editData.purchaseCompany"
-                required />
+              <input type="text" [(ngModel)]="editData.purchaseCompany" required />
             </div>
             <div class="modal-input-group">
               <label>Origin:</label>
               <select [(ngModel)]="editData.origin" required>
-                <option *ngFor="let o of origins" [value]="o">{{
-                  o | titlecase }}</option>
+                <option *ngFor="let o of origins" [value]="o">
+                  {{ o | titlecase }}
+                </option>
               </select>
             </div>
 
@@ -532,8 +578,7 @@
             </div>
             <div class="modal-input-group">
               <label>Contact Person:</label>
-              <input type="text" [(ngModel)]="editData.contactPerson"
-                required />
+              <input type="text" [(ngModel)]="editData.contactPerson" required />
             </div>
             <div class="modal-input-group full-width">
               <label>Remark:</label>
@@ -541,15 +586,13 @@
             </div>
           </div>
 
-          <hr>
+          <hr />
           <span>Payment Detail</span>
-          <div *ngFor="let payment of editData.payments; let i = index"
-            class="detail-row">
+          <div *ngFor="let payment of editData.payments; let i = index" class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Amount Paid:</label>
-                <input type="number" [(ngModel)]="payment.amountPaid"
-                  required />
+                <input type="number" [(ngModel)]="payment.amountPaid" required />
               </div>
             </div>
             <div class="modal-form">
@@ -561,8 +604,7 @@
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Account Paid From:</label>
-                <input type="text" [(ngModel)]="payment.accountPaidFrom"
-                  required />
+                <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
               </div>
             </div>
             <div class="modal-form">
@@ -571,39 +613,190 @@
                 <input type="date" [(ngModel)]="payment.paidDate" required />
               </div>
             </div>
-
           </div>
 
           <div class="modal-buttons">
-            <button (click)="saveEditClick();  closeModal()"
-              class="btn btn-primary">Save Changes</button>
-            <button (click)="closeModal()"
-              class="btn btn-secondary">Cancel</button>
+            <button (click)="saveEditedIntransitData()" class="btn btn-primary">
+              Save Changes
+            </button>
+
+            <button (click)="closeModal()" class="btn btn-secondary">
+              Cancel
+            </button>
           </div>
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
-          <span>Edit Logistics Data</span>
+          <span>Product Detail</span>
+          <div *ngFor="let item of editData.items; let i = index" class="detail-row">
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Item Description:</label>
+                <input type="text" [(ngModel)]="item.itemDescription" required />
+              </div>
+            </div>
+
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>UOM:</label>
+                <select [(ngModel)]="item.uom" required>
+                  <option *ngFor="let u of uoms" [value]="u">{{ u }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Loaded Quantity:</label>
+                <input type="number" [(ngModel)]="item.loadedQnty" required />
+              </div>
+            </div>
+
+            <div class="modal-form">
+              <div class="modal-input-group">
+                <label>Remaining Quantity:</label>
+                <input type="number" [(ngModel)]="item.remaningQnty" required />
+              </div>
+            </div>
+          </div>
+
+          <hr />
+          <span>Common Data</span>
+          <div class="modal-form">
+            <div class="modal-input-group">
+              <label>ETADJB:</label>
+              <input type="date" [(ngModel)]="editData.etadjb" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Loading Date:</label>
+              <input type="date" [(ngModel)]="editData.loadingDate" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>DJB Arrived:</label>
+              <input type="date" [(ngModel)]="editData.djbArrived" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Doc Sent DJB:</label>
+              <input type="date" [(ngModel)]="editData.docSentDjb" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>No-Cont:</label>
+              <input type="text" [(ngModel)]="editData.loadedOnfcl" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Cont-Type</label>
+              <select [(ngModel)]="editData.containerType" required>
+                <option *ngFor="let c of containerTypes" [value]="c">{{ c
+                  }}</option>
+              </select>
+            </div>
+
+            <div class="modal-input-group">
+              <label>Bill-No:</label>
+              <input type="text" [(ngModel)]="editData.billNo" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Track-Waybill:</label>
+              <input type="text" [(ngModel)]="editData.trackWaybill" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Doc-Owner:</label>
+              <input type="text" [(ngModel)]="editData.docOwner" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Shipper:</label>
+              <input type="text" [(ngModel)]="editData.shipper" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Transitor:</label>
+              <input type="text" [(ngModel)]="editData.transitor" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>SDT Arrived:</label>
+              <input type="date" [(ngModel)]="editData.sdtArrived" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Bill Collected:</label>
+              <input type="number" [(ngModel)]="editData.billCollected" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Tax Paid:</label>
+              <input type="date" [(ngModel)]="editData.taxPaid" />
+
+            </div>
+
+            <div class="modal-input-group">
+              <label>AKK Arrived:</label>
+              <input type="date" [(ngModel)]="editData.akkArrived" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>DJB Departed:</label>
+              <input type="date" [(ngModel)]="editData.djbDeparted" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Unreturned Containers:</label>
+              <input type="number" [(ngModel)]="editData.empityContainersLeftUnreturned" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Origin:</label>
+              <select [(ngModel)]="editData.origin">
+                <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
+              </select>
+            </div>
+
+            <div class="modal-input-group full-width">
+              <label>Remark:</label>
+              <textarea [(ngModel)]="editData.remark"></textarea>
+            </div>
+          </div>
+
+          <hr />
+          <div class="modal-buttons">
+            <button (click)="saveEditedLogisticsData()" class="btn btn-primary">
+              Save Changes
+            </button>
+
+            <button (click)="closeModal()" class="btn btn-secondary">
+              Cancel
+            </button>
+          </div>
         </ng-container>
+
       </ng-container>
 
       <!-- PAYMENT TAB -->
       <ng-container *ngIf="activeTab === 'payment' && buttonVisibility.payment">
-
         <ng-container *ngIf="pageType === 'intransit'">
           <div class="modal-header">
-            <h3>Add Payment for {{ selectedRow?.transactionId }}
-            </h3>
-
+            <h3>Add Payment for {{ selectedRow?.transactionId }}</h3>
           </div>
 
-          <div class="modal-buttons" style="margin-bottom: 10px;">
-            <button class="btn btn-success" (click)="addPaymentRow()">+ Add
-              Payment</button>
+          <div class="modal-buttons" style="margin-bottom: 10px">
+            <button class="btn btn-success" (click)="addRow('payment')">
+              + Add Payment
+            </button>
           </div>
 
-          <div *ngFor="let payment of newPayments; let j = index"
-            class="payment-row"
-            style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+          <div *ngFor="let payment of newPayments; let j = index" class="payment-row" style="
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              margin-bottom: 10px;
+            ">
             <div class="modal-input-group" style="flex: 1">
               <label>Amount Paid:</label>
               <input type="number" [(ngModel)]="payment.amountPaid" required />
@@ -614,25 +807,27 @@
             </div>
             <div class="modal-input-group" style="flex: 1">
               <label>Account Paid From:</label>
-              <input type="text" [(ngModel)]="payment.accountPaidFrom"
-                required />
+              <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
             </div>
             <div class="modal-input-group" style="flex: 1">
               <label>Payment Date:</label>
               <input type="date" [(ngModel)]="payment.paidDate" required />
             </div>
             <div class="modal-buttons">
-              <button class="btn btn-danger" (click)="removePaymentRow(j)"
-                [disabled]="j===0">X</button>
+              <button class="btn btn-danger" (click)="removeRow('payment', j)" [disabled]="j === 0">
+                X
+              </button>
             </div>
+
           </div>
 
-          <div class="modal-buttons"
-            style="margin-top:10px; display:flex; gap:10px;">
-            <button class="btn btn-primary"
-              (click)="submitPayments(); closeModal()">Save</button>
-            <button class="btn btn-secondary"
-              (click)="closeModal()">Cancel</button>
+          <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
+            <button class="btn btn-primary" (click)="submitPayments(); closeModal()">
+              Save
+            </button>
+            <button class="btn btn-secondary" (click)="closeModal()">
+              Cancel
+            </button>
           </div>
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
@@ -643,24 +838,31 @@
       <!-- DELETE TAB -->
       <ng-container *ngIf="activeTab === 'delete' && buttonVisibility.delete">
         <ng-container *ngIf="pageType === 'intransit'">
-          <p>Are you sure you want to delete transaction:
-            {{selectedRow?.transactionId}}?
+          <p>
+            Are you sure you want to delete transaction:
+            {{ selectedRow?.transactionId }}?
           </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger"
-              (click)="confirmDeleteClick(); closeModal()">Delete</button>
-            <button class="btn btn-secondary"
-              (click)="closeModal()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDeleteClick(); closeModal()">
+              Delete
+            </button>
+            <button class="btn btn-secondary" (click)="closeModal()">
+              Cancel
+            </button>
           </div>
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
-          <p>Are you sure you want to delete this Logistics transaction: {{
-            selectedRow?.transactionId }}?</p>
+          <p>
+            Are you sure you want to delete this Logistics transaction:
+            {{ selectedRow?.transactionId }}?
+          </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger"
-              (click)="confirmDeleteClick(); closeModal('main')">Delete</button>
-            <button class="btn btn-secondary"
-              (click)="closeModal('main')">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDeleteClick(); closeModal('main')">
+              Delete
+            </button>
+            <button class="btn btn-secondary" (click)="closeModal('main')">
+              Cancel
+            </button>
           </div>
         </ng-container>
       </ng-container>

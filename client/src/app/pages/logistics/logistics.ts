@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class Logistics implements OnInit {
   logisticsHeaders = [
-      //  { label: 'Id', key: 'id' },
+    { label: 'Id', key: 'id' },
      { label: 'Ref NO.', key: 'transactionId' },
     { label: 'No-Cont', key: 'loadedOnfcl' },
     { label: 'Cont-Type', key: 'containerType' },
@@ -91,12 +91,12 @@ export class Logistics implements OnInit {
 
 
 
-  onRemoveLogistics(index: number) {
-    if (this.addData.items?.length > index) {
-      this.addData.items.splice(index, 1);
-      this.cdr.detectChanges();
-    }
-  }
+  // onRemoveLogistics(index: number) {
+  //   if (this.addData.items?.length > index) {
+  //     this.addData.items.splice(index, 1);
+  //     this.cdr.detectChanges();
+  //   }
+  // }
 
   onLoadedQntyInput(event: Event, item: any) {
     const input = event.target as HTMLInputElement;
@@ -129,20 +129,29 @@ export class Logistics implements OnInit {
     };
   }
 
-  // ---------------- Edit / Delete / Payment ----------------
-  saveLogisticsEdit(event: any) {
-    this.editData = event;
-  }
+
+
+saveLogisticsEdit(updatedRow: any) {
+  const parentId = updatedRow.id; // main logistics row ID
+  this.logisticsService.updateLogisticsDetailData(parentId, updatedRow).subscribe({
+    next: res => {
+      console.log('Logistics updated successfully', res);
+      // update local table
+      const idx = this.tableData.findIndex(r => r.id === parentId);
+      if (idx > -1) this.tableData[idx] = updatedRow;
+    },
+    error: err => console.error('Failed to update logistics:', err)
+  });
+}
+
+
 
   onLogisticsDelete(event: any) {
     const idx = this.tableData.findIndex(row => row.id === event.id);
     if (idx > -1) this.tableData.splice(idx, 1);
   }
 
-  saveLogisticsPayment(event: any) {
-    console.log('Payment saved:', event);
-  }
-
+ 
   
 
 

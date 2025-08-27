@@ -20,12 +20,27 @@ namespace server.Models
          public string IntransitId { get; set; } = string.Empty; // instead of TransactionId
         public string TransactionId { get; set; } = string.Empty;
         public string ItemDescription { get; set; } = string.Empty;
-        public decimal Quantity { get; set; }
+      
+       public decimal? Quantity { get; set; }
         public decimal? LoadedQnty { get; set; }
         public decimal? RemaningQnty { get; set; }
         public decimal? TotalQnty { get; set; }
         public string? Uom { get; set; } = string.Empty;
         public decimal? TotalQuantity { get; set; }
+    public string? BillNo { get; set; }
+    public string? truckWayBill { get; set; }
+    public string? Transitor { get; set; }
+    public DateOnly? SdtArrived { get; set; }
+    public DateOnly? AkkArrived { get; set; }
+    public DateOnly? DjbDeparted { get; set; }
+    public DateOnly? DjbArrived { get; set; }
+    public int? EmpityContainersLeftUnreturned { get; set; }
+    public DateOnly? BillCollected { get; set; }
+    public DateOnly? TaxPaid { get; set; }
+    public DateOnly? DocSentDjb { get; set; }
+    public DateOnly? DocCollected { get; set; }
+    public string? DocOwner { get; set; }
+    public DateOnly? LoadingDate { get; set; }
 
     }
 }

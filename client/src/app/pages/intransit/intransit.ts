@@ -17,7 +17,7 @@ export class Intransit implements OnInit {
 
   // ---------------- Headers ----------------
   tableHeaders = [
-    // { label: 'Id', key: 'id' },
+    { label: 'Id', key: 'id' },
     { label: 'Ref NO.', key: 'transactionId' },
     { label: 'Purchase Date', key: 'purchaseDate' },
     { label: 'Purchase Order', key: 'purchaseOrder' },
@@ -50,6 +50,8 @@ export class Intransit implements OnInit {
   showAddModal = false;
   showPaymentModal = false;
   editDataForChild: any = {};
+  cdr: any;
+  selectedRow: any;
 
   constructor(
     private intransitService: IntransitFollowupService,
@@ -172,6 +174,16 @@ export class Intransit implements OnInit {
       error: (err) => console.error('Failed to delete:', err)
     });
   }
+
+
+
+
+
+
+
+
+
+
 
 
 

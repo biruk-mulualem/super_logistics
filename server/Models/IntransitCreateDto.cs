@@ -12,7 +12,7 @@ namespace server.Models
     public string ContactPerson { get; set; } = string.Empty;
     public string Origin { get; set; } = string.Empty;
     public string Remark { get; set; } = string.Empty;
-        public string Grn { get; set; } = string.Empty;
+        public string? Grn { get; set; } = string.Empty;
 
     public List<IntransitItemsDetailDto> Items { get; set; } = new();
 }
@@ -25,7 +25,7 @@ public class IntransitItemsDetailDto
     public string Uom { get; set; } = string.Empty;
          // ✅ Add these two for frontend → API
         public decimal? LoadedQnty { get; set; } = 0;
-        public decimal? RemainingQnty { get; set; }
+        public decimal RemaningQnty { get; set; }
    
 }
     }

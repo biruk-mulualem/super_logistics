@@ -18,7 +18,6 @@ import { filter } from 'rxjs/operators';
 import { IntransitFollowupService } from '../../../services/intransit-followup.service';
 import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
 
-
 @Component({
   imports: [CommonModule, FormsModule],
   selector: 'app-reusable-table',
@@ -29,31 +28,32 @@ export class ReusableTable implements OnInit, OnChanges {
   // ============================================================
   // ---------------------- Inputs / Outputs --------------------
   // ============================================================
-  @Input() headers: { label: string; key: string }[] = [];
-  @Input() data: any[] = [];
-  @Input() detailRow: any;
-  @Input() paymentTerms: any[] = [];
-  @Input() editData: any = {};
-  @Input() showEditModal: boolean = false;
-  @Input() intransitOptions: any[] = []; // all TransactionIds + Items
 
-  @Output() add = new EventEmitter<any>();
-  @Output() edit = new EventEmitter<any>();
-  @Output() delete = new EventEmitter<any>();
-  @Output() addPayment = new EventEmitter<any>();
+  @Input() headers: { label: string; key: string }[] = []; // Table headers
+  @Input() data: any[] = []; // Main data source
+  @Input() detailRow: any; // Row for detail view
+  @Input() paymentTerms: any[] = []; // Payments for selected row
+  @Input() editData: any = {}; // Data for edit modal
+  @Input() showEditModal: boolean = false; // Control edit modal visibility
+  @Input() intransitOptions: any[] = []; // Options for transactions/items
 
-  // Intransit & Logistics shared events
+  @Output() add = new EventEmitter<any>(); // Emit new intransit data
+  @Output() edit = new EventEmitter<any>(); // Emit edited data
+  @Output() delete = new EventEmitter<any>(); // Emit delete action
+  @Output() addPayment = new EventEmitter<any>(); // Emit payment additions
+
+  // Shared events between intransit & logistics
   @Output() transactionChange = new EventEmitter<any>();
   @Output() itemChange = new EventEmitter<any>();
   @Output() addItemEvent = new EventEmitter<void>();
   @Output() removeItemEvent = new EventEmitter<number>();
   @Output() intransitOptionsChange = new EventEmitter<any[]>();
 
-  // Logistics-specific
+  // Logistics-specific events
   @Output() logisticsAdd = new EventEmitter<any>();
   @Output() logisticsRemove = new EventEmitter<any>();
 
- 
+  // Emit updated intransit options
   updateIntransitOptions(newOptions: any[]) {
     this.intransitOptionsChange.emit(newOptions);
   }
@@ -75,29 +75,33 @@ export class ReusableTable implements OnInit, OnChanges {
     main: false,
   };
 
-  selectedRow: any = null;
-  newPayments: any[] = [];
-  addData: any = {};
-  deleteRowData: any = null;
-  activeTab: string = 'detail';
+  selectedRow: any = null; // Currently selected row
+  newPayments: any[] = []; // Temporary payments in modal
+  addData: any = {}; // Data for add modal
+  deleteRowData: any = null; // Row selected for delete
+  activeTab: string = 'detail'; // Active tab in main modal
 
   uoms: string[] = [
-    'mg', 'g', 'kg', 'ton', 'lb', 'oz', 'ml', 'l', 'pcs', 'box', 'roll', 'pack',
-    'dozen', 'set', 'bottle', 'can', 'bag', 'sheet', 'meter', 'cm', 'inch',
-    'yard', 'sqft', 'sqm', 'gallon', 'quart', 'pint', 'fluid_oz', 'tube',
-    'carton', 'crate', 'pail', 'jar', 'packaging_unit', 'bundle', 'set', 'pair',
-    'reel', 'sheet_metal', 'roll_fabric', 'drum'
+    'mg', 'g', 'kg', 'ton', 'lb', 'oz', 'ml', 'l', 'pcs', 'box',
+    'roll', 'pack', 'dozen', 'set', 'bottle', 'can', 'bag', 'sheet',
+    'meter', 'cm', 'inch', 'yard', 'sqft', 'sqm', 'gallon', 'quart',
+    'pint', 'fluid_oz', 'tube', 'carton', 'crate', 'pail', 'jar',
+    'packaging_unit', 'bundle', 'set', 'pair', 'reel', 'sheet_metal',
+    'roll_fabric', 'drum',
   ];
 
   origins: string[] = [
-    'china', 'india', 'usa', 'germany', 'japan', 'south_korea', 'france', 'uk',
-    'italy', 'canada', 'mexico', 'brazil', 'russia', 'turkey', 'australia',
-    'singapore', 'netherlands', 'belgium', 'switzerland', 'uae', 'thailand',
-    'vietnam', 'malaysia', 'indonesia'
+    'china', 'india', 'usa', 'germany', 'japan', 'south_korea',
+    'france', 'uk', 'italy', 'canada', 'mexico', 'brazil', 'russia',
+    'turkey', 'australia', 'singapore', 'netherlands', 'belgium',
+    'switzerland', 'uae', 'thailand', 'vietnam', 'malaysia', 'indonesia',
   ];
+
+  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open Top', 'Flat Rack'];
 
   isBrowser: boolean;
   pageType: string | null = null;
+
   buttonVisibility = {
     add: true,
     edit: true,
@@ -125,32 +129,30 @@ export class ReusableTable implements OnInit, OnChanges {
     public router: Router,
     public intransitService: IntransitFollowupService,
     private logisticsService: LogisticsFollowupService,
-
     private cdr: ChangeDetectorRef
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
-    // Update page type & buttons on route change
+    // Listen for route changes to update page type & button visibility
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => {
-        this.updatePageTypeAndButtons();
-      });
+      .subscribe(() => this.updatePageTypeAndButtons());
   }
 
   // ============================================================
   // ---------------------- Lifecycle Hooks ---------------------
   // ============================================================
-ngOnInit(): void {
+  ngOnInit(): void {
     this.filteredData = Array.isArray(this.data) ? [...this.data] : [];
     if (this.isBrowser) this.setRowsPerPage(window.innerWidth);
     this.applyFilterAndPagination();
     this.updatePageTypeAndButtons();
-}
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.applyFilterAndPagination();
 
+    // Automatically open detail modal if detailRow changes
     if (changes['detailRow'] && this.detailRow) {
       this.selectedRow = this.detailRow;
       this.openModal('detail', this.detailRow);
@@ -180,30 +182,33 @@ ngOnInit(): void {
     return Math.ceil(this.filteredData.length / this.rowsPerPage);
   }
 
-  setPage(page: number) { this.currentPage = page; }
-  prevPage() { if (this.currentPage > 1) this.currentPage--; }
-  nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
+  setPage(page: number) {
+    this.currentPage = page;
+  }
+  prevPage() {
+    if (this.currentPage > 1) this.currentPage--;
+  }
+  nextPage() {
+    if (this.currentPage < this.totalPages) this.currentPage++;
+  }
 
-onSearch(): void {
-  const query = this.searchQuery.toLowerCase();
+  // ---------------- Search & Filter ----------------
+  onSearch(): void {
+    const query = this.searchQuery.toLowerCase();
 
-  const matchesSearch = (value: any): boolean => {
-    if (value === null || value === undefined) return false;
-    if (typeof value === 'string' || typeof value === 'number')
-      return String(value).toLowerCase().includes(query);
-    if (Array.isArray(value))
-      return value.some((item) => matchesSearch(item));
-    if (typeof value === 'object')
-      return Object.values(value).some((val) => matchesSearch(val));
-    return false;
-  };
+    const matchesSearch = (value: any): boolean => {
+      if (value === null || value === undefined) return false;
+      if (typeof value === 'string' || typeof value === 'number')
+        return String(value).toLowerCase().includes(query);
+      if (Array.isArray(value)) return value.some((item) => matchesSearch(item));
+      if (typeof value === 'object') return Object.values(value).some((val) => matchesSearch(val));
+      return false;
+    };
 
-  // Ensure data is always an array
-  const sourceData = Array.isArray(this.data) ? this.data : [];
-  this.filteredData = sourceData.filter((row) => matchesSearch(row));
-  this.currentPage = 1;
-}
-
+    const sourceData = Array.isArray(this.data) ? this.data : [];
+    this.filteredData = sourceData.filter((row) => matchesSearch(row));
+    this.currentPage = 1;
+  }
 
   private applyFilterAndPagination() {
     this.onSearch();
@@ -212,14 +217,10 @@ onSearch(): void {
   }
 
   hasAnyActionButton(): boolean {
-    return (
-      this.buttonVisibility.detail ||
-      this.buttonVisibility.edit ||
-      this.buttonVisibility.payment ||
-      this.buttonVisibility.delete
-    );
+    return this.buttonVisibility.detail || this.buttonVisibility.edit || this.buttonVisibility.payment || this.buttonVisibility.delete;
   }
 
+  // Update button visibility and pageType based on route
   private updatePageTypeAndButtons() {
     const currentRoute = this.router.url;
     const config = this.routeConfigs.find((cfg) => currentRoute.includes(cfg.match));
@@ -234,13 +235,7 @@ onSearch(): void {
       });
     } else {
       this.pageType = null;
-      Object.assign(this.buttonVisibility, {
-        add: false,
-        edit: false,
-        delete: false,
-        detail: false,
-        payment: false,
-      });
+      Object.assign(this.buttonVisibility, { add: false, edit: false, delete: false, detail: false, payment: false });
     }
   }
 
@@ -255,9 +250,8 @@ onSearch(): void {
 
   closeModal(modal?: keyof typeof this.showModal) {
     if (modal) this.showModal[modal] = false;
-    else Object.keys(this.showModal).forEach(
-      (key) => (this.showModal[key as keyof typeof this.showModal] = false)
-    );
+    else Object.keys(this.showModal).forEach((key) => (this.showModal[key as keyof typeof this.showModal] = false));
+
     this.selectedRow = null;
     this.newPayments = [];
     this.toggleBodyScroll(false);
@@ -274,9 +268,7 @@ onSearch(): void {
   private fetchPayments(transactionId: string): void {
     this.intransitService.getPaymentData(transactionId).subscribe({
       next: (payments) => {
-        this.paymentTerms = payments.length
-          ? payments
-          : [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }];
+        this.paymentTerms = payments.length ? payments : [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }];
         this.cdr.detectChanges();
       },
       error: () => {
@@ -286,19 +278,15 @@ onSearch(): void {
     });
   }
 
-  addPaymentRow(): void {
-    this.newPayments.push({ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' });
-  }
-
-  removePaymentRow(index: number): void {
-    this.newPayments.splice(index, 1);
+  openRowModal(row: any) {
+    this.selectedRow = row;
+    this.fetchPayments(row.transactionId);
   }
 
   submitPayments(): void {
-    if (this.newPayments.some(p =>
-      !p.amountPaid || !p.paidBy?.trim() || !p.accountPaidFrom?.trim() || !p.paidDate
-    )) {
-      alert('Please fill out all required fields before saving.');
+    const missingFields = this.validateIntransitPayments(this.newPayments);
+    if (missingFields.length > 0) {
+      alert('Please fill out all required fields: ' + missingFields.join(', '));
       return;
     }
 
@@ -312,95 +300,97 @@ onSearch(): void {
     this.closeModal('payment');
   }
 
-  // ============================================================
-  // -------------------- Intransit Related ---------------------
-  // ============================================================
-openAddModal() {
-  if (this.pageType === 'intransit') {
-    this.addData = {
-      purchaseDate: '',
-      purchaseOrder: '',
-      purchaseCompany: '',
-      contactPerson: '',
-      origin: '',
-      remark: '',
-      items: [
-        { itemDescription: '', uom: '', quantity: '', unitPrice: '' }
-      ]
-    };
-  } else if (this.pageType === 'logistics') {
-    this.addData = {
-      LoadedOnfcl: '',
-      containerType: '',
-      remark: '',
-      items: [
-        {
-          transactionId: '',
-          availableItems: [],
-          selectedItem: null,
-          itemDescription: '',
-          uom: '',
-          quantity: 0,
-          LoadedQnty: 0
-        }
-      ]
-    };
-  }
-
-  // console.log('Modal addData initializedfffffffffffffffff:', this.addData); // ✅ log here
-  this.openModal('add');
-}
-
-  addItem(target: 'add' | 'edit') {
-    const arr = target === 'add' ? this.addData.items : this.editData.items;
-    arr.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' });
-  }
-
-  removeItem(target: 'add' | 'edit', index: number) {
-    const arr = target === 'add' ? this.addData.items : this.editData.items;
-    if (arr.length > 1) arr.splice(index, 1);
-  }
-
-  saveAddClick(): void {
+  validateIntransitPayments(payments: any[]): string[] {
     const missing: string[] = [];
-    const d = this.addData;
 
-    if (!d.purchaseOrder?.trim()) missing.push('Purchase Order');
-    if (!d.purchaseDate) missing.push('Purchase Date');
-    if (!d.origin?.trim()) missing.push('Origin');
-    if (!d.purchaseCompany?.trim()) missing.push('Purchase Company');
-    if (!d.contactPerson?.trim()) missing.push('Contact Person');
+    payments.forEach((p, idx) => {
+      if (!p.amountPaid) missing.push(`Payment #${idx + 1} Amount Paid`);
+      if (!p.paidBy?.trim()) missing.push(`Payment #${idx + 1} Paid By`);
+      if (!p.accountPaidFrom?.trim()) missing.push(`Payment #${idx + 1} Account Paid From`);
+      if (!p.paidDate) missing.push(`Payment #${idx + 1} Paid Date`);
+    });
 
-    d.items.forEach((i: any, idx: number) => {
+    return missing;
+  }
+
+  // ============================================================
+  // -------------------- Intransit Add / Edit ------------------
+  // ============================================================
+  openAddModal() {
+    if (this.pageType === 'intransit') {
+      this.addData = {
+        purchaseDate: '',
+        purchaseOrder: '',
+        purchaseCompany: '',
+        contactPerson: '',
+        origin: '',
+        remark: '',
+        items: [{ itemDescription: '', uom: '', quantity: '', unitPrice: '' }],
+      };
+    } else if (this.pageType === 'logistics') {
+      this.addData = {
+        LoadedOnfcl: '',
+        containerType: '',
+        remark: '',
+        items: [
+          { transactionId: '', availableItems: [], selectedItem: null, itemDescription: '', uom: '', quantity: 0, LoadedQnty: 0 },
+        ],
+      };
+    }
+
+    this.openModal('add');
+  }
+
+  AddIntransitData(): void {
+    const missingFields = this.validateIntransitAddData(this.addData);
+    if (missingFields.length > 0) {
+      alert('Please fill: ' + missingFields.join(', '));
+      return;
+    }
+
+    this.add.emit(this.addData);
+    this.closeModal('add');
+  }
+
+  validateIntransitAddData(data: any): string[] {
+    const missing: string[] = [];
+
+    // Main fields
+    if (!data.purchaseOrder?.trim()) missing.push('Purchase Order');
+    if (!data.purchaseDate) missing.push('Purchase Date');
+    if (!data.origin?.trim()) missing.push('Origin');
+    if (!data.purchaseCompany?.trim()) missing.push('Purchase Company');
+    if (!data.contactPerson?.trim()) missing.push('Contact Person');
+
+    // Items
+    data.items.forEach((i: any, idx: number) => {
       if (!i.itemDescription?.trim()) missing.push(`Item #${idx + 1} Description`);
       if (!i.uom?.trim()) missing.push(`Item #${idx + 1} UOM`);
       if (!i.quantity || isNaN(Number(i.quantity))) missing.push(`Item #${idx + 1} Quantity`);
       if (!i.unitPrice || isNaN(Number(i.unitPrice))) missing.push(`Item #${idx + 1} Unit Price`);
+
       i.loadedQnty = 0;
       i.remainingQnty = Number(i.quantity) || 0;
     });
 
-    if (missing.length > 0) {
-      alert('Please fill: ' + missing.join(', '));
-      return;
-    }
-
-    this.add.emit(d);
-    this.closeModal('add');
+    return missing;
   }
 
-  // ============================================================
-  // ------------------- Edit / Delete / Main -------------------
-  // ============================================================
-  openEditModal(row: any) {
-    this.editData = JSON.parse(JSON.stringify(row));
+  openEditModal(row: any, type: 'intransit' | 'logistics') {
+    this.pageType = type;
+    this.editData = JSON.parse(JSON.stringify(row)); // Deep copy
+    if (type === 'intransit' && !this.editData.payments) this.editData.payments = [];
     this.openModal('edit', row);
-    if (!this.editData.payments) this.editData.payments = [];
   }
 
-  saveEditClick(): void {
+  saveEditedIntransitData(): void {
     this.edit.emit(this.editData);
-    this.closeModal('edit');
+    this.closeModal();
+  }
+
+  saveEditedLogisticsData(): void {
+    this.edit.emit(this.editData);
+    this.closeModal();
   }
 
   openDeleteModal(row: any) {
@@ -443,46 +433,17 @@ openAddModal() {
     this.itemChange.emit(row);
   }
 
-  addLogistics() {
-    if (!this.addData.items) this.addData.items = [];
-
-    this.addData.items.push({
-      transactionId: '',
-      availableItems: [],
-      selectedItem: null,
-      itemDescription: '',
-      uom: '',
-      quantity: '',
-      LoadedQnty: ''
-    });
-  }
-
   onLoadedQntyInput(event: Event, item: any) {
     const input = event.target as HTMLInputElement;
     let value = parseInt(input.value, 10);
-
-    if (isNaN(value) || value < 0) {
-      value = 0;
-    } else if (value > item.quantity) {
-      value = item.quantity;
-    }
-
+    if (isNaN(value) || value < 0) value = 0;
+    else if (value > item.quantity) value = item.quantity;
     item.LoadedQnty = value;
     input.value = String(value);
   }
 
-  removeLogistics(index: number) {
-    if (index === 0) return;
-    if (this.addData?.items?.length > index) {
-      this.addData.items.splice(index, 1);
-    }
-  }
-
   onTransactionChange(item: any) {
-    const selectedTransaction = this.intransitOptions.find(
-      opt => opt.transactionId === item.transactionId
-    );
-
+    const selectedTransaction = this.intransitOptions.find((opt) => opt.transactionId === item.transactionId);
     item.availableItems = selectedTransaction ? selectedTransaction.items : [];
     item.selectedItem = null;
     item.itemDescription = '';
@@ -499,30 +460,87 @@ openAddModal() {
     }
   }
 
+  // ---------------- Validation ----------------
+  validateLogisticsAddData(): string[] {
+    const missing: string[] = [];
+    if (!this.addData.LoadedOnfcl || isNaN(Number(this.addData.LoadedOnfcl))) missing.push('Loaded On FCL');
+    if (!this.addData.containerType?.trim()) missing.push('Container Type');
 
-saveAddLogsticsClick() {
-  // Build a clean payload
-  const payload = {
-    LoadedOnfcl: Number(this.addData.LoadedOnfcl), // ensure numeric
-    containerType: this.addData.containerType,
-    remark: this.addData.remark,
-    items: this.addData.items.map((item: { transactionId: any; itemDescription: any; uom: any; LoadedQnty: any; quantity:any; }) => ({
-      transactionId: item.transactionId,
-      itemDescription: item.itemDescription,
-      uom: item.uom,
-      quantity: item.LoadedQnty ,  // Send the actual loaded quantity
+    if (!this.addData.items || this.addData.items.length === 0) missing.push('At least one item');
+    else {
+      this.addData.items.forEach((item: any, idx: number) => {
+        if (!item.transactionId?.trim()) missing.push(`Item #${idx + 1} Transaction ID`);
+        if (!item.itemDescription?.trim()) missing.push(`Item #${idx + 1} Description`);
+        if (!item.uom?.trim()) missing.push(`Item #${idx + 1} UOM`);
+        if (!item.LoadedQnty || isNaN(Number(item.LoadedQnty))) missing.push(`Item #${idx + 1} Loaded Quantity`);
+      });
+    }
 
-        totalQuantity: item.quantity    // send the original available quantity too
-    }))
-  };
+    return missing;
+  }
 
-  console.log("🚀 Clean Logistics payload emitted:", payload);
+  // ---------------- Submit ----------------
+  saveAddLogsticsData() {
+    const missingFields = this.validateLogisticsAddData();
+    if (missingFields.length > 0) {
+      alert('Please fill: ' + missingFields.join(', '));
+      return;
+    }
 
-  // Emit payload to parent
-  this.logisticsAdd.emit(payload);
+    const payload = {
+      LoadedOnfcl: Number(this.addData.LoadedOnfcl),
+      containerType: this.addData.containerType,
+      remark: this.addData.remark,
+      items: this.addData.items.map((item: any) => ({
+        transactionId: item.transactionId,
+        itemDescription: item.itemDescription,
+        uom: item.uom,
+        quantity: item.LoadedQnty,
+        totalQuantity: item.quantity,
+      })),
+    };
 
-  this.closeModal('add'); // close modal if needed
-}
+    console.log('🚀 Clean Logistics payload emitted:', payload);
+    this.logisticsAdd.emit(payload);
+    this.closeModal('add');
+  }
+
+  // ============================================================
+  // ------------------- Add / Remove Rows ----------------------
+  // ============================================================
+  addRow(target: 'add' | 'edit' | 'logistics' | 'payment') {
+    let arr;
+    if (target === 'logistics') {
+      if (!this.addData.items) this.addData.items = [];
+      arr = this.addData.items;
+      arr.push({ transactionId: '', availableItems: [], selectedItem: null, itemDescription: '', uom: '', quantity: '', LoadedQnty: '' });
+    } else if (target === 'payment') {
+      if (!this.newPayments) this.newPayments = [];
+      arr = this.newPayments;
+      arr.push({ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' });
+    } else {
+      arr = target === 'add' ? this.addData.items : this.editData.items;
+      arr.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' });
+    }
+  }
+
+  removeRow(target: 'add' | 'edit' | 'logistics' | 'payment', index: number) {
+    let arr;
+    if (target === 'logistics') arr = this.addData.items;
+    else if (target === 'payment') arr = this.newPayments;
+    else arr = target === 'add' ? this.addData.items : this.editData.items;
+
+    if (arr.length > 1) arr.splice(index, 1);
+  }
 
 
+
+
+
+
+
+
+
+
+  
 }

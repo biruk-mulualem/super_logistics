@@ -466,6 +466,11 @@
               <span class="label">Bill Collected:</span>
               <span class="value">{{ selectedRow.billCollected }}</span>
             </div>
+
+            <div class="detail-item">
+              <span class="label">Doc Collected:</span>
+              <span class="value">{{ selectedRow.docCollected }}</span>
+            </div>
             <div class="detail-item">
               <span class="label">Tax Paid:</span>
               <span class="value">{{ selectedRow.taxPaid }}</span>
@@ -702,7 +707,7 @@
 
             <div class="modal-input-group">
               <label>Track-Waybill:</label>
-              <input type="text" [(ngModel)]="editData.trackWaybill" />
+              <input type="text" [(ngModel)]="editData.truckWayBill" />
             </div>
 
             <div class="modal-input-group">
@@ -727,7 +732,11 @@
 
             <div class="modal-input-group">
               <label>Bill Collected:</label>
-              <input type="number" [(ngModel)]="editData.billCollected" />
+              <input type="date" [(ngModel)]="editData.billCollected" />
+            </div>
+             <div class="modal-input-group">
+              <label>Doc Collected:</label>
+              <input type="date" [(ngModel)]="editData.docCollected" />
             </div>
 
             <div class="modal-input-group">

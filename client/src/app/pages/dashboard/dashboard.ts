@@ -6,7 +6,7 @@ import { Header } from '../../shared/components/header/header';
 
 @Component({
   selector: 'app-dashboard',
- imports: [ReusableTable,Sidebar,Header],
+ imports: [Sidebar,Header],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })

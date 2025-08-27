@@ -151,8 +151,8 @@ saveLogisticsEdit(updatedRow: any) {
     if (idx > -1) this.tableData.splice(idx, 1);
   }
 
- 
-  
+
+
 
 
 

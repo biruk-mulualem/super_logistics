@@ -1,77 +1,226 @@
 /* Base layout */
-
 .main {
-    margin-left: 40px;
-    transition: margin-left 0.3s ease;
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 60px);
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px);
+  background-color: #f5f7fa; /* Subtle background color */
 }
 
 .main.sidebar-hidden {
-    margin-left: 0;
+  margin-left: 0;
 }
-
 
 /* Content */
-
 .content {
-    padding: 20px;
+  padding: 20px;
 }
 
-
-/* Responsive table wrapper */
-
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
+/* Dashboard Title */
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  margin-top: 8%;
 }
 
-
-/* Table styling */
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-    /* prevent it from squishing too much */
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-th,
-td {
-    padding: 12px;
-    text-align: left;
-    white-space: nowrap;
+/* Cards */
+.card {
+  background: #d5e4ee;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s ease;
 }
 
-
-/* 📱 Mobile-specific styles for 480px and below */
-
-@media (max-width: 480px) {
-    .main {
-        margin-top: 50px;
-        margin-left: 15px !important;
-        padding: 10px;
-    }
-    .content {
-        padding: 0px;
-    }
-    .table-responsive {
-        overflow-x: auto;
-    }
-    table {
-        min-width: 400px;
-        /* narrower for smaller phones */
-    }
-    th,
-    td {
-        padding: 8px;
-        font-size: 14px;
-    }
+.card:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
-h1 {
-    text-align: 10px;
+.card h4 {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.card h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.card p.positive {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.card p.negative {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* Market Share */
+.market-chart {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.legend {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+
+    &.blue { background: #4f88ff; }
+    &.green { background: #00c8aa; }
+    &.gray { background: #ccc; }
+  }
+}
+
+/* Weather Card */
+.weather-card .weather {
+  display: flex;
+  align-items: center;
+
+  .icon {
+    font-size: 32px;
+    margin-right: 10px;
+  }
+
+  .info h3 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .info p {
+    margin: 2px 0;
+    font-size: 12px;
+  }
+}
+
+/* Bottom Panels */
+.bottom-panels {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Projects */
+.projects ul {
+  list-style: none;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+
+    .progress-text {
+      margin-left: auto;
+      font-size: 12px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      margin: 0 10px;
+      background: #f0f0f0;
+      border-radius: 3px;
+
+      .fill {
+        height: 100%;
+        background: #4f88ff;
+        border-radius: 3px;
+      }
+    }
+  }
+}
+
+/* Storage Section */
+.storage-section {
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.storage-bar {
+  flex: 2;
+
+  .storage-bar-inner {
+    display: flex;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 10px 0;
+
+    .regular { background: #4f88ff; width: 50%; }
+    .system { background: #8e44ad; width: 20%; }
+    .shared { background: #27ae60; width: 10%; }
+    .free { background: #ccc; width: 20%; }
+  }
+
+  .legend {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.storage-warning {
+  flex: 1;
+  background: linear-gradient(to right, #ffe9d2, #ffb199);
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+
+  h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  a {
+    color: #e67e22;
+    font-weight: bold;
+    text-decoration: none;
+  }
 }

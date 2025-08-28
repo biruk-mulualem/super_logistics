@@ -30,7 +30,14 @@ public DateOnly? LoadingDate { get; set; }
         public string? DocOwner { get; set; }
         
 
-        public List<LogisticsItemDto> Items { get; set; } = new();
+    
+           // ================== Related collections ==================
+    public List<LogisticsItemDto> Items { get; set; } = new();
+    public List<LogisticsDjbDepartedDto> DjbDepartedRows { get; set; } = new();
+    public List<LogisticsArrivedAakDto> AakArrivedRows { get; set; } = new();
+    public List<LogisticsArrivedSdtDto> SdtArrivedRows { get; set; } = new();
+    public List<LogisticsContainerReturnedDto> ContainersReturnedRows { get; set; } = new();
+}
     }
 
     public class LogisticsItemDto
@@ -45,4 +52,4 @@ public DateOnly? LoadingDate { get; set; }
         public string? Uom { get; set; } = string.Empty;
         public decimal? TotalQuantity { get; set; }
     }
-}
+

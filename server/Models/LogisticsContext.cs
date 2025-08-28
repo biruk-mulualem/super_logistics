@@ -16,5 +16,12 @@ namespace server.Models
         public DbSet<PaymentHistory> PaymentHistories { get; set; }
         public DbSet<IntransitItemsDetail> IntransitItemsDetails { get; set; }
          public DbSet<logisticsItemsDetail> logisticsItemsDetails { get; set; }
+
+
+             public DbSet<LogisticsArrivedAAk> LogisticsArrivedAAks { get; set; }
+
+                 public DbSet<LogisticsArrivedSDT> LogisticsArrivedSDTs { get; set; }
+                     public DbSet<LogisticsContainerReturned> LogisticsContainerReturns { get; set; }
+                         public DbSet<LogisticsDjboutiDeparted> LogisticsDjboutiDeparts { get; set; }
     }
 }

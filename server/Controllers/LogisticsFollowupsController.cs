@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
 using System.Text.Json; // for JsonSerializer
+using server.Models;
 
 namespace server.Controllers
 {
@@ -179,6 +180,83 @@ public async Task<ActionResult> AddLogistics([FromBody] LogisticsCreateDto dto)
     return Ok(new { message = "Logistics saved successfully", transactionId });
 }
 
+// [HttpPut("logisticsDetail/{id}")]
+// public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
+// {
+//     var followup = await _context.LogisticsFollowups.FindAsync(id);
+//     if (followup == null)
+//         return NotFound($"Logistics followup with ID {id} not found.");
+
+//     // ✅ Update main followup fields from top-level DTO
+//     followup.Remark = dto.Remark;
+//     followup.BillNo = dto.BillNo;
+//     followup.truckWayBill = dto.truckWayBill;
+//     followup.Transitor = dto.Transitor;
+//     followup.ContainerType = dto.ContainerType;
+//     followup.LoadedOnfcl = dto.LoadedOnfcl;
+//     followup.Origin = dto.Origin;
+//     followup.Shipper = dto.Shipper;
+
+//     followup.SdtArrived = dto.SdtArrived;
+//     followup.AkkArrived = dto.AkkArrived;
+//     followup.DjbDeparted = dto.DjbDeparted;
+//     followup.DjbArrived = dto.DjbArrived;
+//     followup.EmpityContainersLeftUnreturned = dto.EmpityContainersLeftUnreturned;
+//     followup.BillCollected = dto.BillCollected;
+//     followup.TaxPaid = dto.TaxPaid;
+//     followup.DocSentDjb = dto.DocSentDjb;
+//     followup.DocCollected = dto.DocCollected;
+//     followup.DocOwner = dto.DocOwner;
+//     followup.LoadingDate = dto.LoadingDate;
+//     followup.Etadjb = dto.Etadjb;
+
+
+
+//     // ✅ Replace items if any exist
+//             if (dto.Items != null && dto.Items.Any())
+//             {
+//                 // Remove old items
+//                 var existingItems = _context.logisticsItemsDetails
+//                     .Where(i => i.TransactionId == followup.TransactionId);
+//                 _context.logisticsItemsDetails.RemoveRange(existingItems);
+
+//                 // Add new items
+//                 var newItems = dto.Items.Select(it => new logisticsItemsDetail
+//                 {
+//                     TransactionId = followup.TransactionId,
+//                     IntransitId = it.IntransitId,
+//                     ItemDescription = it.ItemDescription,
+//                     Uom = it.Uom,
+//                     TotalQnty = it.TotalQnty ?? 0,
+//                     LoadedQnty = it.LoadedQnty ?? 0,
+//                     RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0)
+//                 }).ToList();
+
+//                 _context.logisticsItemsDetails.AddRange(newItems);
+//             }
+            
+        
+//     // ✅ Ensure EF Core tracks this as modified
+//             _context.Entry(followup).State = EntityState.Modified;
+
+//     // ✅ Save changes to the database
+//     await _context.SaveChangesAsync();
+
+//     return NoContent();
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
 [HttpPut("logisticsDetail/{id}")]
 public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
 {
@@ -186,7 +264,7 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
     if (followup == null)
         return NotFound($"Logistics followup with ID {id} not found.");
 
-    // ✅ Update main followup fields from top-level DTO
+    // ================== Main followup fields ==================
     followup.Remark = dto.Remark;
     followup.BillNo = dto.BillNo;
     followup.truckWayBill = dto.truckWayBill;
@@ -209,40 +287,125 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
     followup.LoadingDate = dto.LoadingDate;
     followup.Etadjb = dto.Etadjb;
 
+    // ================== Items ==================
+    if (dto.Items != null && dto.Items.Any())
+    {
+        var existingItems = _context.logisticsItemsDetails
+            .Where(i => i.TransactionId == followup.TransactionId);
+        _context.logisticsItemsDetails.RemoveRange(existingItems);
 
+        var newItems = dto.Items.Select(it => new logisticsItemsDetail
+        {
+            TransactionId = followup.TransactionId,
+            IntransitId = it.IntransitId,
+            ItemDescription = it.ItemDescription,
+            Uom = it.Uom,
+            TotalQnty = it.TotalQnty ?? 0,
+            LoadedQnty = it.LoadedQnty ?? 0,
+            RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0)
+        }).ToList();
 
-    // ✅ Replace items if any exist
-            if (dto.Items != null && dto.Items.Any())
-            {
-                // Remove old items
-                var existingItems = _context.logisticsItemsDetails
-                    .Where(i => i.TransactionId == followup.TransactionId);
-                _context.logisticsItemsDetails.RemoveRange(existingItems);
+        _context.logisticsItemsDetails.AddRange(newItems);
+    }
 
-                // Add new items
-                var newItems = dto.Items.Select(it => new logisticsItemsDetail
-                {
-                    TransactionId = followup.TransactionId,
-                    IntransitId = it.IntransitId,
-                    ItemDescription = it.ItemDescription,
-                    Uom = it.Uom,
-                    TotalQnty = it.TotalQnty ?? 0,
-                    LoadedQnty = it.LoadedQnty ?? 0,
-                    RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0)
-                }).ToList();
+    // ================== DJB Departed Rows ==================
+    if (dto.DjbDepartedRows != null)
+    {
+        var oldDjbRows = _context.LogisticsDjboutiDeparts
+            .Where(r => r.TransactionId == followup.TransactionId);
+        _context.LogisticsDjboutiDeparts.RemoveRange(oldDjbRows);
 
-                _context.logisticsItemsDetails.AddRange(newItems);
-            }
-            
-        
-    // ✅ Ensure EF Core tracks this as modified
-            _context.Entry(followup).State = EntityState.Modified;
+        var newDjbRows = dto.DjbDepartedRows.Select(r => new LogisticsDjboutiDeparted
+        {
+            TransactionId = followup.TransactionId,
+            NumberOfContainer = r.NumberOfContainer,
+            Remark = r.Remark,
+            Date = r.Date
+        }).ToList();
 
-    // ✅ Save changes to the database
+        _context.LogisticsDjboutiDeparts.AddRange(newDjbRows);
+    }
+
+    // ================== AAK Arrived Rows ==================
+    if (dto.AakArrivedRows != null)
+    {
+        var oldAakRows = _context.LogisticsArrivedAAks
+            .Where(r => r.TransactionId == followup.TransactionId);
+        _context.LogisticsArrivedAAks.RemoveRange(oldAakRows);
+
+        var newAakRows = dto.AakArrivedRows.Select(r => new LogisticsArrivedAAk
+        {
+            TransactionId = followup.TransactionId,
+            NumberOfContainer = r.NumberOfContainer,
+            Remark = r.Remark,
+            Date = r.Date
+        }).ToList();
+
+        _context.LogisticsArrivedAAks.AddRange(newAakRows);
+    }
+
+    // ================== SDT Arrived Rows ==================
+    if (dto.SdtArrivedRows != null)
+    {
+        var oldSdtRows = _context.LogisticsArrivedSDTs
+            .Where(r => r.TransactionId == followup.TransactionId);
+        _context.LogisticsArrivedSDTs.RemoveRange(oldSdtRows);
+
+        var newSdtRows = dto.SdtArrivedRows.Select(r => new LogisticsArrivedSDT
+        {
+            TransactionId = followup.TransactionId,
+            NumberOfContainer = r.NumberOfContainer,
+            Remark = r.Remark,
+            Date = r.Date
+        }).ToList();
+
+        _context.LogisticsArrivedSDTs.AddRange(newSdtRows);
+    }
+
+    // ================== Containers Returned Rows ==================
+    if (dto.ContainersReturnedRows != null)
+    {
+        var oldReturnedRows = _context.LogisticsContainerReturns
+            .Where(r => r.TransactionId == followup.TransactionId);
+        _context.LogisticsContainerReturns.RemoveRange(oldReturnedRows);
+
+        var newReturnedRows = dto.ContainersReturnedRows.Select(r => new LogisticsContainerReturned
+        {
+            TransactionId = followup.TransactionId,
+            NumberOfContainer = r.NumberOfContainer,
+            Remark = r.Remark,
+            Date = r.Date
+        }).ToList();
+
+        _context.LogisticsContainerReturns.AddRange(newReturnedRows);
+    }
+
+    _context.Entry(followup).State = EntityState.Modified;
     await _context.SaveChangesAsync();
 
     return NoContent();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

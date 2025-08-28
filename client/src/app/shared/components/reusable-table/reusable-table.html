@@ -46,6 +46,7 @@
     .btn-delete.active {
       background-color: #28a745;
     }
+
     
   </style>
 
@@ -692,13 +693,6 @@
         <ng-container *ngIf="pageType === 'logistics'">
           <span>Product Detail</span>
 
-          <!-- <div class="modal-buttons "
-            style="display: flex; gap: 10px; align-items: center">
-            <button (click)="addRow('editLogisticsItem')"
-              class="btn btn-success">
-              + Add Logistics
-            </button>
-          </div> -->
           <div *ngFor="let item of editData.items; let i = index"
             class="detail-row">
             <div class="modal-form">
@@ -731,13 +725,7 @@
                 <input type="number" [(ngModel)]="item.remaningQnty" required />
               </div>
             </div>
-            <!-- 
-            <div class="modal-input-group remove-btn">
-              <button type="button" (click)="removeRow('editLogisticsItem', i)"
-                style="width: 25px; margin-top: 10px;">
-                X
-              </button>
-            </div> -->
+
           </div>
 
           <hr />
@@ -824,31 +812,21 @@
               <label>DJB Departed:</label>
               <input type="date" [(ngModel)]="editData.djbDeparted" />
             </div>
-          </div>
-          <hr />
-
-          <span>AAk status</span>
-          <div class="detail-row">
             <div class="modal-input-group">
               <label>AKK Arrived:</label>
               <input type="date" [(ngModel)]="editData.akkArrived" />
             </div>
-          </div>
-
-          <hr />
-          <span>SDT status</span>
-          <div class="detail-row">
-
             <div class="modal-input-group">
               <label>SDT Arrived:</label>
               <input type="date" [(ngModel)]="editData.sdtArrived" />
             </div>
-
           </div>
+
           <hr />
+
           <span>Container status</span>
 
-           <div class="detail-row">
+          <div class="detail-row">
             <div class="modal-input-group">
               <label>No-Cont:</label>
               <input type="text" [(ngModel)]="editData.loadedOnfcl" />
@@ -861,16 +839,8 @@
                   }}</option>
               </select>
             </div>
-               <div class="modal-input-group">
-              <label>Remaning Containers:</label>
-              <input type="number"
-                [(ngModel)]="editData.empityContainersLeftUnreturned" />
-            </div>
-
-          </div>
-          <div class="detail-row">
             <div class="modal-input-group">
-              <label>Returned Containers:</label>
+              <label>Remaning Containers:</label>
               <input type="number"
                 [(ngModel)]="editData.empityContainersLeftUnreturned" />
             </div>
@@ -887,6 +857,72 @@
             </div>
           </div>
 
+
+
+
+
+
+
+
+
+          <!-- DJB Departed -->
+<div class="modal-buttons">
+  <button (click)="addRowDjbDeparted()" class="btn btn-success">+ DJB Departed</button>
+</div>
+<div *ngFor="let row of rowDjbDeparted; let i = index" class="item-row">
+  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
+  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
+  <input type="date" [(ngModel)]="row.date" />
+  <button type="button" (click)="removeRowDjbDeparted(i)">X</button>
+</div>
+
+<hr>
+
+<!-- AAK Arrived -->
+<div class="modal-buttons">
+  <button (click)="addRowAakArrived()" class="btn btn-success">+ AAK Arrived</button>
+</div>
+<div *ngFor="let row of rowAakArrived; let i = index" class="item-row">
+  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
+  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
+  <input type="date" [(ngModel)]="row.date" />
+  <button type="button" (click)="removeRowAakArrived(i)">X</button>
+</div>
+
+<hr>
+
+<!-- SDT Arrived -->
+<div class="modal-buttons">
+  <button (click)="addRowSdtArrived()" class="btn btn-success">+ SDT Arrived</button>
+</div>
+<div *ngFor="let row of rowSdtArrived; let i = index" class="item-row">
+  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
+  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
+  <input type="date" [(ngModel)]="row.date" />
+  <button type="button" (click)="removeRowSdtArrived(i)">X</button>
+</div>
+
+<hr>
+
+<!-- Containers Returned -->
+<div class="modal-buttons">
+  <button (click)="addRowContainerReturned()" class="btn btn-success">+ Container Status</button>
+</div>
+<div *ngFor="let row of rowsContainerReturned; let i = index" class="item-row">
+  <input type="text" [(ngModel)]="row.container" placeholder="Container" />
+  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
+  <input type="date" [(ngModel)]="row.date" />
+  <button type="button" (click)="removeRowContainerReturned(i)">X</button>
+</div>
+
+
+
+
+
+
+
+
+
           <hr />
           <div class="modal-buttons">
             <button (click)="saveEditedLogisticsData()" class="btn btn-primary">
@@ -898,9 +934,7 @@
             </button>
           </div>
         </ng-container>
-
       </ng-container>
-
       <!-- PAYMENT TAB -->
       <ng-container *ngIf="activeTab === 'payment' && buttonVisibility.payment">
         <ng-container *ngIf="pageType === 'intransit'">

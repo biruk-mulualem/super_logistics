@@ -52,6 +52,7 @@ export class ReusableTable implements OnInit, OnChanges {
   // Logistics-specific events
   @Output() logisticsAdd = new EventEmitter<any>();
   @Output() logisticsRemove = new EventEmitter<any>();
+  rows: any;
 
   // Emit updated intransit options
   updateIntransitOptions(newOptions: any[]) {
@@ -388,10 +389,28 @@ export class ReusableTable implements OnInit, OnChanges {
     this.closeModal();
   }
 
+  // saveEditedLogisticsData(): void {
+  //   this.edit.emit(this.editData);
+  //   this.closeModal();
+  // }
+
+
   saveEditedLogisticsData(): void {
-    this.edit.emit(this.editData);
-    this.closeModal();
-  }
+  // Combine the main editData with the row arrays
+  const payload = {
+    ...this.editData,
+    djbDepartedRows: this.rowDjbDeparted,
+    aakArrivedRows: this.rowAakArrived,
+    sdtArrivedRows: this.rowSdtArrived,
+    containersReturnedRows: this.rowsContainerReturned
+  };
+
+  // Emit to parent
+  this.edit.emit(payload);
+
+  // Close the modal
+  this.closeModal();
+}
 
   openDeleteModal(row: any) {
     this.selectedRow = row;
@@ -508,9 +527,7 @@ export class ReusableTable implements OnInit, OnChanges {
   // ============================================================
   // ------------------- Add / Remove Rows ----------------------
   // ============================================================
-addRow(
-  target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment' | 'editLogisticsItem'
-) {
+addRow(target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment') {
   let arr;
 
   if (target === 'logistics') {
@@ -544,11 +561,12 @@ addRow(
       quantity: '',
       unitPrice: '',
       uom: '',
+   
     });
 
   } else if (target === 'editIntransitPayment') {
     if (!this.editData.payments) this.editData.payments = [];
-    arr = this.editData.payments;
+    arr = this.editData.payments; // <-- make sure it pushes into payments
     arr.push({
       amountPaid: '',
       paidBy: '',
@@ -556,17 +574,11 @@ addRow(
       paidDate: ''
     });
 
-  } else if (target === 'editLogisticsItem') {
-    if (!this.editData.items) this.editData.items = [];
-    arr = this.editData.items;
-    arr.push({
-      itemDescription: '',
-      quantity: '',
-      unitPrice: '',
-      uom: ''
-    });
-
-  } else {
+  } 
+  
+  
+  
+  else {
     arr = target === 'add' ? this.addData.items : this.editData.items;
     arr.push({
       itemDescription: '',
@@ -578,37 +590,77 @@ addRow(
     });
   }
 }
-removeRow(
-  target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment' | 'editLogisticsItem',
-  index: number
-) {
+
+removeRow(target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment', index: number) {
   let arr;
 
   if (target === 'logistics') {
     arr = this.addData.items;
-    if (arr.length > 1) arr.splice(index, 1);
+    if (arr.length > 1) arr.splice(index, 1); // keep at least one
 
   } else if (target === 'payment') {
     arr = this.newPayments;
-    if (arr.length > 1) arr.splice(index, 1);
+    if (arr.length > 1) arr.splice(index, 1); // keep at least one
 
   } else if (target === 'editIntransitItem') {
     arr = this.editData.items;
-    arr.splice(index, 1);
+    arr.splice(index, 1); // remove any row, no limit
 
   } else if (target === 'editIntransitPayment') {
     arr = this.editData.payments;
-    arr.splice(index, 1);
-
-  } else if (target === 'editLogisticsItem') {
-    arr = this.editData.items;
-    arr.splice(index, 1);
+    arr.splice(index, 1); // remove any row, no limit
 
   } else {
     arr = target === 'add' ? this.addData.items : this.editData.items;
-    if (arr.length > 1) arr.splice(index, 1);
+    if (arr.length > 1) arr.splice(index, 1); // keep at least one
   }
 }
+
+// ================== DJB Departed Rows ==================
+rowDjbDeparted: { container: string; remark: string; date: string }[] = [];
+
+addRowDjbDeparted() {
+  this.rowDjbDeparted.push({ container: '', remark: '', date: '' });
+}
+
+removeRowDjbDeparted(index: number) {
+  this.rowDjbDeparted.splice(index, 1);
+}
+
+// ================== AAK Arrived Rows ==================
+rowAakArrived: { container: string; remark: string; date: string }[] = [];
+
+addRowAakArrived() {
+  this.rowAakArrived.push({ container: '', remark: '', date: '' });
+}
+
+removeRowAakArrived(index: number) {
+  this.rowAakArrived.splice(index, 1);
+}
+
+// ================== SDT Arrived Rows ==================
+rowSdtArrived: { container: string; remark: string; date: string }[] = [];
+
+addRowSdtArrived() {
+  this.rowSdtArrived.push({ container: '', remark: '', date: '' });
+}
+
+removeRowSdtArrived(index: number) {
+  this.rowSdtArrived.splice(index, 1);
+}
+
+// ================== Containers Returned Rows ==================
+rowsContainerReturned: { container: string; remark: string; date: string }[] = [];
+
+addRowContainerReturned() {
+  this.rowsContainerReturned.push({ container: '', remark: '', date: '' });
+}
+
+removeRowContainerReturned(index: number) {
+  this.rowsContainerReturned.splice(index, 1);
+}
+
+
 
 
 

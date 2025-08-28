@@ -46,12 +46,15 @@
     .btn-delete.active {
       background-color: #28a745;
     }
+    
   </style>
 
   <div class="container">
-    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()" class="search-input" placeholder="Search..." />
+    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()"
+      class="search-input" placeholder="Search..." />
 
-    <button *ngIf="buttonVisibility.add" class="add-btn" title="Add" (click)="openAddModal()">
+    <button *ngIf="buttonVisibility.add" class="add-btn" title="Add"
+      (click)="openAddModal()">
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -89,14 +92,17 @@
 
   <!-- Pagination -->
   <div class="pagination">
-    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+    <button class="page-btn" (click)="prevPage()"
+      [disabled]="currentPage === 1">
       &lt;
     </button>
-    <button class="page-btn" *ngFor="let page of [].constructor(totalPages); let i = index"
+    <button class="page-btn"
+      *ngFor="let page of [].constructor(totalPages); let i = index"
       [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
       {{ i + 1 }}
     </button>
-    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+    <button class="page-btn" (click)="nextPage()"
+      [disabled]="currentPage === totalPages">
       &gt;
     </button>
   </div>
@@ -109,12 +115,13 @@
     <ng-container *ngIf="pageType === 'intransit'">
       <!-- Modal Header -->
       <div class="modal-header">
-        <h3>Add Intransit Entry</h3>
+        <h3>Add New Purchase</h3>
       </div>
       <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center">
+      <div class="modal-buttons"
+        style="display: flex; gap: 10px; align-items: center">
         <button (click)="addRow('add')" class="btn btn-success">
           + Add Item
         </button>
@@ -145,7 +152,8 @@
         </div>
 
         <div class="modal-input-group remove-btn">
-          <button type="button" (click)="removeRow('add', i)" [disabled]="i === 0">
+          <button type="button" (click)="removeRow('add', i)"
+            [disabled]="i === 0">
             X
           </button>
         </div>
@@ -193,8 +201,10 @@
       <hr />
 
       <!-- Modal Actions -->
-      <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
-        <button (click)="AddIntransitData()" class="btn btn-primary">Save</button>
+      <div class="modal-buttons"
+        style="margin-top: 10px; display: flex; gap: 10px">
+        <button (click)="AddIntransitData()"
+          class="btn btn-primary">Save</button>
         <button (click)="closeModal('add')" class="btn btn-secondary">
           Cancel
         </button>
@@ -210,7 +220,8 @@
       <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons" style="display: flex; gap: 10px; align-items: center">
+      <div class="modal-buttons"
+        style="display: flex; gap: 10px; align-items: center">
         <button (click)="addRow('logistics')" class="btn btn-success">
           + Add Item
         </button>
@@ -221,8 +232,10 @@
         <!-- Transaction ID Selector -->
         <div class="modal-input-group">
           <label>Transaction ID</label>
-          <select [(ngModel)]="item.transactionId" (ngModelChange)="onTransactionChange(item)">
-            <option *ngFor="let trx of intransitOptions" [value]="trx.transactionId">
+          <select [(ngModel)]="item.transactionId"
+            (ngModelChange)="onTransactionChange(item)">
+            <option *ngFor="let trx of intransitOptions"
+              [value]="trx.transactionId">
               {{ trx.transactionId }}
             </option>
           </select>
@@ -231,7 +244,8 @@
         <!-- Item Description Selector -->
         <div class="modal-input-group">
           <label>Item Description</label>
-          <select [(ngModel)]="item.selectedItem" (ngModelChange)="onItemChange(item)">
+          <select [(ngModel)]="item.selectedItem"
+            (ngModelChange)="onItemChange(item)">
             <option *ngFor="let itm of item.availableItems" [ngValue]="itm">
               {{ itm.itemDescription }}
             </option>
@@ -246,23 +260,23 @@
 
         <!-- Editable Loaded Quantity -->
         <div class="modal-input-group">
-          <label style="display: flex; justify-content: space-between; width: 100%">
+          <label
+            style="display: flex; justify-content: space-between; width: 100%">
             <span> Qnty</span>
-            <span style="color: rgb(217, 24, 24); font-weight: normal">(Available:
+            <span
+              style="color: rgb(217, 24, 24); font-weight: normal">(Available:
               {{ item.quantity || 0 }})</span>
           </label>
 
-          <input type="number" [value]="item.LoadedQnty" (input)="onLoadedQntyInput($event, item)" min="0" />
+          <input type="number" [value]="item.LoadedQnty"
+            (input)="onLoadedQntyInput($event, item)" min="0" />
         </div>
-
         <!-- Remove Button -->
         <div class="modal-input-group remove-btn">
           <button type="button" (click)="removeRow('logistics', i)">X</button>
         </div>
       </div>
-
       <hr />
-
       <!-- Main Logistics Form -->
       <div class="modal-form">
         <div class="modal-input-group">
@@ -285,7 +299,8 @@
       </div>
       <hr />
       <!-- Modal Actions -->
-      <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
+      <div class="modal-buttons"
+        style="margin-top: 10px; display: flex; gap: 10px">
         <button (click)="saveAddLogsticsData()" class="btn btn-primary">
           Save
         </button>
@@ -305,22 +320,26 @@
         {{ pageType === "intransit" ? "Intransit" : "Logistics" }} Main Modal
       </h3>
 
-      <button class="btn-detail" *ngIf="buttonVisibility.detail" [class.active]="activeTab === 'detail'"
+      <button class="btn-detail" *ngIf="buttonVisibility.detail"
+        [class.active]="activeTab === 'detail'"
         (click)="setActiveTab('detail')">
         Detail
       </button>
 
-      <button class="btn-edit" *ngIf="buttonVisibility.edit" [class.active]="activeTab === 'edit'"
+      <button class="btn-edit" *ngIf="buttonVisibility.edit"
+        [class.active]="activeTab === 'edit'"
         (click)="setActiveTab('edit')">
         Edit
       </button>
 
-      <button class="btn-payment" *ngIf="buttonVisibility.payment" [class.active]="activeTab === 'payment'"
+      <button class="btn-payment" *ngIf="buttonVisibility.payment"
+        [class.active]="activeTab === 'payment'"
         (click)="setActiveTab('payment')">
         Payment
       </button>
 
-      <button class="btn-delete" *ngIf="buttonVisibility.delete" [class.active]="activeTab === 'delete'"
+      <button class="btn-delete" *ngIf="buttonVisibility.delete"
+        [class.active]="activeTab === 'delete'"
         (click)="setActiveTab('delete')">
         Delete
       </button>
@@ -525,11 +544,22 @@
       <ng-container *ngIf="activeTab === 'edit' && buttonVisibility.edit">
         <ng-container *ngIf="pageType === 'intransit'">
           <span>Product Detail</span>
-          <div *ngFor="let item of editData.items; let i = index" class="detail-row">
+
+          <div class="modal-buttons "
+            style="display: flex; gap: 10px; align-items: center">
+            <button (click)="addRow('editIntransitItem')"
+              class="btn btn-success">
+              + Add Item
+            </button>
+          </div>
+
+          <div *ngFor="let item of editData.items; let i = index"
+            class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Item:</label>
-                <input type="text" [(ngModel)]="item.itemDescription" required />
+                <input type="text" [(ngModel)]="item.itemDescription"
+                  required />
               </div>
             </div>
             <div class="modal-form">
@@ -551,6 +581,13 @@
                 <input type="number" [(ngModel)]="item.unitPrice" required />
               </div>
             </div>
+
+            <div class="modal-input-group remove-btn">
+              <button type="button" (click)="removeRow('editIntransitItem', i)"
+                style="width: 25px; margin-top: 10px;">
+                X
+              </button>
+            </div>
           </div>
 
           <hr />
@@ -562,11 +599,13 @@
             </div>
             <div class="modal-input-group">
               <label>Purchase Order:</label>
-              <input type="text" [(ngModel)]="editData.purchaseOrder" required />
+              <input type="text" [(ngModel)]="editData.purchaseOrder"
+                required />
             </div>
             <div class="modal-input-group">
               <label>Purchase Company:</label>
-              <input type="text" [(ngModel)]="editData.purchaseCompany" required />
+              <input type="text" [(ngModel)]="editData.purchaseCompany"
+                required />
             </div>
             <div class="modal-input-group">
               <label>Origin:</label>
@@ -583,7 +622,8 @@
             </div>
             <div class="modal-input-group">
               <label>Contact Person:</label>
-              <input type="text" [(ngModel)]="editData.contactPerson" required />
+              <input type="text" [(ngModel)]="editData.contactPerson"
+                required />
             </div>
             <div class="modal-input-group full-width">
               <label>Remark:</label>
@@ -593,11 +633,21 @@
 
           <hr />
           <span>Payment Detail</span>
-          <div *ngFor="let payment of editData.payments; let i = index" class="detail-row">
+
+          <div class="modal-buttons "
+            style="display: flex; gap: 10px; align-items: center">
+            <button (click)="addRow('editIntransitPayment')"
+              class="btn btn-success">
+              + Add Payment
+            </button>
+          </div>
+          <div *ngFor="let payment of editData.payments; let i = index"
+            class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Amount Paid:</label>
-                <input type="number" [(ngModel)]="payment.amountPaid" required />
+                <input type="number" [(ngModel)]="payment.amountPaid"
+                  required />
               </div>
             </div>
             <div class="modal-form">
@@ -609,7 +659,8 @@
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Account Paid From:</label>
-                <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
+                <input type="text" [(ngModel)]="payment.accountPaidFrom"
+                  required />
               </div>
             </div>
             <div class="modal-form">
@@ -617,6 +668,14 @@
                 <label>Paid Date:</label>
                 <input type="date" [(ngModel)]="payment.paidDate" required />
               </div>
+            </div>
+
+            <div class="modal-input-group remove-btn">
+              <button type="button"
+                (click)="removeRow('editIntransitPayment', i)"
+                style="width: 25px; margin-top: 10px;">
+                X
+              </button>
             </div>
           </div>
 
@@ -632,11 +691,21 @@
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
           <span>Product Detail</span>
-          <div *ngFor="let item of editData.items; let i = index" class="detail-row">
+
+          <!-- <div class="modal-buttons "
+            style="display: flex; gap: 10px; align-items: center">
+            <button (click)="addRow('editLogisticsItem')"
+              class="btn btn-success">
+              + Add Logistics
+            </button>
+          </div> -->
+          <div *ngFor="let item of editData.items; let i = index"
+            class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Item Description:</label>
-                <input type="text" [(ngModel)]="item.itemDescription" required />
+                <input type="text" [(ngModel)]="item.itemDescription"
+                  required />
               </div>
             </div>
 
@@ -662,31 +731,124 @@
                 <input type="number" [(ngModel)]="item.remaningQnty" required />
               </div>
             </div>
+            <!-- 
+            <div class="modal-input-group remove-btn">
+              <button type="button" (click)="removeRow('editLogisticsItem', i)"
+                style="width: 25px; margin-top: 10px;">
+                X
+              </button>
+            </div> -->
           </div>
 
           <hr />
           <span>Common Data</span>
-          <div class="modal-form">
+
+          <div class="detail-row">
             <div class="modal-input-group">
-              <label>ETADJB:</label>
-              <input type="date" [(ngModel)]="editData.etadjb" />
+              <label>Bill-No:</label>
+              <input type="text" [(ngModel)]="editData.billNo" />
             </div>
 
+            <div class="modal-input-group">
+              <label>Track-Waybill:</label>
+              <input type="text" [(ngModel)]="editData.truckWayBill" />
+            </div>
+            <div class="modal-input-group">
+              <label>Shipper:</label>
+              <input type="text" [(ngModel)]="editData.shipper" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Transitor:</label>
+              <input type="text" [(ngModel)]="editData.transitor" />
+            </div>
+
+          </div>
+
+          <div class="detail-row">
             <div class="modal-input-group">
               <label>Loading Date:</label>
               <input type="date" [(ngModel)]="editData.loadingDate" />
             </div>
 
             <div class="modal-input-group">
+              <label>Bill Collected:</label>
+              <input type="date" [(ngModel)]="editData.billCollected" />
+            </div>
+
+            <div class="modal-input-group">
+              <label>Origin:</label>
+              <select [(ngModel)]="editData.origin">
+                <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
+              </select>
+            </div>
+
+            <div class="modal-input-group">
+              <label>Doc-Owner:</label>
+              <input type="text" [(ngModel)]="editData.docOwner" />
+            </div>
+
+          </div>
+
+          <hr />
+          <span>Djibouti status</span>
+
+          <div class="detail-row">
+            <div class="modal-input-group">
+              <label>ETADJB:</label>
+              <input type="date" [(ngModel)]="editData.etadjb" />
+            </div>
+            <div class="modal-input-group">
               <label>DJB Arrived:</label>
               <input type="date" [(ngModel)]="editData.djbArrived" />
             </div>
-
             <div class="modal-input-group">
               <label>Doc Sent DJB:</label>
               <input type="date" [(ngModel)]="editData.docSentDjb" />
             </div>
+            <div class="modal-input-group">
+              <label>Tax Paid:</label>
+              <input type="date" [(ngModel)]="editData.taxPaid" />
 
+            </div>
+
+            <div class="modal-input-group">
+              <label>Doc Collected:</label>
+              <input type="date" [(ngModel)]="editData.docCollected" />
+            </div>
+
+          </div>
+
+          <div class="detail-row">
+            <div class="modal-input-group">
+              <label>DJB Departed:</label>
+              <input type="date" [(ngModel)]="editData.djbDeparted" />
+            </div>
+          </div>
+          <hr />
+
+          <span>AAk status</span>
+          <div class="detail-row">
+            <div class="modal-input-group">
+              <label>AKK Arrived:</label>
+              <input type="date" [(ngModel)]="editData.akkArrived" />
+            </div>
+          </div>
+
+          <hr />
+          <span>SDT status</span>
+          <div class="detail-row">
+
+            <div class="modal-input-group">
+              <label>SDT Arrived:</label>
+              <input type="date" [(ngModel)]="editData.sdtArrived" />
+            </div>
+
+          </div>
+          <hr />
+          <span>Container status</span>
+
+           <div class="detail-row">
             <div class="modal-input-group">
               <label>No-Cont:</label>
               <input type="text" [(ngModel)]="editData.loadedOnfcl" />
@@ -699,73 +861,25 @@
                   }}</option>
               </select>
             </div>
+               <div class="modal-input-group">
+              <label>Remaning Containers:</label>
+              <input type="number"
+                [(ngModel)]="editData.empityContainersLeftUnreturned" />
+            </div>
 
+          </div>
+          <div class="detail-row">
             <div class="modal-input-group">
-              <label>Bill-No:</label>
-              <input type="text" [(ngModel)]="editData.billNo" />
+              <label>Returned Containers:</label>
+              <input type="number"
+                [(ngModel)]="editData.empityContainersLeftUnreturned" />
             </div>
 
-            <div class="modal-input-group">
-              <label>Track-Waybill:</label>
-              <input type="text" [(ngModel)]="editData.truckWayBill" />
-            </div>
+          </div>
 
-            <div class="modal-input-group">
-              <label>Doc-Owner:</label>
-              <input type="text" [(ngModel)]="editData.docOwner" />
-            </div>
+          <hr />
 
-            <div class="modal-input-group">
-              <label>Shipper:</label>
-              <input type="text" [(ngModel)]="editData.shipper" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Transitor:</label>
-              <input type="text" [(ngModel)]="editData.transitor" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>SDT Arrived:</label>
-              <input type="date" [(ngModel)]="editData.sdtArrived" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Bill Collected:</label>
-              <input type="date" [(ngModel)]="editData.billCollected" />
-            </div>
-             <div class="modal-input-group">
-              <label>Doc Collected:</label>
-              <input type="date" [(ngModel)]="editData.docCollected" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Tax Paid:</label>
-              <input type="date" [(ngModel)]="editData.taxPaid" />
-
-            </div>
-
-            <div class="modal-input-group">
-              <label>AKK Arrived:</label>
-              <input type="date" [(ngModel)]="editData.akkArrived" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>DJB Departed:</label>
-              <input type="date" [(ngModel)]="editData.djbDeparted" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Unreturned Containers:</label>
-              <input type="number" [(ngModel)]="editData.empityContainersLeftUnreturned" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Origin:</label>
-              <select [(ngModel)]="editData.origin">
-                <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
-              </select>
-            </div>
+          <div class="modal-form">
 
             <div class="modal-input-group full-width">
               <label>Remark:</label>
@@ -800,7 +914,8 @@
             </button>
           </div>
 
-          <div *ngFor="let payment of newPayments; let j = index" class="payment-row" style="
+          <div *ngFor="let payment of newPayments; let j = index"
+            class="payment-row" style="
               display: flex;
               gap: 10px;
               align-items: center;
@@ -816,22 +931,26 @@
             </div>
             <div class="modal-input-group" style="flex: 1">
               <label>Account Paid From:</label>
-              <input type="text" [(ngModel)]="payment.accountPaidFrom" required />
+              <input type="text" [(ngModel)]="payment.accountPaidFrom"
+                required />
             </div>
             <div class="modal-input-group" style="flex: 1">
               <label>Payment Date:</label>
               <input type="date" [(ngModel)]="payment.paidDate" required />
             </div>
             <div class="modal-buttons">
-              <button class="btn btn-danger" (click)="removeRow('payment', j)" [disabled]="j === 0">
+              <button class="btn btn-danger" (click)="removeRow('payment', j)"
+                [disabled]="j === 0">
                 X
               </button>
             </div>
 
           </div>
 
-          <div class="modal-buttons" style="margin-top: 10px; display: flex; gap: 10px">
-            <button class="btn btn-primary" (click)="submitPayments(); closeModal()">
+          <div class="modal-buttons"
+            style="margin-top: 10px; display: flex; gap: 10px">
+            <button class="btn btn-primary"
+              (click)="submitPayments(); closeModal()">
               Save
             </button>
             <button class="btn btn-secondary" (click)="closeModal()">
@@ -852,7 +971,8 @@
             {{ selectedRow?.transactionId }}?
           </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger" (click)="confirmDeleteClick(); closeModal()">
+            <button class="btn btn-danger"
+              (click)="confirmDeleteClick(); closeModal()">
               Delete
             </button>
             <button class="btn btn-secondary" (click)="closeModal()">
@@ -866,7 +986,8 @@
             {{ selectedRow?.transactionId }}?
           </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger" (click)="confirmDeleteClick(); closeModal('main')">
+            <button class="btn btn-danger"
+              (click)="confirmDeleteClick(); closeModal('main')">
               Delete
             </button>
             <button class="btn btn-secondary" (click)="closeModal('main')">

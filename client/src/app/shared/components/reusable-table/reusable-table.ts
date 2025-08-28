@@ -111,7 +111,7 @@ export class ReusableTable implements OnInit, OnChanges {
   };
 
   routeConfigs = [
-    { match: '/intransit', pageType: 'intransit', add: true, edit: true, delete: true, detail: true, payment: true },
+    { match: '/intransit', pageType: 'intransit', add: true, edit: true, delete: true, detail: true, payment: false },
     { match: '/logistics', pageType: 'logistics', add: true, edit: true, delete: true, detail: true, payment: false },
     { match: '/reports', pageType: 'reports', add: false, edit: true, delete: false, detail: true, payment: false },
     { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true, payment: false },
@@ -508,31 +508,107 @@ export class ReusableTable implements OnInit, OnChanges {
   // ============================================================
   // ------------------- Add / Remove Rows ----------------------
   // ============================================================
-  addRow(target: 'add' | 'edit' | 'logistics' | 'payment') {
-    let arr;
-    if (target === 'logistics') {
-      if (!this.addData.items) this.addData.items = [];
-      arr = this.addData.items;
-      arr.push({ transactionId: '', availableItems: [], selectedItem: null, itemDescription: '', uom: '', quantity: '', LoadedQnty: '' });
-    } else if (target === 'payment') {
-      if (!this.newPayments) this.newPayments = [];
-      arr = this.newPayments;
-      arr.push({ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' });
-    } else {
-      arr = target === 'add' ? this.addData.items : this.editData.items;
-      arr.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' });
-    }
+addRow(
+  target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment' | 'editLogisticsItem'
+) {
+  let arr;
+
+  if (target === 'logistics') {
+    if (!this.addData.items) this.addData.items = [];
+    arr = this.addData.items;
+    arr.push({
+      transactionId: '',
+      availableItems: [],
+      selectedItem: null,
+      itemDescription: '',
+      uom: '',
+      quantity: '',
+      LoadedQnty: ''
+    });
+
+  } else if (target === 'payment') {
+    if (!this.newPayments) this.newPayments = [];
+    arr = this.newPayments;
+    arr.push({
+      amountPaid: '',
+      paidBy: '',
+      accountPaidFrom: '',
+      paidDate: ''
+    });
+
+  } else if (target === 'editIntransitItem') {
+    if (!this.editData.items) this.editData.items = [];
+    arr = this.editData.items;
+    arr.push({
+      itemDescription: '',
+      quantity: '',
+      unitPrice: '',
+      uom: '',
+    });
+
+  } else if (target === 'editIntransitPayment') {
+    if (!this.editData.payments) this.editData.payments = [];
+    arr = this.editData.payments;
+    arr.push({
+      amountPaid: '',
+      paidBy: '',
+      accountPaidFrom: '',
+      paidDate: ''
+    });
+
+  } else if (target === 'editLogisticsItem') {
+    if (!this.editData.items) this.editData.items = [];
+    arr = this.editData.items;
+    arr.push({
+      itemDescription: '',
+      quantity: '',
+      unitPrice: '',
+      uom: ''
+    });
+
+  } else {
+    arr = target === 'add' ? this.addData.items : this.editData.items;
+    arr.push({
+      itemDescription: '',
+      quantity: '',
+      unitPrice: '',
+      uom: '',
+      loadedQnty: '',
+      remainingQnty: ''
+    });
   }
+}
+removeRow(
+  target: 'add' | 'edit' | 'logistics' | 'payment' | 'editIntransitItem' | 'editIntransitPayment' | 'editLogisticsItem',
+  index: number
+) {
+  let arr;
 
-  removeRow(target: 'add' | 'edit' | 'logistics' | 'payment', index: number) {
-    let arr;
-    if (target === 'logistics') arr = this.addData.items;
-    else if (target === 'payment') arr = this.newPayments;
-    else arr = target === 'add' ? this.addData.items : this.editData.items;
+  if (target === 'logistics') {
+    arr = this.addData.items;
+    if (arr.length > 1) arr.splice(index, 1);
 
+  } else if (target === 'payment') {
+    arr = this.newPayments;
+    if (arr.length > 1) arr.splice(index, 1);
+
+  } else if (target === 'editIntransitItem') {
+    arr = this.editData.items;
+    arr.splice(index, 1);
+
+  } else if (target === 'editIntransitPayment') {
+    arr = this.editData.payments;
+    arr.splice(index, 1);
+
+  } else if (target === 'editLogisticsItem') {
+    arr = this.editData.items;
+    arr.splice(index, 1);
+
+  } else {
+    arr = target === 'add' ? this.addData.items : this.editData.items;
     if (arr.length > 1) arr.splice(index, 1);
   }
-
+}
 
 
 

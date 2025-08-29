@@ -46,15 +46,90 @@
     .btn-delete.active {
       background-color: #28a745;
     }
+  
+            /* Header row */
+.header-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
 
-    
-  </style>
+/* Header labels */
+.header-label {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  background-color: #5dc6e6;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+/* Add button */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  border-color: #21bd76;
+  margin-top: 10px;
+}
+
+.add-btn {
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(218, 153, 153, 0.2);
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+  padding: 6px 14px;
+}
+
+/* Inputs */
+
+.input-number {
+  margin-left: 10px;
+}
+
+.input-remark {
+  margin-left: 30px;
+}
+
+.input-date {
+  margin-left: 50px;
+}
+
+/* Remove button */
+.remove-btn-x {
+  margin-left: 90px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.remove-btn-x:hover {
+  background: #a71d2a;
+}
+
+
+
+          </style>
 
   <div class="container">
-    <input type="text" [(ngModel)]="searchQuery" (input)="onSearch()"
-      class="search-input" placeholder="Search..." />
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      (input)="onSearch()"
+      class="search-input"
+      placeholder="Search..." />
 
-    <button *ngIf="buttonVisibility.add" class="add-btn" title="Add"
+    <button
+      *ngIf="buttonVisibility.add"
+      class="add-btn"
+      title="Add"
       (click)="openAddModal()">
       <i class="fas fa-plus"></i>
     </button>
@@ -76,12 +151,15 @@
           </td>
           <td *ngIf="hasAnyActionButton()" data-label="Actions">
             <div class="action-buttons">
-              <button *ngIf="
+              <button
+                *ngIf="
                   buttonVisibility.detail ||
                   buttonVisibility.edit ||
                   buttonVisibility.payment ||
                   buttonVisibility.delete
-                " class="detail-btn" (click)="openMainModal(row)">
+                "
+                class="detail-btn"
+                (click)="openMainModal(row)">
                 <i class="fas fa-eye"></i>
               </button>
             </div>
@@ -93,16 +171,22 @@
 
   <!-- Pagination -->
   <div class="pagination">
-    <button class="page-btn" (click)="prevPage()"
+    <button
+      class="page-btn"
+      (click)="prevPage()"
       [disabled]="currentPage === 1">
       &lt;
     </button>
-    <button class="page-btn"
+    <button
+      class="page-btn"
       *ngFor="let page of [].constructor(totalPages); let i = index"
-      [class.active]="currentPage === i + 1" (click)="setPage(i + 1)">
+      [class.active]="currentPage === i + 1"
+      (click)="setPage(i + 1)">
       {{ i + 1 }}
     </button>
-    <button class="page-btn" (click)="nextPage()"
+    <button
+      class="page-btn"
+      (click)="nextPage()"
       [disabled]="currentPage === totalPages">
       &gt;
     </button>
@@ -121,9 +205,10 @@
       <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons"
+      <div
+        class="modal-buttons"
         style="display: flex; gap: 10px; align-items: center">
-        <button (click)="addRow('add')" class="btn btn-success">
+        <button (click)="addRow('add')"  class="btn btn-success add-btn">
           + Add Item
         </button>
       </div>
@@ -153,7 +238,9 @@
         </div>
 
         <div class="modal-input-group remove-btn">
-          <button type="button" (click)="removeRow('add', i)"
+          <button
+            type="button"
+            (click)="removeRow('add', i)"
             [disabled]="i === 0">
             X
           </button>
@@ -202,10 +289,12 @@
       <hr />
 
       <!-- Modal Actions -->
-      <div class="modal-buttons"
+      <div
+        class="modal-buttons"
         style="margin-top: 10px; display: flex; gap: 10px">
-        <button (click)="AddIntransitData()"
-          class="btn btn-primary">Save</button>
+        <button (click)="AddIntransitData()" class="btn btn-primary">
+          Save
+        </button>
         <button (click)="closeModal('add')" class="btn btn-secondary">
           Cancel
         </button>
@@ -221,9 +310,10 @@
       <hr />
 
       <!-- Add Item Button -->
-      <div class="modal-buttons"
+      <div
+        class="modal-buttons"
         style="display: flex; gap: 10px; align-items: center">
-        <button (click)="addRow('logistics')" class="btn btn-success">
+        <button (click)="addRow('logistics')"  class="btn btn-success add-btn">
           + Add Item
         </button>
       </div>
@@ -233,9 +323,11 @@
         <!-- Transaction ID Selector -->
         <div class="modal-input-group">
           <label>Transaction ID</label>
-          <select [(ngModel)]="item.transactionId"
+          <select
+            [(ngModel)]="item.transactionId"
             (ngModelChange)="onTransactionChange(item)">
-            <option *ngFor="let trx of intransitOptions"
+            <option
+              *ngFor="let trx of intransitOptions"
               [value]="trx.transactionId">
               {{ trx.transactionId }}
             </option>
@@ -245,7 +337,8 @@
         <!-- Item Description Selector -->
         <div class="modal-input-group">
           <label>Item Description</label>
-          <select [(ngModel)]="item.selectedItem"
+          <select
+            [(ngModel)]="item.selectedItem"
             (ngModelChange)="onItemChange(item)">
             <option *ngFor="let itm of item.availableItems" [ngValue]="itm">
               {{ itm.itemDescription }}
@@ -269,8 +362,11 @@
               {{ item.quantity || 0 }})</span>
           </label>
 
-          <input type="number" [value]="item.LoadedQnty"
-            (input)="onLoadedQntyInput($event, item)" min="0" />
+          <input
+            type="number"
+            [value]="item.LoadedQnty"
+            (input)="onLoadedQntyInput($event, item)"
+            min="0" />
         </div>
         <!-- Remove Button -->
         <div class="modal-input-group remove-btn">
@@ -288,8 +384,9 @@
         <div class="modal-input-group">
           <label>Cont-Type</label>
           <select [(ngModel)]="addData.containerType" required>
-            <option *ngFor="let c of containerTypes" [value]="c">{{ c
-              }}</option>
+            <option *ngFor="let c of containerTypes" [value]="c">
+              {{ c }}
+            </option>
           </select>
         </div>
 
@@ -300,7 +397,8 @@
       </div>
       <hr />
       <!-- Modal Actions -->
-      <div class="modal-buttons"
+      <div
+        class="modal-buttons"
         style="margin-top: 10px; display: flex; gap: 10px">
         <button (click)="saveAddLogsticsData()" class="btn btn-primary">
           Save
@@ -321,25 +419,33 @@
         {{ pageType === "intransit" ? "Intransit" : "Logistics" }} Main Modal
       </h3>
 
-      <button class="btn-detail" *ngIf="buttonVisibility.detail"
+      <button
+        class="btn-detail"
+        *ngIf="buttonVisibility.detail"
         [class.active]="activeTab === 'detail'"
         (click)="setActiveTab('detail')">
         Detail
       </button>
 
-      <button class="btn-edit" *ngIf="buttonVisibility.edit"
+      <button
+        class="btn-edit"
+        *ngIf="buttonVisibility.edit"
         [class.active]="activeTab === 'edit'"
         (click)="setActiveTab('edit')">
         Edit
       </button>
 
-      <button class="btn-payment" *ngIf="buttonVisibility.payment"
+      <button
+        class="btn-payment"
+        *ngIf="buttonVisibility.payment"
         [class.active]="activeTab === 'payment'"
         (click)="setActiveTab('payment')">
         Payment
       </button>
 
-      <button class="btn-delete" *ngIf="buttonVisibility.delete"
+      <button
+        class="btn-delete"
+        *ngIf="buttonVisibility.delete"
         [class.active]="activeTab === 'delete'"
         (click)="setActiveTab('delete')">
         Delete
@@ -495,38 +601,95 @@
               <span class="label">Tax Paid:</span>
               <span class="value">{{ selectedRow.taxPaid }}</span>
             </div>
+
+            <div class="detail-item">
+              <span class="label">Origin:</span>
+              <span class="value">{{ selectedRow.origin }}</span>
+            </div>
           </div>
 
-          <div class="detail-row">
-            <div class="detail-item">
-              <span class="label">DJB Departed:</span>
-              <span class="value">{{ selectedRow.djbDeparted }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">AKK Arrived:</span>
-              <span class="value">{{ selectedRow.akkArrived }}</span>
+          <hr />
+          <!-- ================== Djibouti Departed ================== -->
+          <div *ngIf="selectedRow?.djbDeparted?.length > 0">
+            <h3>Djb Departed</h3>
+            <div *ngFor="let row of selectedRow.djbDeparted" class="detail-row">
+              <div class="detail-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ row.date }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Number of Containers:</span>
+                <span class="value">{{ row.numberOfContainer }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Remark:</span>
+                <span class="value">{{ row.remark }}</span>
+              </div>
             </div>
           </div>
 
           <hr />
 
-          <div class="detail-row">
-            <div class="detail-item">
-              <span class="label">Unreturned Containers:</span>
-              <span class="value">{{
-                selectedRow.empityContainersLeftUnreturned
-                }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="label">Origin:</span>
-              <span class="value">{{ selectedRow.origin }}</span>
-            </div>
+          <!-- ================== AAK Arrived ================== -->
 
-            <div class="detail-item">
-              <span class="label">SDT Arrived:</span>
-              <span class="value">{{ selectedRow.sdtArrived }}</span>
+          <div *ngIf="selectedRow?.arrivedAAk?.length > 0">
+            <h3>AAK Arrived</h3>
+            <div *ngFor="let row of selectedRow.arrivedAAk" class="detail-row">
+              <div class="detail-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ row.date }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Number of Containers:</span>
+                <span class="value">{{ row.numberOfContainer }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Remark:</span>
+                <span class="value">{{ row.remark }}</span>
+              </div>
             </div>
           </div>
+
+          <!-- ================== SDT Arrived ================== -->
+          <div *ngIf="selectedRow?.arrivedSDT?.length > 0">
+            <h3>SDT Arrived</h3>
+            <div *ngFor="let row of selectedRow.arrivedSDT" class="detail-row">
+              <div class="detail-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ row.date | date : "mediumDate" }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Number of Containers:</span>
+                <span class="value">{{ row.numberOfContainer }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Remark:</span>
+                <span class="value">{{ row.remark }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================== Containers Returned ================== -->
+          <div *ngIf="selectedRow?.containerReturned?.length > 0">
+            <h3>Empity Containers Returned</h3>
+            <div
+              *ngFor="let row of selectedRow.containerReturned"
+              class="detail-row">
+              <div class="detail-item">
+                <span class="label">Date:</span>
+                <span class="value">{{ row.date | date : "mediumDate" }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Number of Containers:</span>
+                <span class="value">{{ row.numberOfContainer }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Remark:</span>
+                <span class="value">{{ row.remark }}</span>
+              </div>
+            </div>
+          </div>
+
           <div class="detail-row">
             <div class="detail-item">
               <span class="label">Remark:</span>
@@ -546,20 +709,25 @@
         <ng-container *ngIf="pageType === 'intransit'">
           <span>Product Detail</span>
 
-          <div class="modal-buttons "
+          <div
+            class="modal-buttons"
             style="display: flex; gap: 10px; align-items: center">
-            <button (click)="addRow('editIntransitItem')"
-              class="btn btn-success">
+            <button
+              (click)="addRow('editIntransitItem')"
+              class="btn btn-success add-btn">
               + Add Item
             </button>
           </div>
 
-          <div *ngFor="let item of editData.items; let i = index"
+          <div
+            *ngFor="let item of editData.items; let i = index"
             class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Item:</label>
-                <input type="text" [(ngModel)]="item.itemDescription"
+                <input
+                  type="text"
+                  [(ngModel)]="item.itemDescription"
                   required />
               </div>
             </div>
@@ -584,8 +752,10 @@
             </div>
 
             <div class="modal-input-group remove-btn">
-              <button type="button" (click)="removeRow('editIntransitItem', i)"
-                style="width: 25px; margin-top: 10px;">
+              <button
+                type="button"
+                (click)="removeRow('editIntransitItem', i)"
+                style="width: 25px; margin-top: 10px">
                 X
               </button>
             </div>
@@ -600,12 +770,16 @@
             </div>
             <div class="modal-input-group">
               <label>Purchase Order:</label>
-              <input type="text" [(ngModel)]="editData.purchaseOrder"
+              <input
+                type="text"
+                [(ngModel)]="editData.purchaseOrder"
                 required />
             </div>
             <div class="modal-input-group">
               <label>Purchase Company:</label>
-              <input type="text" [(ngModel)]="editData.purchaseCompany"
+              <input
+                type="text"
+                [(ngModel)]="editData.purchaseCompany"
                 required />
             </div>
             <div class="modal-input-group">
@@ -623,7 +797,9 @@
             </div>
             <div class="modal-input-group">
               <label>Contact Person:</label>
-              <input type="text" [(ngModel)]="editData.contactPerson"
+              <input
+                type="text"
+                [(ngModel)]="editData.contactPerson"
                 required />
             </div>
             <div class="modal-input-group full-width">
@@ -635,19 +811,24 @@
           <hr />
           <span>Payment Detail</span>
 
-          <div class="modal-buttons "
+          <div
+            class="modal-buttons"
             style="display: flex; gap: 10px; align-items: center">
-            <button (click)="addRow('editIntransitPayment')"
-              class="btn btn-success">
+            <button
+              (click)="addRow('editIntransitPayment')"
+               class="btn btn-success add-btn">
               + Add Payment
             </button>
           </div>
-          <div *ngFor="let payment of editData.payments; let i = index"
+          <div
+            *ngFor="let payment of editData.payments; let i = index"
             class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Amount Paid:</label>
-                <input type="number" [(ngModel)]="payment.amountPaid"
+                <input
+                  type="number"
+                  [(ngModel)]="payment.amountPaid"
                   required />
               </div>
             </div>
@@ -660,7 +841,9 @@
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Account Paid From:</label>
-                <input type="text" [(ngModel)]="payment.accountPaidFrom"
+                <input
+                  type="text"
+                  [(ngModel)]="payment.accountPaidFrom"
                   required />
               </div>
             </div>
@@ -672,9 +855,10 @@
             </div>
 
             <div class="modal-input-group remove-btn">
-              <button type="button"
+              <button
+                type="button"
                 (click)="removeRow('editIntransitPayment', i)"
-                style="width: 25px; margin-top: 10px;">
+                style="width: 25px; margin-top: 10px">
                 X
               </button>
             </div>
@@ -693,12 +877,15 @@
         <ng-container *ngIf="pageType === 'logistics'">
           <span>Product Detail</span>
 
-          <div *ngFor="let item of editData.items; let i = index"
+          <div
+            *ngFor="let item of editData.items; let i = index"
             class="detail-row">
             <div class="modal-form">
               <div class="modal-input-group">
                 <label>Item Description:</label>
-                <input type="text" [(ngModel)]="item.itemDescription"
+                <input
+                  type="text"
+                  [(ngModel)]="item.itemDescription"
                   required />
               </div>
             </div>
@@ -725,7 +912,6 @@
                 <input type="number" [(ngModel)]="item.remaningQnty" required />
               </div>
             </div>
-
           </div>
 
           <hr />
@@ -750,7 +936,10 @@
               <label>Transitor:</label>
               <input type="text" [(ngModel)]="editData.transitor" />
             </div>
-
+            <div class="modal-input-group">
+              <label>No-Cont:</label>
+              <input type="text" [(ngModel)]="editData.loadedOnfcl" />
+            </div>
           </div>
 
           <div class="detail-row">
@@ -775,12 +964,18 @@
               <label>Doc-Owner:</label>
               <input type="text" [(ngModel)]="editData.docOwner" />
             </div>
-
+            <div class="modal-input-group">
+              <label>Cont-Type</label>
+              <select [(ngModel)]="editData.containerType" required>
+                <option *ngFor="let c of containerTypes" [value]="c">
+                  {{ c }}
+                </option>
+              </select>
+            </div>
           </div>
 
           <hr />
           <span>Djibouti status</span>
-
           <div class="detail-row">
             <div class="modal-input-group">
               <label>ETADJB:</label>
@@ -797,138 +992,193 @@
             <div class="modal-input-group">
               <label>Tax Paid:</label>
               <input type="date" [(ngModel)]="editData.taxPaid" />
-
             </div>
 
             <div class="modal-input-group">
               <label>Doc Collected:</label>
               <input type="date" [(ngModel)]="editData.docCollected" />
             </div>
-
           </div>
 
-          <div class="detail-row">
-            <div class="modal-input-group">
-              <label>DJB Departed:</label>
-              <input type="date" [(ngModel)]="editData.djbDeparted" />
+          <div class="modal-section">
+            <!-- Labels aligned horizontally with background color -->
+            <div class="header-row">
+              <label class="header-label">Containers Dispatched Djb</label>
+              <label class="header-label">Remark</label>
+              <label class="header-label">Date</label>
+
+              <!-- Button below the labels -->
+              <div class="modal-buttons">
+                <button (click)="addRowDjbDeparted()"
+                  class="btn btn-success add-btn">
+                  + Add
+                </button>
+              </div>
             </div>
-            <div class="modal-input-group">
-              <label>AKK Arrived:</label>
-              <input type="date" [(ngModel)]="editData.akkArrived" />
+
+            <div *ngFor="let row of rowDjbDeparted; let i = index"
+              class="item-row">
+              <div class="modal-input-group">
+                <input type="number" [(ngModel)]="row.numberOfContainer"
+                  class="row-input input-number" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="text" [(ngModel)]="row.remark"
+                  class="row-input input-remark" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="date" [(ngModel)]="row.date"
+                  class="row-input input-date" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group remove-btn">
+                <button type="button" (click)="removeRowDjbDeparted(i)"
+                  class="remove-btn-x">X</button>
+              </div>
             </div>
-            <div class="modal-input-group">
-              <label>SDT Arrived:</label>
-              <input type="date" [(ngModel)]="editData.sdtArrived" />
+          </div>
+
+          <!-- ================== AAK Arrived ================== -->
+          <div class="modal-section">
+            <!-- <h3>Number of container AAK Arrived</h3> -->
+            <div class="header-row">
+              <label class="header-label">Containers Arrived to AAk</label>
+              <label class="header-label">Remark</label>
+              <label class="header-label">Date</label>
+              <div class="modal-buttons">
+                <button (click)="addRowAakArrived()"
+                  class="btn btn-success add-btn">
+                  + add
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic rows -->
+            <div *ngFor="let row of rowAakArrived; let i = index"
+              class="item-row">
+              <div class="modal-input-group">
+                <input type="number" [(ngModel)]="row.numberOfContainer"
+                  class="row-input input-number" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="text" [(ngModel)]="row.remark"
+                  class="row-input input-remark" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="date" [(ngModel)]="row.date"
+                  class="row-input input-date" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group remove-btn">
+                <button type="button" (click)="removeRowAakArrived(i)"
+                  class="remove-btn-x">X</button>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- ================== SDT Arrived ================== -->
+          <div class="modal-section">
+            <!-- <h3>Number of container arrived sdt</h3> -->
+            <div class="header-row">
+              <label class="header-label"> Containers Arrived SDT</label>
+              <label class="header-label">Remark</label>
+              <label class="header-label">Date</label>
+              <div class="modal-buttons">
+                <button (click)="addRowSdtArrived()"
+                  class="btn btn-success add-btn">
+                  + add
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic rows -->
+            <div *ngFor="let row of rowSdtArrived; let i = index"
+              class="item-row">
+              <div class="modal-input-group">
+                <input type="number" [(ngModel)]="row.numberOfContainer"
+                  class="row-input input-number" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="text" [(ngModel)]="row.remark"
+                  class="row-input input-remark" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="date" [(ngModel)]="row.date"
+                  class="row-input input-date" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group remove-btn">
+                <button type="button" (click)="removeRowSdtArrived(i)"
+                  class="remove-btn-x">X</button>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- ================== Containers Returned ================== -->
+          <div class="modal-section">
+            <!-- Header row -->
+            <!-- <h3>Number of empity container returned</h3> -->
+            <div class="header-row">
+              <label class="header-label">Empity Container Returned</label>
+              <label class="header-label">Remark</label>
+              <label class="header-label">Date</label>
+              <div class="modal-buttons">
+                <button (click)="addRowContainerReturned()"
+                  class="btn btn-success add-btn">
+                  + add
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic rows -->
+            <div *ngFor="let row of rowsContainerReturned; let i = index"
+              class="item-row">
+              <div class="modal-input-group">
+                <input type="number" [(ngModel)]="row.numberOfContainer"
+                  class="row-input input-number" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="text" [(ngModel)]="row.remark"
+                  class="row-input input-remark" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group">
+                <input type="date" [(ngModel)]="row.date"
+                  class="row-input input-date" style=" width: 210px;" />
+              </div>
+
+              <div class="modal-input-group remove-btn">
+                <button type="button" (click)="removeRowContainerReturned(i)"
+                  class="remove-btn-x">X</button>
+              </div>
             </div>
           </div>
 
           <hr />
-
-          <span>Container status</span>
-
-          <div class="detail-row">
-            <div class="modal-input-group">
-              <label>No-Cont:</label>
-              <input type="text" [(ngModel)]="editData.loadedOnfcl" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Cont-Type</label>
-              <select [(ngModel)]="editData.containerType" required>
-                <option *ngFor="let c of containerTypes" [value]="c">{{ c
-                  }}</option>
-              </select>
-            </div>
-            <div class="modal-input-group">
-              <label>Remaning Containers:</label>
-              <input type="number"
-                [(ngModel)]="editData.empityContainersLeftUnreturned" />
-            </div>
-
-          </div>
-
-          <hr />
-
           <div class="modal-form">
-
             <div class="modal-input-group full-width">
               <label>Remark:</label>
               <textarea [(ngModel)]="editData.remark"></textarea>
             </div>
           </div>
-
-
-
-
-
-
-
-
-
-          <!-- DJB Departed -->
-<div class="modal-buttons">
-  <button (click)="addRowDjbDeparted()" class="btn btn-success">+ DJB Departed</button>
-</div>
-<div *ngFor="let row of rowDjbDeparted; let i = index" class="item-row">
-  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
-  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
-  <input type="date" [(ngModel)]="row.date" />
-  <button type="button" (click)="removeRowDjbDeparted(i)">X</button>
-</div>
-
-<hr>
-
-<!-- AAK Arrived -->
-<div class="modal-buttons">
-  <button (click)="addRowAakArrived()" class="btn btn-success">+ AAK Arrived</button>
-</div>
-<div *ngFor="let row of rowAakArrived; let i = index" class="item-row">
-  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
-  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
-  <input type="date" [(ngModel)]="row.date" />
-  <button type="button" (click)="removeRowAakArrived(i)">X</button>
-</div>
-
-<hr>
-
-<!-- SDT Arrived -->
-<div class="modal-buttons">
-  <button (click)="addRowSdtArrived()" class="btn btn-success">+ SDT Arrived</button>
-</div>
-<div *ngFor="let row of rowSdtArrived; let i = index" class="item-row">
-  <input type="number" [(ngModel)]="row.container" placeholder="Container" />
-  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
-  <input type="date" [(ngModel)]="row.date" />
-  <button type="button" (click)="removeRowSdtArrived(i)">X</button>
-</div>
-
-<hr>
-
-<!-- Containers Returned -->
-<div class="modal-buttons">
-  <button (click)="addRowContainerReturned()" class="btn btn-success">+ Container Status</button>
-</div>
-<div *ngFor="let row of rowsContainerReturned; let i = index" class="item-row">
-  <input type="text" [(ngModel)]="row.container" placeholder="Container" />
-  <input type="text" [(ngModel)]="row.remark" placeholder="Remark" />
-  <input type="date" [(ngModel)]="row.date" />
-  <button type="button" (click)="removeRowContainerReturned(i)">X</button>
-</div>
-
-
-
-
-
-
-
-
+          <hr />
 
           <hr />
           <div class="modal-buttons">
             <button (click)="saveEditedLogisticsData()" class="btn btn-primary">
               Save Changes
             </button>
-
             <button (click)="closeModal()" class="btn btn-secondary">
               Cancel
             </button>
@@ -948,8 +1198,10 @@
             </button>
           </div>
 
-          <div *ngFor="let payment of newPayments; let j = index"
-            class="payment-row" style="
+          <div
+            *ngFor="let payment of newPayments; let j = index"
+            class="payment-row"
+            style="
               display: flex;
               gap: 10px;
               align-items: center;
@@ -965,7 +1217,9 @@
             </div>
             <div class="modal-input-group" style="flex: 1">
               <label>Account Paid From:</label>
-              <input type="text" [(ngModel)]="payment.accountPaidFrom"
+              <input
+                type="text"
+                [(ngModel)]="payment.accountPaidFrom"
                 required />
             </div>
             <div class="modal-input-group" style="flex: 1">
@@ -973,17 +1227,20 @@
               <input type="date" [(ngModel)]="payment.paidDate" required />
             </div>
             <div class="modal-buttons">
-              <button class="btn btn-danger" (click)="removeRow('payment', j)"
+              <button
+                class="btn btn-danger"
+                (click)="removeRow('payment', j)"
                 [disabled]="j === 0">
                 X
               </button>
             </div>
-
           </div>
 
-          <div class="modal-buttons"
+          <div
+            class="modal-buttons"
             style="margin-top: 10px; display: flex; gap: 10px">
-            <button class="btn btn-primary"
+            <button
+              class="btn btn-primary"
               (click)="submitPayments(); closeModal()">
               Save
             </button>
@@ -1005,7 +1262,8 @@
             {{ selectedRow?.transactionId }}?
           </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger"
+            <button
+              class="btn btn-danger"
               (click)="confirmDeleteClick(); closeModal()">
               Delete
             </button>
@@ -1020,7 +1278,8 @@
             {{ selectedRow?.transactionId }}?
           </p>
           <div class="modal-buttons">
-            <button class="btn btn-danger"
+            <button
+              class="btn btn-danger"
               (click)="confirmDeleteClick(); closeModal('main')">
               Delete
             </button>

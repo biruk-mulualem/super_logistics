@@ -23,10 +23,6 @@ namespace server.Models
         public DateOnly? DocCollected { get; set; }
         public DateOnly? BillCollected { get; set; }
         public DateOnly? TaxPaid { get; set; }
-        public DateOnly? DjbDeparted { get; set; }
-        public DateOnly? AkkArrived { get; set; }
-        public DateOnly? SdtArrived { get; set; }
-        public int? EmpityContainersLeftUnreturned { get; set; }
           public string? Origin { get; set; }
         public string? Remark { get; set; }
             public string? status { get; set; }

@@ -34,23 +34,14 @@ public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
 }
 
 
-
-
-
-
-
-
-
-
-
-
 // GET: api/logisticsfollowups/with-items
 [HttpGet("LogisticsData")]
 public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
 {
     var data = await _context.LogisticsFollowups
         .Select(lf => new 
-        {lf.Id,
+        {
+            lf.Id,
             lf.TransactionId,
             lf.LoadedOnfcl,
             lf.ContainerType,
@@ -66,13 +57,11 @@ public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
             lf.DocCollected,
             lf.BillCollected,
             lf.TaxPaid,
-            lf.DjbDeparted,
-            lf.AkkArrived,
-            lf.SdtArrived,
-            lf.EmpityContainersLeftUnreturned,
             lf.Origin,
             lf.Remark,
             lf.status,
+
+            // ✅ Items
             Items = _context.logisticsItemsDetails
                 .Where(item => item.TransactionId == lf.TransactionId)
                 .Select(item => new 
@@ -80,7 +69,6 @@ public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
                     item.Id,
                     item.ItemDescription,
                     item.Uom,
-               
                     item.LoadedQnty,
                     item.RemaningQnty,
                     item.TotalQnty,
@@ -88,18 +76,64 @@ public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
                     item.status,
                     item.IntransitId
                 })
-                .ToList() // ✅ convert IQueryable to List
+                .ToList(),
+
+            // ✅ Arrived at AAK
+            ArrivedAAk = _context.LogisticsArrivedAAks
+                .Where(a => a.TransactionId == lf.TransactionId)
+                .Select(a => new 
+                {
+                    a.Id,
+                    a.TransactionId,
+                    a.NumberOfContainer,
+                    a.Date,
+                    a.Remark
+                })
+                .ToList(),
+
+            // ✅ Arrived at SDT
+            ArrivedSDT = _context.LogisticsArrivedSDTs
+                .Where(s => s.TransactionId == lf.TransactionId)
+                .Select(s => new 
+                {
+                    s.Id,
+                    s.TransactionId,
+                    s.NumberOfContainer,
+                    s.Date,
+                    s.Remark
+                })
+                .ToList(),
+
+            // ✅ Containers Returned
+            ContainerReturned = _context.LogisticsContainerReturns
+                .Where(c => c.TransactionId == lf.TransactionId)
+                .Select(c => new 
+                {
+                    c.Id,
+                    c.TransactionId,
+                    c.NumberOfContainer,
+                    c.Date,
+                    c.Remark
+                })
+                .ToList(),
+
+            // ✅ Departed from Djibouti
+            DjbDeparted = _context.LogisticsDjboutiDeparts
+                .Where(d => d.TransactionId == lf.TransactionId)
+                .Select(d => new 
+                {
+                    d.Id,
+                    d.TransactionId,
+                    d.NumberOfContainer,
+                    d.Date,
+                    d.Remark
+                })
+                .ToList()
         })
-        .ToListAsync(); // outer ToListAsync
+        .ToListAsync();
 
     return Ok(data);
 }
-
-
-
-
-
-
 
 
 
@@ -128,7 +162,7 @@ public async Task<ActionResult> AddLogistics([FromBody] LogisticsCreateDto dto)
     {
         TransactionId = transactionId,
         LoadedOnfcl = dto.LoadedOnfcl,
-        EmpityContainersLeftUnreturned = dto.LoadedOnfcl,
+     
         ContainerType = dto.ContainerType,
         Remark = dto.Remark,
         Origin = origin
@@ -180,82 +214,6 @@ public async Task<ActionResult> AddLogistics([FromBody] LogisticsCreateDto dto)
     return Ok(new { message = "Logistics saved successfully", transactionId });
 }
 
-// [HttpPut("logisticsDetail/{id}")]
-// public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
-// {
-//     var followup = await _context.LogisticsFollowups.FindAsync(id);
-//     if (followup == null)
-//         return NotFound($"Logistics followup with ID {id} not found.");
-
-//     // ✅ Update main followup fields from top-level DTO
-//     followup.Remark = dto.Remark;
-//     followup.BillNo = dto.BillNo;
-//     followup.truckWayBill = dto.truckWayBill;
-//     followup.Transitor = dto.Transitor;
-//     followup.ContainerType = dto.ContainerType;
-//     followup.LoadedOnfcl = dto.LoadedOnfcl;
-//     followup.Origin = dto.Origin;
-//     followup.Shipper = dto.Shipper;
-
-//     followup.SdtArrived = dto.SdtArrived;
-//     followup.AkkArrived = dto.AkkArrived;
-//     followup.DjbDeparted = dto.DjbDeparted;
-//     followup.DjbArrived = dto.DjbArrived;
-//     followup.EmpityContainersLeftUnreturned = dto.EmpityContainersLeftUnreturned;
-//     followup.BillCollected = dto.BillCollected;
-//     followup.TaxPaid = dto.TaxPaid;
-//     followup.DocSentDjb = dto.DocSentDjb;
-//     followup.DocCollected = dto.DocCollected;
-//     followup.DocOwner = dto.DocOwner;
-//     followup.LoadingDate = dto.LoadingDate;
-//     followup.Etadjb = dto.Etadjb;
-
-
-
-//     // ✅ Replace items if any exist
-//             if (dto.Items != null && dto.Items.Any())
-//             {
-//                 // Remove old items
-//                 var existingItems = _context.logisticsItemsDetails
-//                     .Where(i => i.TransactionId == followup.TransactionId);
-//                 _context.logisticsItemsDetails.RemoveRange(existingItems);
-
-//                 // Add new items
-//                 var newItems = dto.Items.Select(it => new logisticsItemsDetail
-//                 {
-//                     TransactionId = followup.TransactionId,
-//                     IntransitId = it.IntransitId,
-//                     ItemDescription = it.ItemDescription,
-//                     Uom = it.Uom,
-//                     TotalQnty = it.TotalQnty ?? 0,
-//                     LoadedQnty = it.LoadedQnty ?? 0,
-//                     RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0)
-//                 }).ToList();
-
-//                 _context.logisticsItemsDetails.AddRange(newItems);
-//             }
-            
-        
-//     // ✅ Ensure EF Core tracks this as modified
-//             _context.Entry(followup).State = EntityState.Modified;
-
-//     // ✅ Save changes to the database
-//     await _context.SaveChangesAsync();
-
-//     return NoContent();
-// }
-
-
-
-
-
-
-
-
-
-
-
-
 
 [HttpPut("logisticsDetail/{id}")]
 public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
@@ -274,11 +232,9 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
     followup.Origin = dto.Origin;
     followup.Shipper = dto.Shipper;
 
-    followup.SdtArrived = dto.SdtArrived;
-    followup.AkkArrived = dto.AkkArrived;
-    followup.DjbDeparted = dto.DjbDeparted;
+ 
     followup.DjbArrived = dto.DjbArrived;
-    followup.EmpityContainersLeftUnreturned = dto.EmpityContainersLeftUnreturned;
+
     followup.BillCollected = dto.BillCollected;
     followup.TaxPaid = dto.TaxPaid;
     followup.DocSentDjb = dto.DocSentDjb;
@@ -385,39 +341,6 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
 
     return NoContent();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private bool LogisticsFollowupExists(int id)
         {

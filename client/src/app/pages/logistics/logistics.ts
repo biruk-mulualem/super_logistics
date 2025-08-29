@@ -15,9 +15,11 @@ export class Logistics implements OnInit {
   logisticsHeaders = [
     { label: 'Id', key: 'id' },
      { label: 'Ref NO.', key: 'transactionId' },
+      { label: 'Bill-No', key: 'billNo' },
+   
     { label: 'No-Cont', key: 'loadedOnfcl' },
     { label: 'Cont-Type', key: 'containerType' },
-    { label: 'Bill-No', key: 'billNo' },
+  
     { label: 'Track-Waybill', key: 'truckWayBill' },
     { label: 'Doc-Owner', key: 'docOwner' },
     { label: 'Shipper', key: 'shipper' },
@@ -54,7 +56,7 @@ export class Logistics implements OnInit {
 
   ngOnInit(): void {
     this.fetchIntransitOptions();
-     this.loadLogisticsData();
+    this.loadLogisticsData();
   }
 
   fetchIntransitOptions() {
@@ -66,7 +68,9 @@ export class Logistics implements OnInit {
 
   // ---------------- Transaction / Item Changes ----------------
   onTransactionChange(item: any) {
-    const trx = this.intransitOptions.find(t => t.transactionId === item.transactionId);
+    const trx = this.intransitOptions.find(
+      (t) => t.transactionId === item.transactionId
+    );
     item.availableItems = trx ? trx.items : [];
     item.selectedItem = null;
     item.itemDescription = '';
@@ -89,8 +93,6 @@ export class Logistics implements OnInit {
     }
   }
 
-
-
   // onRemoveLogistics(index: number) {
   //   if (this.addData.items?.length > index) {
   //     this.addData.items.splice(index, 1);
@@ -108,7 +110,6 @@ export class Logistics implements OnInit {
   }
 
   // ---------------- Save Logistics (using your subscription) ----------------
-
 
   resetAddData() {
     this.addData = {
@@ -129,106 +130,87 @@ export class Logistics implements OnInit {
     };
   }
 
+  private toPascalCase(obj: any): any {
+    if (Array.isArray(obj))
+      return obj.map((item: any) => this.toPascalCase(item));
+    if (obj !== null && typeof obj === 'object') {
+      return Object.keys(obj).reduce((acc, key) => {
+        const pascalKey = key.charAt(0).toUpperCase() + key.slice(1);
+        acc[pascalKey] = this.toPascalCase(obj[key]);
+        return acc;
+      }, {} as any);
+    }
+    return obj;
+  }
 
+  // Usage in your save method
+  saveLogisticsEdit(updatedRow: any) {
+    const payload = this.toPascalCase(updatedRow);
+    const parentId = payload.Id; // <-- use PascalCase Id
 
-saveLogisticsEdit(updatedRow: any) {
-  const parentId = updatedRow.id; // main logistics row ID
-  this.logisticsService.updateLogisticsDetailData(parentId, updatedRow).subscribe({
-    next: res => {
-      console.log('Logistics updated successfully', res);
-      // update local table
-      const idx = this.tableData.findIndex(r => r.id === parentId);
-      if (idx > -1) this.tableData[idx] = updatedRow;
-    },
-    error: err => console.error('Failed to update logistics:', err)
-  });
-}
-
-
+    this.logisticsService
+      .updateLogisticsDetailData(parentId, payload)
+      .subscribe({
+        next: (res) => {
+          console.log('Logistics updated successfully', res);
+          const idx = this.tableData.findIndex((r) => r.id === parentId);
+          if (idx > -1) this.tableData[idx] = updatedRow;
+        },
+        error: (err) => console.error('Failed to update logistics:', err),
+      });
+  }
 
   onLogisticsDelete(event: any) {
-    const idx = this.tableData.findIndex(row => row.id === event.id);
+    const idx = this.tableData.findIndex((row) => row.id === event.id);
     if (idx > -1) this.tableData.splice(idx, 1);
   }
 
+  onAddLogistics(payload: any) {
+    console.log('Received payload from child:', payload);
 
+    if (!payload || !payload.items || payload.items.length === 0) {
+      alert('No items to save.');
+      return;
+    }
 
+    this.logisticsService.addLogistics(payload).subscribe({
+      next: (res) => {
+        console.log('✅ Logistics saved successfully:', res);
 
+        // Add new row to table for UI
+        const newId = this.tableData.length + 1;
+        this.tableData.push({
+          id: newId,
+          loadedOnfcl: payload.LoadedOnfcl,
+          containerType: payload.containerType,
+          remark: payload.remark,
+          items: payload.items.map((i: any) => ({
+            transactionId: i.transactionId,
+            itemDescription: i.itemDescription,
+            uom: i.uom,
+            quantity: i.LoadedQnty || i.quantity,
+          })),
+        });
 
-
-onAddLogistics(payload: any) {
-  console.log("Received payload from child:", payload);
-
-  if (!payload || !payload.items || payload.items.length === 0) {
-    alert("No items to save.");
-    return;
+        // Reset modal data
+        this.resetAddData();
+      },
+      error: (err) => {
+        console.error('❌ Failed to save logistics:', err);
+        alert('Failed to save logistics.');
+      },
+    });
   }
 
-  this.logisticsService.addLogistics(payload).subscribe({
-    next: res => {
-      console.log('✅ Logistics saved successfully:', res);
-
-      // Add new row to table for UI
-      const newId = this.tableData.length + 1;
-      this.tableData.push({
-        id: newId,
-        loadedOnfcl: payload.LoadedOnfcl,
-        containerType: payload.containerType,
-        remark: payload.remark,
-        items: payload.items.map((i: any) => ({
-          transactionId: i.transactionId,
-          itemDescription: i.itemDescription,
-          uom: i.uom,
-          quantity: i.LoadedQnty || i.quantity
-        }))
-      });
-
-      // Reset modal data
-      this.resetAddData();
-    },
-    error: err => {
-      console.error('❌ Failed to save logistics:', err);
-      alert('Failed to save logistics.');
-    }
-  });
-}
-
-loadLogisticsData() {
-  this.logisticsService.getLogisticsData().subscribe({
-    next: data => {
-      console.log('✅ Data received in component:', data);
-      this.tableData = data;
-    },
-    error: err => {
-      console.error('❌ Error fetching data:', err);
-    }
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  loadLogisticsData() {
+    this.logisticsService.getLogisticsData().subscribe({
+      next: (data) => {
+        console.log('✅ Data received in component:', data);
+        this.tableData = data;
+      },
+      error: (err) => {
+        console.error('❌ Error fetching data:', err);
+      },
+    });
+  }
 }

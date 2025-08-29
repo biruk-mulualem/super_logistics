@@ -338,7 +338,11 @@
     <div class="main-modal-body">
       <!-- DETAIL TAB -->
       <ng-container *ngIf="activeTab === 'detail' && buttonVisibility.detail">
-        <ng-container *ngIf="pageType === 'intransit'">
+
+        <ng-container *ngIf="pageType === 'intransit' 
+                  || pageType === 'doneintransithistory' 
+                  || pageType === 'cancelledintransithistory'">
+
           <span>Product Detail</span>
           <div *ngIf="selectedRow?.items?.length; else noItems">
             <div *ngFor="let item of selectedRow.items" class="detail-row">
@@ -424,6 +428,7 @@
             </button>
           </div>
         </ng-container>
+
         <ng-container *ngIf="pageType === 'logistics' && selectedRow">
           <!-- Product Detail -->
           <span>Product Detail</span>

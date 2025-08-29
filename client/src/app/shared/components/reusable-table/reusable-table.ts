@@ -530,10 +530,10 @@ export class ReusableTable implements OnInit, OnChanges {
     return missing;
   }
 
-  openEditModal(row: any, type: 'intransit' | 'logistics') {
+  openEditModal(row: any, type: 'intransit' | 'logistics' |'donelogisticshistory' |'doneintransithistory' | 'cancelledintransithistory') {
     this.pageType = type;
     this.editData = JSON.parse(JSON.stringify(row)); // Deep copy
-    if (type === 'intransit' && !this.editData.payments)
+    if ((type === 'intransit' || type === 'doneintransithistory' || type === 'cancelledintransithistory') && !this.editData.payments)
       this.editData.payments = [];
     this.openModal('edit', row);
   }
@@ -621,18 +621,14 @@ export class ReusableTable implements OnInit, OnChanges {
     this.closeModal('main');
   }
 
-    confirmDeleteLogisicsClick(): void {
+  confirmDeleteLogisicsClick(): void {
     if (!this.selectedRow) {
       alert('No row selected!');
       return;
-    
     }
     this.delete.emit(this.selectedRow);
     this.closeModal('main');
   }
-
-
-
 
   openMainModal(row: any) {
     this.selectedRow = row;
@@ -876,7 +872,7 @@ export class ReusableTable implements OnInit, OnChanges {
       if (arr.length > 1) arr.splice(index, 1); // keep at least one
     }
   }
-  
+
   rowDjbDeparted: {
     numberOfContainer: number;
     remark: string;

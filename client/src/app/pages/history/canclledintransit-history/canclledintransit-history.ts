@@ -44,25 +44,29 @@ export class CancelledIntransitHistory implements OnInit {
     this.loadFollowups();
   }
 
-  async loadFollowups() {
-    try {
-      // 1️⃣ Fetch all followups with status 0
-      const data = await firstValueFrom(this.intransitService.getIntransitStatus0Data());
 
-      // 2️⃣ Fetch items for each followup in parallel
-      const tableWithItems = await Promise.all(
+
+
+
+    async loadFollowups() {
+    try {
+      const data = await firstValueFrom(this.intransitService.getIntransitStatus0Data());
+      if (!data) { this.tableData = []; return; }
+
+      const tableWithDetails = await Promise.all(
         data.map(async row => {
-          const items = await firstValueFrom(
-            this.intransitService.getIntransitItemsDetailStatus0Data(row.transactionId)
-          );
-          return { ...row, items }; // merge items array
+          const [items, payments] = await Promise.all([
+            firstValueFrom(this.intransitService.getIntransitItemsDetailStatus0Data(row.transactionId)),
+            firstValueFrom(this.intransitService.getPaymentData(row.transactionId))
+          ]);
+          return { ...row, items, payments };
         })
       );
 
-      // 3️⃣ Assign to tableData
-      this.tableData = tableWithItems;
+      this.tableData = tableWithDetails;
     } catch (err) {
       console.error('Failed to load followups:', err);
+      this.tableData = [];
     }
   }
 }

@@ -46,9 +46,7 @@
       </div>
 
       <!-- Bottom Panels -->
-<div class="dashboard-grid">
-
-
+      <div class="dashboard-grid">
 
         <div class="card sales">
           <h4>Total Sales</h4>
@@ -59,11 +57,10 @@
           <canvas id="salesChart"></canvas>
         </div>
 
-         <div class="card sales">
+        <div class="card sales">
           <h4>Total Sales</h4>
           <canvas id="salesChart"></canvas>
         </div>
-
 
       </div>
 
@@ -87,10 +84,41 @@
 
         <div class="card storage-warning">
           <h4>Running out of your space?</h4>
-          <p>Your storage will be running out soon. Get more space and powerful productivity features.</p>
+          <p>Your storage will be running out soon. Get more space and powerful
+            productivity features.</p>
           <a href="#">Upgrade storage →</a>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- ===================================================Chatbot Trigger============================================= Button -->
+<button class="chatbot-toggle" (click)="toggleChat()" aria-label="Toggle chatbot">
+  💬
+</button>
+
+<div class="chatbot-window" [class.open]="isChatOpen" role="dialog" aria-modal="true" aria-labelledby="chatbotTitle">
+  <div class="chatbot-header">
+    <h4 id="chatbotTitle">Logistics Assistant</h4>
+    <button class="close-btn" (click)="toggleChat()" aria-label="Close chatbot">✖</button>
+  </div>
+  <div class="chatbot-body" #chatBody>
+    <div *ngFor="let msg of messages" [class.user]="msg.from === 'user'" class="chat-message">
+      <strong *ngIf="msg.from === 'user'">You:</strong>
+      <strong *ngIf="msg.from === 'bot'">Bot:</strong>
+      {{ msg.text }}
+    </div>
+  </div>
+  <div class="chatbot-input">
+    <input
+      type="text"
+      [(ngModel)]="chatInput"
+      (keyup.enter)="sendMessage()"
+      placeholder="Ask something..."
+      aria-label="Chat input"
+    />
+    <button (click)="sendMessage()" aria-label="Send message">➤</button>
+  </div>
+</div>
+
 </div>

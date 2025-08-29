@@ -16,6 +16,8 @@ namespace server.Controllers
         {
             _context = context;
         }
+
+
 [HttpGet("IntransitData")]
 public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
 {
@@ -33,12 +35,11 @@ public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
     
 }
 
-
-// GET: api/logisticsfollowups/with-items
 [HttpGet("LogisticsData")]
 public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
 {
     var data = await _context.LogisticsFollowups
+            .Where(lf => lf.status != "0" && lf.status != "1")
         .Select(lf => new 
         {
             lf.Id,
@@ -59,7 +60,7 @@ public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
             lf.TaxPaid,
             lf.Origin,
             lf.Remark,
-            lf.status,
+            lf.status, 
 
             // ✅ Items
             Items = _context.logisticsItemsDetails
@@ -134,8 +135,6 @@ public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
 
     return Ok(data);
 }
-
-
 
 [HttpPost("AddLogistics")]
 public async Task<ActionResult> AddLogistics([FromBody] LogisticsCreateDto dto)
@@ -213,7 +212,6 @@ public async Task<ActionResult> AddLogistics([FromBody] LogisticsCreateDto dto)
 
     return Ok(new { message = "Logistics saved successfully", transactionId });
 }
-
 
 [HttpPut("logisticsDetail/{id}")]
 public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
@@ -342,6 +340,22 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
     return NoContent();
 }
 
+ [HttpDelete("logisticsDeleteDetail/{id}")]
+public async Task<IActionResult> UpdateStatusToZero(int id)
+{
+    var followup = await _context.LogisticsFollowups.FindAsync(id);
+    if (followup == null) return NotFound();
+
+    followup.status = "0"; // string, not number
+    _context.LogisticsFollowups.Update(followup);
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = $"Status updated to 0 for ID {id}" });
+}
+
+      // ===========================
+        // Helper Method
+        // ===========================
         private bool LogisticsFollowupExists(int id)
         {
             return _context.LogisticsFollowups.Any(e => e.Id == id);

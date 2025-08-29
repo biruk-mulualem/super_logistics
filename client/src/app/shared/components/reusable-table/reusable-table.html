@@ -1,122 +1,4 @@
 <div class="table-section">
-  <style>
-    .modal-actions button {
-      padding: 6px 12px;
-      margin-right: 5px;
-      border-radius: 4px;
-      border: 1px solid;
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-detail {
-      border-color: #264ea5;
-      background-color: #264ea5;
-      color: black;
-    }
-
-    .btn-detail.active {
-      background-color: #28a745;
-    }
-
-    .btn-edit {
-      border-color: #264ea5;
-      background-color: #264ea5;
-    }
-
-    .btn-edit.active {
-      background-color: #28a745;
-    }
-
-    .btn-payment {
-      border-color: #264ea5;
-      background-color: #264ea5;
-    }
-
-    .btn-payment.active {
-      background-color: #28a745;
-    }
-
-    .btn-delete {
-      border-color: #264ea5;
-      background-color: #264ea5;
-    }
-
-    .btn-delete.active {
-      background-color: #28a745;
-    }
-  
-            /* Header row */
-.header-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-/* Header labels */
-.header-label {
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-  background-color: #5dc6e6;
-  padding: 5px;
-  border-radius: 3px;
-}
-
-/* Add button */
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  border-color: #21bd76;
-  margin-top: 10px;
-}
-
-.add-btn {
-  font-weight: bold;
-  font-size: 14px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(218, 153, 153, 0.2);
-  transition: all 0.3s ease;
-  margin-bottom: 10px;
-  padding: 6px 14px;
-}
-
-/* Inputs */
-
-.input-number {
-  margin-left: 10px;
-}
-
-.input-remark {
-  margin-left: 30px;
-}
-
-.input-date {
-  margin-left: 50px;
-}
-
-/* Remove button */
-.remove-btn-x {
-  margin-left: 90px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 3px 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.remove-btn-x:hover {
-  background: #a71d2a;
-}
-
-
-
-          </style>
 
   <div class="container">
     <input
@@ -208,7 +90,7 @@
       <div
         class="modal-buttons"
         style="display: flex; gap: 10px; align-items: center">
-        <button (click)="addRow('add')"  class="btn btn-success add-btn">
+        <button (click)="addRow('add')" class="btn btn-success add-btn">
           + Add Item
         </button>
       </div>
@@ -313,7 +195,7 @@
       <div
         class="modal-buttons"
         style="display: flex; gap: 10px; align-items: center">
-        <button (click)="addRow('logistics')"  class="btn btn-success add-btn">
+        <button (click)="addRow('logistics')" class="btn btn-success add-btn">
           + Add Item
         </button>
       </div>
@@ -816,7 +698,7 @@
             style="display: flex; gap: 10px; align-items: center">
             <button
               (click)="addRow('editIntransitPayment')"
-               class="btn btn-success add-btn">
+              class="btn btn-success add-btn">
               + Add Payment
             </button>
           </div>
@@ -1020,7 +902,7 @@
               class="item-row">
               <div class="modal-input-group">
                 <input type="number" [(ngModel)]="row.numberOfContainer"
-                  class="row-input input-number" style=" width: 210px;" />
+                  class="row-input input-number" style=" width: 200px;" />
               </div>
 
               <div class="modal-input-group">
@@ -1033,13 +915,11 @@
                   class="row-input input-date" style=" width: 210px;" />
               </div>
 
-              <div class="modal-input-group remove-btn">
-                <button type="button" (click)="removeRowDjbDeparted(i)"
-                  class="remove-btn-x">X</button>
-              </div>
+              <button type="button" (click)="removeRowDjbDeparted(i)">X</button>
+
             </div>
           </div>
-
+          <hr>
           <!-- ================== AAK Arrived ================== -->
           <div class="modal-section">
             <!-- <h3>Number of container AAK Arrived</h3> -->
@@ -1073,10 +953,8 @@
                   class="row-input input-date" style=" width: 210px;" />
               </div>
 
-              <div class="modal-input-group remove-btn">
-                <button type="button" (click)="removeRowAakArrived(i)"
-                  class="remove-btn-x">X</button>
-              </div>
+              <button type="button" (click)="removeRowAakArrived(i)">X</button>
+
             </div>
           </div>
 
@@ -1115,10 +993,8 @@
                   class="row-input input-date" style=" width: 210px;" />
               </div>
 
-              <div class="modal-input-group remove-btn">
-                <button type="button" (click)="removeRowSdtArrived(i)"
-                  class="remove-btn-x">X</button>
-              </div>
+              <button type="button" (click)="removeRowSdtArrived(i)">X</button>
+
             </div>
           </div>
 
@@ -1158,10 +1034,9 @@
                   class="row-input input-date" style=" width: 210px;" />
               </div>
 
-              <div class="modal-input-group remove-btn">
-                <button type="button" (click)="removeRowContainerReturned(i)"
-                  class="remove-btn-x">X</button>
-              </div>
+              <button type="button"
+                (click)="removeRowContainerReturned(i)">X</button>
+
             </div>
           </div>
 
@@ -1261,10 +1136,11 @@
             Are you sure you want to delete transaction:
             {{ selectedRow?.transactionId }}?
           </p>
+
           <div class="modal-buttons">
             <button
               class="btn btn-danger"
-              (click)="confirmDeleteClick(); closeModal()">
+              (click)="confirmDeleteIntransitClick(); closeModal()">
               Delete
             </button>
             <button class="btn btn-secondary" (click)="closeModal()">
@@ -1277,10 +1153,11 @@
             Are you sure you want to delete this Logistics transaction:
             {{ selectedRow?.transactionId }}?
           </p>
+
           <div class="modal-buttons">
             <button
               class="btn btn-danger"
-              (click)="confirmDeleteClick(); closeModal('main')">
+              (click)="confirmDeleteLogisicsClick(); closeModal('main')">
               Delete
             </button>
             <button class="btn btn-secondary" (click)="closeModal('main')">

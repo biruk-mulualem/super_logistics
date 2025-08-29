@@ -10,8 +10,6 @@
             <br>
             <h1> <span style="visibility: hidden;">-------</span> Logistics</h1>
 
-
-
 <app-reusable-table
   [headers]="logisticsHeaders"
   [data]="tableData"
@@ -19,11 +17,12 @@
   [showEditModal]="showEditModal"
   [intransitOptions]="intransitOptions"
   (logisticsAdd)="onAddLogistics($event)"
-
+(delete)="onDelete($event)"
   (edit)="saveLogisticsEdit($event)"
-  (logisticsDelete)="onLogisticsDelete($event)"
+
 
 >
+  <!-- (logisticsDelete)="onLogisticsDelete($event)" -->
 </app-reusable-table>
 
 

@@ -30,12 +30,24 @@ getLogisticsData(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/LogisticsData`)
 }
 
-
-
 // Update main followup + items
 updateLogisticsDetailData(id: number, data: any): Observable<any> {
   return this.http.put<any>(`${this.apiUrl}/logisticsDetail/${id}`, data);
 }
+
+// Update main followup + items
+
+
+// logistics.service.ts
+// updateDeletedLogisticsData(id: number): Observable<any> {
+//   return this.http.delete(`${this.apiUrl}/logisticsDeleteDetail/${id}`, {});
+// }
+
+
+
+  deleteIntransitData(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/logisticsDeleteDetail/${id}`);
+  }
 
 
 }

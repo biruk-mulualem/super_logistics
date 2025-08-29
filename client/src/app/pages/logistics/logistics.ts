@@ -93,12 +93,17 @@ export class Logistics implements OnInit {
     }
   }
 
-  // onRemoveLogistics(index: number) {
-  //   if (this.addData.items?.length > index) {
-  //     this.addData.items.splice(index, 1);
-  //     this.cdr.detectChanges();
-  //   }
-  // }
+    onDelete(rowData: any) {
+    this.logisticsService.deleteIntransitData(rowData.id).subscribe({
+      next: () => this.loadLogisticsData(), 
+      error: (err) => console.error('Failed to delete:', err)
+    });
+  }
+
+
+
+
+
 
   onLoadedQntyInput(event: Event, item: any) {
     const input = event.target as HTMLInputElement;
@@ -109,6 +114,8 @@ export class Logistics implements OnInit {
     input.value = String(value);
   }
 
+
+  
   // ---------------- Save Logistics (using your subscription) ----------------
 
   resetAddData() {
@@ -129,6 +136,8 @@ export class Logistics implements OnInit {
       ],
     };
   }
+
+
 
   private toPascalCase(obj: any): any {
     if (Array.isArray(obj))
@@ -160,13 +169,9 @@ export class Logistics implements OnInit {
       });
   }
 
-  onLogisticsDelete(event: any) {
-    const idx = this.tableData.findIndex((row) => row.id === event.id);
-    if (idx > -1) this.tableData.splice(idx, 1);
-  }
 
   onAddLogistics(payload: any) {
-    console.log('Received payload from child:', payload);
+    
 
     if (!payload || !payload.items || payload.items.length === 0) {
       alert('No items to save.');
@@ -205,7 +210,7 @@ export class Logistics implements OnInit {
   loadLogisticsData() {
     this.logisticsService.getLogisticsData().subscribe({
       next: (data) => {
-        console.log('✅ Data received in component:', data);
+    
         this.tableData = data;
       },
       error: (err) => {

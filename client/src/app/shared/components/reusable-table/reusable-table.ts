@@ -612,7 +612,7 @@ export class ReusableTable implements OnInit, OnChanges {
     this.showModal.main = true;
   }
 
-  confirmDeleteClick(): void {
+  confirmDeleteIntransitClick(): void {
     if (!this.selectedRow) {
       alert('No row selected!');
       return;
@@ -620,6 +620,19 @@ export class ReusableTable implements OnInit, OnChanges {
     this.delete.emit(this.selectedRow);
     this.closeModal('main');
   }
+
+    confirmDeleteLogisicsClick(): void {
+    if (!this.selectedRow) {
+      alert('No row selected!');
+      return;
+    
+    }
+    this.delete.emit(this.selectedRow);
+    this.closeModal('main');
+  }
+
+
+
 
   openMainModal(row: any) {
     this.selectedRow = row;

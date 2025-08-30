@@ -1,0 +1,13 @@
+What is the status of transaction SDT1?->GetTransactionStatus
+What is the total price of SDT1?->GetTotalPrice
+What is the total amount paid for SDT1?->GetTotalAmountPaid
+How much is remaining to be paid for SDT000001?->GetTotalAmountRemaining
+What is the GRN number for SDT000001?->GetGrn
+Who is the contact person for SDT000001?->GetContactPerson
+Give me the purchase order for SDT000001.->GetPurchaseOrder
+What is the origin of SDT000001?->GetOrigin
+What is the item description for SDT000001?->GetItemDescription
+How much of the item has been loaded for SDT000001?->GetLoadedQuantity
+How many items are remaining for SDT000001?->GetRemainingQuantity
+What is the unit price for SDT000001?->GetUnitPrice
+Show me all items in SDT000001.->GetAllItemsInTransaction

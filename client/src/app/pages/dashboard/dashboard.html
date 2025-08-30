@@ -108,6 +108,10 @@
       <strong *ngIf="msg.from === 'bot'">Bot:</strong>
       {{ msg.text }}
     </div>
+    <!-- Bot Typing Indicator -->
+    <div *ngIf="isBotTyping" class="bot-typing">
+      <strong>Bot is typing...</strong>
+    </div>
   </div>
   <div class="chatbot-input">
     <input
@@ -117,8 +121,11 @@
       placeholder="Ask something..."
       aria-label="Chat input"
     />
-    <button (click)="sendMessage()" aria-label="Send message">➤</button>
+    <button (click)="sendMessage()" aria-label="Send message" [disabled]="isSending || !chatInput.trim()">
+      ➤
+    </button>
   </div>
 </div>
+
 
 </div>

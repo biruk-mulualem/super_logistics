@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using server.Models; // <-- adjust as needed to match your actual namespace
-
+using Microsoft.Extensions.DependencyInjection;
+using server.Services;
 namespace server
 {
     // Main entry point for the application
@@ -14,7 +15,8 @@ namespace server
             // Add services to the container for the application
             builder.Services.AddControllers();
             // This registers your MVC controllers, which are responsible for handling HTTP requests.
-
+builder.Services.AddSingleton<IntentClassifier>(); // Register IntentClassifier as a singleton
+builder.Services.AddSingleton<ResponseGenerator>();
             // Configure MySQL with your connection string (connecting to the database)
             builder.Services.AddDbContext<LogisticsContext>(options =>
                 options.UseMySql(

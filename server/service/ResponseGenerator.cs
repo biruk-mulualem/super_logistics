@@ -1,36 +1,62 @@
 using server.Models;
-using server.Services;
+using System.Collections.Generic;
 
 namespace server.Services
 {
     public class ResponseGenerator
     {
-        // Generate bot response based on predicted intent
-        public string GenerateResponse(string intent)
+
+           private readonly LogisticsContext _context;
+        // Generate bot response based on predicted intent and provided entity data
+         public ResponseGenerator(LogisticsContext context)
+        {
+            _context = context;
+        }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        public string GenerateResponse(Dictionary<string, object> entityData, string intent)
         {
             switch (intent)
             {
-                case "GetTotalPrice":
-                    return "The total price is 10000 USD";
-                case "GetTotalAmountPaid":
-                    return "The total amount paid is 3000 USD";
-                case "GetRemainingAmount":
-                    return "The remaining amount is 7000 USD";
-                case "GetTransactionStatus":
-                    return "The transaction status is In Progress";
-                case "GetItems":
-                    return "The transaction contains 3 items: Item A, Item B, Item C";
-                case "GetGrn":
-                    return "The GRN number is GRN12345";
-                case "GetPurchaseOrder":
-                    return "The purchase order number is PO98765";
-                case "GetContactPerson":
-                    return "The contact person is John Doe";
-                case "GetPurchaseCompany":
-                    return "The purchase was made by Acme Corp";
+                case "GetAllIntransitStatus":
+                  var query = _context.IntransitFollowups.AsQueryable();
+                        if (entityData.ContainsKey("TransactionId") && entityData["TransactionId"] != null)
+                        query = query.Where(x => x.TransactionId == (string)entityData["TransactionId"]);
+
+                    if (entityData.ContainsKey("PurchaseOrder") && entityData["PurchaseOrder"] != null)
+                        query = query.Where(x => x.PurchaseOrder == (string)entityData["PurchaseOrder"]);
+                    var results = query.ToList();
+                    if (results.Count == 0)
+                        return "No matching intransit updates found.";
+                    // Format results for bot
+                    return string.Join("\n", results.Select(r =>
+                        $"TransactionId: {r.TransactionId}, PurchaseOrder: {r.PurchaseOrder}"));
+
                 default:
                     return "Sorry, I didn’t understand that. Can you rephrase?";
             }
         }
+
+
+
+
+
+
+
+
+
+
     }
 }

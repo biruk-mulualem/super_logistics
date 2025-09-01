@@ -16,7 +16,9 @@ namespace server
             builder.Services.AddControllers();
             // This registers your MVC controllers, which are responsible for handling HTTP requests.
             builder.Services.AddSingleton<IntentClassifier>(); // Register IntentClassifier as a singleton
-            builder.Services.AddSingleton<ResponseGenerator>();
+          // Program.cs or Startup.cs
+builder.Services.AddScoped<ResponseGenerator>();
+
             // Configure MySQL with your connection string (connecting to the database)
             builder.Services.AddDbContext<LogisticsContext>(options =>
                 options.UseMySql(

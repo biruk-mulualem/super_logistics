@@ -1,531 +1,644 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  HostListener,
-  Inject,
-  PLATFORM_ID,
-  ChangeDetectorRef,
-} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { IntransitFollowupService } from '../../../services/intransit-followup.service';
-import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
+What is the status of transaction SDT1?->GetTransactionStatus
+Can you tell me the current status of SDT2?->GetTransactionStatus
+What is the status of transaction SDT1?->GetTransactionStatus
+Can you tell me the current status of SDT2?->GetTransactionStatus
+I want the status of SDT3.->GetTransactionStatus
+Status check for SDT4?->GetTransactionStatus
+Please provide the status of SDT5.->GetTransactionStatus
+Update me on the status of SDT6.->GetTransactionStatus
+What’s happening with SDT7?->GetTransactionStatus
+Give me the current status of SDT8.->GetTransactionStatus
+Do you have the status of SDT9?->GetTransactionStatus
+Check the status of SDT10.->GetTransactionStatus
+I want the status of SDT3.->GetTransactionStatus
+What is the total price of SDT1?->GetTotalPrice
+How much is the total price for SDT2?->GetTotalPrice
+Give me the total cost for transaction SDT3.->GetTotalPrice
+What is the total amount paid for SDT1?->GetTotalAmountPaid
+How much has been paid for SDT2?->GetTotalAmountPaid
+Check the amount already paid for SDT3.->GetTotalAmountPaid
+How much is remaining to be paid for SDT1?->GetTotalAmountRemaining
+Remaining payment for SDT2?->GetTotalAmountRemaining
+What’s left to pay for transaction SDT3?->GetTotalAmountRemaining
+What is the GRN number for SDT1?->GetGrn
+Provide the GRN for SDT2.->GetGrn
+Show me the GRN of SDT3.->GetGrn
+Who is the contact person for SDT1?->GetContactPerson
+Who can I contact for SDT2?->GetContactPerson
+Give me the contact person for transaction SDT3.->GetContactPerson
+Give me the purchase order for SDT1.->GetPurchaseOrder
+What is the purchase order of SDT2?->GetPurchaseOrder
+Show me the PO number for SDT3.->GetPurchaseOrder
+What is the origin of SDT1?->GetOrigin
+Where did SDT2 originate from?->GetOrigin
+Provide the origin location of SDT3.->GetOrigin
+What is the item description for SDT1?->GetItemDescription
+Tell me the description of items in SDT2.->GetItemDescription
+Give me details about the items for SDT3.->GetItemDescription
+How much of the item has been loaded for SDT1?->GetLoadedQuantity
+What is the loaded quantity of SDT2?->GetLoadedQuantity
+Show me the amount of loaded items for SDT3.->GetLoadedQuantity
+How many items are remaining for SDT1?->GetRemainingQuantity
+What is the remaining quantity for SDT2?->GetRemainingQuantity
+Show me the remaining items for SDT3.->GetRemainingQuantity
+What is the unit price for SDT1?->GetUnitPrice
+Give me the price per unit for SDT2.->GetUnitPrice
+Show me the unit cost of SDT3.->GetUnitPrice
+Show me all items in SDT1.->GetAllItemsInTransaction
+List all items for SDT2.->GetAllItemsInTransaction
+Give me all items belonging to transaction SDT3.->GetAllItemsInTransaction
+What is the total price of SDT1?->GetTotalPrice
+How much is the total price for SDT2?->GetTotalPrice
+Give me the total cost for transaction SDT3.->GetTotalPrice
+Total price for SDT4?->GetTotalPrice
+Can you provide the total cost for SDT5?->GetTotalPrice
+I need the total price for SDT6.->GetTotalPrice
+Check the cost of SDT7.->GetTotalPrice
+How much does SDT8 cost?->GetTotalPrice
+Provide the total amount for SDT9.->GetTotalPrice
+Tell me the total price for SDT10.->GetTotalPrice
+What is the total amount paid for SDT1?->GetTotalAmountPaid
+How much has been paid for SDT2?->GetTotalAmountPaid
+Check the amount already paid for SDT3.->GetTotalAmountPaid
+Paid amount for SDT4?->GetTotalAmountPaid
+What’s been paid for SDT5?->GetTotalAmountPaid
+Total payment received for SDT6?->GetTotalAmountPaid
+Can you tell me the paid amount for SDT7?->GetTotalAmountPaid
+Show me how much has been paid for SDT8.->GetTotalAmountPaid
+Amount already paid for SDT9?->GetTotalAmountPaid
+Provide the paid sum for SDT10.->GetTotalAmountPaid
+How much is remaining to be paid for SDT1?->GetTotalAmountRemaining
+Remaining payment for SDT2?->GetTotalAmountRemaining
+What’s left to pay for transaction SDT3?->GetTotalAmountRemaining
+Outstanding amount for SDT4?->GetTotalAmountRemaining
+Remaining balance for SDT5?->GetTotalAmountRemaining
+How much is unpaid for SDT6?->GetTotalAmountRemaining
+Amount left to pay for SDT7?->GetTotalAmountRemaining
+Show me the remaining sum for SDT8.->GetTotalAmountRemaining
+What is still due for SDT9?->GetTotalAmountRemaining
+Provide the remaining payment for SDT10.->GetTotalAmountRemaining
+What is the GRN number for SDT1?->GetGrn
+Provide the GRN for SDT2.->GetGrn
+Show me the GRN of SDT3.->GetGrn
+GRN for SDT4?->GetGrn
+What is the goods receipt number for SDT5?->GetGrn
+Can you give the GRN for SDT6?->GetGrn
+Check the GRN of SDT7.->GetGrn
+Give me the GRN of SDT8.->GetGrn
+GRN number for SDT9?->GetGrn
+Show GRN for SDT10.->GetGrn
+Who is the contact person for SDT1?->GetContactPerson
+Who can I contact for SDT2?->GetContactPerson
+Give me the contact person for transaction SDT3.->GetContactPerson
+Contact for SDT4?->GetContactPerson
+Provide the contact person for SDT5.->GetContactPerson
+Who handles SDT6?->GetContactPerson
+Contact person for SDT7?->GetContactPerson
+Who is responsible for SDT8?->GetContactPerson
+Provide contact details for SDT9.->GetContactPerson
+Show the contact person for SDT10.->GetContactPerson
+Give me the purchase order for SDT1.->GetPurchaseOrder
+What is the purchase order of SDT2?->GetPurchaseOrder
+Show me the PO number for SDT3.->GetPurchaseOrder
+Purchase order for SDT4?->GetPurchaseOrder
+Provide the PO for SDT5.->GetPurchaseOrder
+Can you give the purchase order for SDT6?->GetPurchaseOrder
+PO number for SDT7?->GetPurchaseOrder
+Show the PO for SDT8.->GetPurchaseOrder
+Give me PO details for SDT9.->GetPurchaseOrder
+Purchase order for SDT10?->GetPurchaseOrder
+What is the purchase date of SDT1?->GetPurchaseDate
+When was SDT2 purchased?->GetPurchaseDate
+Tell me the purchase date for transaction SDT3.->GetPurchaseDate
+Provide the purchase date of SDT4.->GetPurchaseDate
+On what date was SDT5 purchased?->GetPurchaseDate
+Give me the purchase date for SDT6.->GetPurchaseDate
+I need to know the purchase date of SDT7.->GetPurchaseDate
+Can you tell me when SDT8 was purchased?->GetPurchaseDate
+Purchase date for SDT9?->GetPurchaseDate
+Show me the purchase date of SDT10.->GetPurchaseDate
+What is the purchase order of SDT1?->GetPurchaseOrder
+Tell me the purchase order for SDT2?->GetPurchaseOrder
+Provide the purchase order of transaction SDT3.->GetPurchaseOrder
+Give me the purchase order for SDT4.->GetPurchaseOrder
+I need the purchase order for SDT5.->GetPurchaseOrder
+Can you show me the purchase order of SDT6?->GetPurchaseOrder
+Purchase order for SDT7?->GetPurchaseOrder
+What’s the purchase order for SDT8?->GetPurchaseOrder
+Please provide the purchase order of SDT9.->GetPurchaseOrder
+Show me the purchase order for SDT10.->GetPurchaseOrder
+Which company made the purchase for SDT1?->GetPurchaseCompany
+Tell me the purchase company for SDT2.->GetPurchaseCompany
+Provide the purchase company of transaction SDT3.->GetPurchaseCompany
+Give me the purchase company for SDT4.->GetPurchaseCompany
+I need the purchase company for SDT5.->GetPurchaseCompany
+Can you show me the purchase company of SDT6?->GetPurchaseCompany
+Purchase company for SDT7?->GetPurchaseCompany
+What’s the purchase company for SDT8?->GetPurchaseCompany
+Please provide the purchase company of SDT9.->GetPurchaseCompany
+Show me the purchase company for SDT10.->GetPurchaseCompany
+Who is the contact person for SDT1?->GetContactPerson
+Tell me the contact person for SDT2?->GetContactPerson
+Provide the contact person of transaction SDT3.->GetContactPerson
+Give me the contact person for SDT4.->GetContactPerson
+I need the contact person for SDT5.->GetContactPerson
+Can you show me the contact person of SDT6?->GetContactPerson
+Contact person for SDT7?->GetContactPerson
+What’s the contact person for SDT8?->GetContactPerson
+Please provide the contact person of SDT9.->GetContactPerson
+Show me the contact person for SDT10.->GetContactPerson
+Who is the contact person for SDT11?->GetContactPerson
+Tell me the contact person for SDT12?->GetContactPerson
+Provide the contact person of transaction SDT13.->GetContactPerson
+Give me the contact person for SDT14.->GetContactPerson
+I need the contact person for SDT15.->GetContactPerson
+Can you show me the contact person of SDT16?->GetContactPerson
+Contact person for SDT17?->GetContactPerson
+What’s the contact person for SDT18?->GetContactPerson
+Please provide the contact person of SDT19.->GetContactPerson
+Show me the contact person for SDT20.->GetContactPerson
+Who is the contact person for SDT100?->GetContactPerson
+What is the total price of SDT1?->GetTotalPrice
+Tell me the total price for SDT2.->GetTotalPrice
+Provide the total price of transaction SDT3.->GetTotalPrice
+Give me the total price for SDT4.->GetTotalPrice
+I need the total price for SDT5.->GetTotalPrice
+Can you show me the total price of SDT6?->GetTotalPrice
+Total price for SDT7?->GetTotalPrice
+What’s the total price for SDT8?->GetTotalPrice
+Please provide the total price of SDT9.->GetTotalPrice
+Show me the total price for SDT10.->GetTotalPrice
+Who can tell me the total price for SDT11?->GetTotalPrice
+I want the total price for SDT12.->GetTotalPrice
+Give the total price for SDT13.->GetTotalPrice
+Total price for transaction SDT14?->GetTotalPrice
+What is the cost of SDT15?->GetTotalPrice
+Can you give the total price of SDT16?->GetTotalPrice
+Please show me the total price for SDT17.->GetTotalPrice
+I need to know the total price of SDT18.->GetTotalPrice
+Provide the total amount for SDT19.->GetTotalPrice
+Check the total price for SDT20.->GetTotalPrice
+What is the total price for SDT100?->GetTotalPrice
+How much has been paid for SDT1?->GetTotalAmountPaid
+What is the total amount paid for SDT2?->GetTotalAmountPaid
+Can you tell me how much has been paid for SDT3?->GetTotalAmountPaid
+Total payment made for SDT4?->GetTotalAmountPaid
+SDT5 – what amount has been paid so far?->GetTotalAmountPaid
+How much did we pay for SDT6?->GetTotalAmountPaid
+Show me the paid amount for SDT7.->GetTotalAmountPaid
+SDT8: total amount paid?->GetTotalAmountPaid
+Please give the amount already paid for SDT9.->GetTotalAmountPaid
+What has been paid till now for SDT10?->GetTotalAmountPaid
+How much is remaining to be paid for SDT1?->GetTotalAmountRemaining
+What is the outstanding amount for SDT2?->GetTotalAmountRemaining
+Remaining payment for SDT3?->GetTotalAmountRemaining
+Tell me the unpaid balance for SDT4.->GetTotalAmountRemaining
+SDT5 – how much is left to pay?->GetTotalAmountRemaining
+Can you show the remaining amount for SDT6?->GetTotalAmountRemaining
+How much do we still owe for SDT7?->GetTotalAmountRemaining
+Remaining sum for SDT8?->GetTotalAmountRemaining
+Amount left to settle for SDT9?->GetTotalAmountRemaining
+What has not been paid yet for SDT10?->GetTotalAmountRemaining
+What percentage of SDT1 has been paid?->GetTotalPaidInPercent
+How much of SDT2 is already paid?->GetTotalPaidInPercent
+SDT3 – what’s the paid percentage?->GetTotalPaidInPercent
+Tell me the payment progress for SDT4.->GetTotalPaidInPercent
+SDT5 – how much percent has been paid?->GetTotalPaidInPercent
+Can you show the paid percent for SDT6?->GetTotalPaidInPercent
+What portion of SDT7 is paid?->GetTotalPaidInPercent
+Paid percentage for SDT8?->GetTotalPaidInPercent
+How much of SDT9’s total amount is paid?->GetTotalPaidInPercent
+What fraction of SDT10 has been paid so far?->GetTotalPaidInPercent
+What percentage of SDT1 is still unpaid?->GetTotalRemainingInPercent
+How much of SDT2 remains to be paid?->GetTotalRemainingInPercent
+SDT3 – what’s the remaining payment percent?->GetTotalRemainingInPercent
+Tell me the unpaid portion for SDT4.->GetTotalRemainingInPercent
+SDT5 – how much percent is left to pay?->GetTotalRemainingInPercent
+Can you show the remaining percent for SDT6?->GetTotalRemainingInPercent
+What fraction of SDT7 is still due?->GetTotalRemainingInPercent
+Remaining payment percentage for SDT8?->GetTotalRemainingInPercent
+How much of SDT9’s total amount is left unpaid?->GetTotalRemainingInPercent
+What portion of SDT10 still needs to be paid?->GetTotalRemainingInPercent
+What is the GRN number for SDT1?->GetGrn
+Can you provide the GRN for SDT2?->GetGrn
+Show me the GRN of SDT3.->GetGrn
+Tell me the GRN number for SDT4.->GetGrn
+SDT5 – what’s the GRN?->GetGrn
+Give me the GRN associated with SDT6.->GetGrn
+What GRN corresponds to SDT7?->GetGrn
+SDT8 – GRN number?->GetGrn
+Provide the GRN for SDT9.->GetGrn
+I need the GRN for SDT10.->GetGrn
+What is the origin of SDT1?->GetOrigin
+Where did SDT2 come from?->GetOrigin
+Tell me the origin for SDT3.->GetOrigin
+From which place is SDT4?->GetOrigin
+SDT5 – what is its origin?->GetOrigin
+Provide the origin location for SDT6.->GetOrigin
+Where was SDT7 shipped from?->GetOrigin
+SDT8 – origin?->GetOrigin
+Show me the origin of SDT9.->GetOrigin
+I need the origin for SDT10.->GetOrigin
+What is the remark for SDT1?->GetRemark
+Tell me the remark of SDT2.->GetRemark
+Provide any remarks for SDT3.->GetRemark
+SDT4 – what are the remarks?->GetRemark
+Show me the remark for SDT5.->GetRemark
+I need the remark for SDT6.->GetRemark
+What notes are associated with SDT7?->GetRemark
+Remark for SDT8?->GetRemark
+Give me the remark for SDT9.->GetRemark
+Any remark for SDT10?->GetRemark
+What is the status of SDT1?->GetStatus
+Tell me the status of SDT2.->GetStatus
+Check the current status of SDT3.->GetStatus
+What’s the progress of SDT4?->GetStatus
+Give me the status for SDT5.->GetStatus
+SDT6 – what is the status?->GetStatus
+I need the current status of SDT7.->GetStatus
+Show the status of SDT8.->GetStatus
+What stage is SDT9 at?->GetStatus
+Any update on SDT10?->GetStatus
+What is the status of SDT1?->GetStatus
+Tell me the status of SDT2.->GetStatus
+Check the current status of SDT3.->GetStatus
+What’s the progress of SDT4?->GetStatus
+Give me the status for SDT5.->GetStatus
+What is the total price of SDT1?->GetTotalPrice
+How much has been paid for SDT2?->GetTotalAmountPaid
+How much is remaining to be paid for SDT3?->GetTotalAmountRemaining
+What is the GRN number for SDT4?->GetGrn
+Who is the contact person for SDT5?->GetContactPerson
+Give me the purchase order for SDT1.->GetPurchaseOrder
+What is the origin of SDT2?->GetOrigin
+What items are in SDT3?->GetAllItemsInTransaction
+When was the purchase date of SDT1?->GetPurchaseDate
+Tell me the purchase date for SDT2.->GetPurchaseDate
+What is the purchase date of SDT3?->GetPurchaseDate
+Give me the date of purchase for SDT4.->GetPurchaseDate
+On what date was SDT5 purchased?->GetPurchaseDate
+I need the purchase date for SDT6.->GetPurchaseDate
+Show the purchase date of SDT7.->GetPurchaseDate
+When did we buy SDT8?->GetPurchaseDate
+SDT9 purchase date?->GetPurchaseDate
+Purchase date for SDT10?->GetPurchaseDate
+SDT1 was purchased on which date?->GetPurchaseDate
+SDT2 was purchased on which date?->GetPurchaseDate
+SDT3 was purchased on which date?->GetPurchaseDate
+What date was SDT1 bought?->GetPurchaseDate
+What date was SDT2 bought?->GetPurchaseDate
+What date was SDT3 bought?->GetPurchaseDate
+What is the status of SDT1?->GetStatus
+What is the status of SDT2?->GetStatus
+What is the status of SDT3?->GetStatus
+When was the purchase date of SDT1?->GetPurchaseDate
+When was the purchase date of SDT2?->GetPurchaseDate
+When was the purchase date of SDT3?->GetPurchaseDate
+Tell me the purchase date for SDT1.->GetPurchaseDate
+Tell me the purchase date for SDT2.->GetPurchaseDate
+Tell me the purchase date for SDT3.->GetPurchaseDate
+Give me the purchase date for SDT1.->GetPurchaseDate
+Give me the purchase date for SDT2.->GetPurchaseDate
+Give me the purchase date for SDT3.->GetPurchaseDate
+What is the status of SDT1?->GetStatus
+What is the status of SDT2?->GetStatus
+What is the status of SDT3?->GetStatus
+Can you tell me the status of SDT1?->GetStatus
+Can you tell me the status of SDT2?->GetStatus
+Can you tell me the status of SDT3?->GetStatus
+Give me the status of SDT1.->GetStatus
+Give me the status of SDT2.->GetStatus
+Give me the status of SDT3.->GetStatus
+Status of SDT1?->GetStatus
+Status of SDT2?->GetStatus
+Status of SDT3?->GetStatus
+Check the status for SDT1.->GetStatus
+Check the status for SDT2.->GetStatus
+Check the status for SDT3.->GetStatus
+I want to know the status of SDT1.->GetStatus
+I want to know the status of SDT2.->GetStatus
+I want to know the status of SDT3.->GetStatus
+What’s the current status of SDT1?->GetStatus
+What’s the current status of SDT2?->GetStatus
+What’s the current status of SDT3?->GetStatus
+Tell me the status of SDT1.->GetStatus
+Tell me the status of SDT2.->GetStatus
+Tell me the status of SDT3.->GetStatus
+Provide the status for SDT1.->GetStatus
+Provide the status for SDT2.->GetStatus
+Provide the status for SDT3.->GetStatus
+Could you check the status of SDT1?->GetStatus
+Could you check the status of SDT2?->GetStatus
+Could you check the status of SDT3?->GetStatus
+I need the status of SDT1.->GetStatus
+I need the status of SDT2.->GetStatus
+I need the status of SDT3.->GetStatus
+What is SDT1’s status?->GetStatus
+What is SDT2’s status?->GetStatus
+What is SDT3’s status?->GetStatus
+Current status of SDT1?->GetStatus
+Current status of SDT2?->GetStatus
+Current status of SDT3?->GetStatus
+Update me on the status of SDT1.->GetStatus
+Update me on the status of SDT2.->GetStatus
+Update me on the status of SDT3.->GetStatus
+How is SDT1 progressing?->GetStatus
+How is SDT2 progressing?->GetStatus
+How is SDT3 progressing?->GetStatus
+Can I get the status of SDT1?->GetStatus
+Can I get the status of SDT2?->GetStatus
+Can I get the status of SDT3?->GetStatus
+Please tell me the status of SDT1.->GetStatus
+Please tell me the status of SDT2.->GetStatus
+Please tell me the status of SDT3.->GetStatus
+When was SDT1 purchased?->GetPurchaseDate
+When was SDT2 purchased?->GetPurchaseDate
+When was SDT3 purchased?->GetPurchaseDate
+What is the purchase date of SDT1?->GetPurchaseDate
+What is the purchase date of SDT2?->GetPurchaseDate
+What is the purchase date of SDT3?->GetPurchaseDate
+Tell me the purchase date of SDT1.->GetPurchaseDate
+Tell me the purchase date of SDT2.->GetPurchaseDate
+Tell me the purchase date of SDT3.->GetPurchaseDate
+Give me the purchase date for SDT1.->GetPurchaseDate
+Give me the purchase date for SDT2.->GetPurchaseDate
+Give me the purchase date for SDT3.->GetPurchaseDate
+SDT1 was purchased on which date?->GetPurchaseDate
+SDT2 was purchased on which date?->GetPurchaseDate
+SDT3 was purchased on which date?->GetPurchaseDate
+What date was SDT1 bought?->GetPurchaseDate
+What date was SDT2 bought?->GetPurchaseDate
+What date was SDT3 bought?->GetPurchaseDate
+I need the purchase date for SDT1.->GetPurchaseDate
+I need the purchase date for SDT2.->GetPurchaseDate
+I need the purchase date for SDT3.->GetPurchaseDate
+Could you tell me when SDT1 was purchased?->GetPurchaseDate
+Could you tell me when SDT2 was purchased?->GetPurchaseDate
+Could you tell me when SDT3 was purchased?->GetPurchaseDate
+What is the date of SDT1 purchase?->GetPurchaseDate
+What is the date of SDT2 purchase?->GetPurchaseDate
+What is the date of SDT3 purchase?->GetPurchaseDate
+When did SDT1 get purchased?->GetPurchaseDate
+When did SDT2 get purchased?->GetPurchaseDate
+When did SDT3 get purchased?->GetPurchaseDate
+Purchase date of SDT1?->GetPurchaseDate
+Purchase date of SDT2?->GetPurchaseDate
+Purchase date of SDT3?->GetPurchaseDate
+Can you provide the purchase date for SDT1?->GetPurchaseDate
+Can you provide the purchase date for SDT2?->GetPurchaseDate
+Can you provide the purchase date for SDT3?->GetPurchaseDate
+I want to know when SDT1 was purchased.->GetPurchaseDate
+I want to know when SDT2 was purchased.->GetPurchaseDate
+I want to know when SDT3 was purchased.->GetPurchaseDate
+Tell me the purchase date of SDT1.->GetPurchaseDate
+Tell me the purchase date of SDT2.->GetPurchaseDate
+Tell me the purchase date of SDT3.->GetPurchaseDate
+Provide the purchase date for SDT1.->GetPurchaseDate
+Provide the purchase date for SDT2.->GetPurchaseDate
+Provide the purchase date for SDT3.->GetPurchaseDate
+SDT1 purchase date?->GetPurchaseDate
+SDT2 purchase date?->GetPurchaseDate
+SDT3 purchase date?->GetPurchaseDate
+What day was SDT1 purchased?->GetPurchaseDate
+What day was SDT2 purchased?->GetPurchaseDate
+What day was SDT3 purchased?->GetPurchaseDate
+What is the status of transaction SDT1?->GetStatus
+Tell me the status of SDT2.->GetStatus
+Where does SDT3 currently stand?->GetStatus
+Give me the current status of SDT4.->GetStatus
+Check the status of SDT5.->GetStatus
+What is the purchase date of SDT1?->GetPurchaseDate
+When was SDT2 purchased?->GetPurchaseDate
+Give me the purchase date for SDT3.->GetPurchaseDate
+What date was SDT4 ordered?->GetPurchaseDate
+On which day was SDT5 purchased?->GetPurchaseDate
+What is the purchase order for SDT1?->GetPurchaseOrder
+Tell me the PO for SDT2.->GetPurchaseOrder
+Give me the purchase order number of SDT3.->GetPurchaseOrder
+Which PO does SDT4 have?->GetPurchaseOrder
+Purchase order of SDT5?->GetPurchaseOrder
+What is the purchase company for SDT1?->GetPurchaseCompany
+Who is the company for SDT2?->GetPurchaseCompany
+Give me the company that purchased SDT3.->GetPurchaseCompany
+Which company bought SDT4?->GetPurchaseCompany
+Purchase company of SDT5?->GetPurchaseCompany
+Who is the contact person for SDT1?->GetContactPerson
+Contact person of SDT2?->GetContactPerson
+Tell me the contact for SDT3.->GetContactPerson
+Give me the contact person for SDT4.->GetContactPerson
+Who manages SDT5?->GetContactPerson
+What is the total price for SDT1?->GetTotalPrice
+Tell me the total price of SDT2.->GetTotalPrice
+How much does SDT3 cost?->GetTotalPrice
+Give me the total price for SDT4.->GetTotalPrice
+Total price of SDT5?->GetTotalPrice
+How much has been paid for SDT1?->GetTotalAmountPaid
+Total amount paid for SDT2?->GetTotalAmountPaid
+Give me the paid amount for SDT3.->GetTotalAmountPaid
+How much has SDT4 paid?->GetTotalAmountPaid
+What is the total paid for SDT5?->GetTotalAmountPaid
+How much remains to be paid for SDT1?->GetTotalAmountRemaining
+Remaining payment for SDT2?->GetTotalAmountRemaining
+Give me the remaining amount for SDT3.->GetTotalAmountRemaining
+What is left to pay for SDT4?->GetTotalAmountRemaining
+How much is still unpaid for SDT5?->GetTotalAmountRemaining
+What percent of payment is done for SDT1?->GetPaidInPercent
+How much percentage is paid for SDT2?->GetPaidInPercent
+Tell me the payment percentage of SDT3.->GetPaidInPercent
+Give me the paid percent for SDT4.->GetPaidInPercent
+Payment done percentage for SDT5?->GetPaidInPercent
+What percent remains for SDT1?->GetRemainingInPercent
+Remaining payment percentage for SDT2?->GetRemainingInPercent
+Tell me the remaining percent for SDT3.->GetRemainingInPercent
+Give me the remaining payment percent for SDT4.->GetRemainingInPercent
+How much is left in percent for SDT5?->GetRemainingInPercent
+What is the GRN number for SDT1?->GetGrn
+Give me the GRN of SDT2.->GetGrn
+Tell me the GRN number for SDT3.->GetGrn
+What GRN does SDT4 have?->GetGrn
+GRN of SDT5?->GetGrn
+What is the origin of SDT1?->GetOrigin
+Where was SDT2 shipped from?->GetOrigin
+Give me the origin of SDT3.->GetOrigin
+Tell me the origin of SDT4.->GetOrigin
+Origin of SDT5?->GetOrigin
+What is the remark of SDT1?->GetRemark
+Give me the remarks for SDT2.->GetRemark
+Tell me the remark for SDT3.->GetRemark
+Remarks of SDT4?->GetRemark
+What are the notes on SDT5?->GetRemark
+What is the item description for SDT1?->GetItemDescription
+Tell me the description for SDT2.->GetItemDescription
+Item description of SDT3?->GetItemDescription
+Give me the item details of SDT4.->GetItemDescription
+Describe the item of SDT5.->GetItemDescription
+What is the quantity of SDT1?->GetQuantity
+Give me the quantity of SDT2.->GetQuantity
+How many units for SDT3?->GetQuantity
+Tell me the quantity of SDT4.->GetQuantity
+Quantity of SDT5?->GetQuantity
+What is the UOM for SDT1?->GetUom
+Give me the unit of measure of SDT2.->GetUom
+Tell me the UOM for SDT3.->GetUom
+UOM of SDT4?->GetUom
+What unit does SDT5 use?->GetUom
+How much has been loaded for SDT1?->GetLoadedQuantity
+Give me the loaded quantity for SDT2.->GetLoadedQuantity
+Tell me how much of SDT3 is loaded.->GetLoadedQuantity
+Loaded quantity of SDT4?->GetLoadedQuantity
+How many items are loaded for SDT5?->GetLoadedQuantity
+How many items remain for SDT1?->GetRemainingQuantity
+Give me the remaining quantity for SDT2.->GetRemainingQuantity
+Tell me how many are left for SDT3.->GetRemainingQuantity
+Remaining items of SDT4?->GetRemainingQuantity
+How many units are remaining for SDT5?->GetRemainingQuantity
+What is the unit price for SDT1?->GetUnitPrice
+Give me the unit price of SDT2.->GetUnitPrice
+Tell me the price per unit for SDT3.->GetUnitPrice
+Unit price of SDT4?->GetUnitPrice
+Price of SDT5 per unit?->GetUnitPrice
+Show me all items in SDT1.->GetAllItemsInTransaction
+List all items of SDT2.->GetAllItemsInTransaction
+Give me all items for SDT3.->GetAllItemsInTransaction
+What items are included in SDT4?->GetAllItemsInTransaction
+All items of SDT5?->GetAllItemsInTransaction
+What is the item description for SDT1?->GetItemDescription
+Tell me the description for SDT2.->GetItemDescription
+Item description of SDT3?->GetItemDescription
+Give me the item details of SDT4.->GetItemDescription
+Describe the item of SDT5.->GetItemDescription
+What is the quantity of SDT1?->GetQuantity
+Give me the quantity of SDT2.->GetQuantity
+How many units for SDT3?->GetQuantity
+Tell me the quantity of SDT4.->GetQuantity
+Quantity of SDT5?->GetQuantity
+What is the UOM for SDT1?->GetUom
+Give me the unit of measure of SDT2.->GetUom
+Tell me the UOM for SDT3.->GetUom
+UOM of SDT4?->GetUom
+What unit does SDT5 use?->GetUom
+How much has been loaded for SDT1?->GetLoadedQuantity
+Give me the loaded quantity for SDT2.->GetLoadedQuantity
+Tell me how much of SDT3 is loaded.->GetLoadedQuantity
+Loaded quantity of SDT4?->GetLoadedQuantity
+How many items are loaded for SDT5?->GetLoadedQuantity
+How many items remain for SDT1?->GetRemainingQuantity
+Give me the remaining quantity for SDT2.->GetRemainingQuantity
+Tell me how many are left for SDT3.->GetRemainingQuantity
+Remaining items of SDT4?->GetRemainingQuantity
+How many units are remaining for SDT5?->GetRemainingQuantity
+What is the unit price for SDT1?->GetUnitPrice
+Give me the unit price of SDT2.->GetUnitPrice
+Tell me the price per unit for SDT3.->GetUnitPrice
+Unit price of SDT4?->GetUnitPrice
+Price of SDT5 per unit?->GetUnitPrice
+Show me all items in SDT1.->GetAllItemsInTransaction
+List all items of SDT2.->GetAllItemsInTransaction
+Give me all items for SDT3.->GetAllItemsInTransaction
+What items are included in SDT4?->GetAllItemsInTransaction
+All items of SDT5?->GetAllItemsInTransaction
+What is the status of SDT1?->GetStatus
+What is the status of SDT2?->GetStatus
+What is the status of SDT3?->GetStatus
+What is the total price of SDT1?->GetTotalPrice
+What is the total price of SDT2?->GetTotalPrice
+What is the total price of SDT3?->GetTotalPrice
+How much has been paid for SDT1?->GetTotalAmountPaid
+How much has been paid for SDT2?->GetTotalAmountPaid
+How much has been paid for SDT3?->GetTotalAmountPaid
+How much is remaining to be paid for SDT1?->GetTotalAmountRemaining
+How much is remaining to be paid for SDT2?->GetTotalAmountRemaining
+How much is remaining to be paid for SDT3?->GetTotalAmountRemaining
+What percent of SDT1 has been paid?->GetPaidInPercent
+What percent of SDT2 has been paid?->GetPaidInPercent
+What percent of SDT3 has been paid?->GetPaidInPercent
+How much payment is still pending in percent for SDT1?->GetRemainingInPercent
+How much payment is still pending in percent for SDT2?->GetRemainingInPercent
+How much payment is still pending in percent for SDT3?->GetRemainingInPercent
+What is the GRN number for SDT1?->GetGrn
+What is the GRN number for SDT2?->GetGrn
+What is the GRN number for SDT3?->GetGrn
+What is the origin of SDT1?->GetOrigin
+What is the origin of SDT2?->GetOrigin
+What is the origin of SDT3?->GetOrigin
+Give me the remark for SDT1.->GetRemark
+Give me the remark for SDT2.->GetRemark
+Give me the remark for SDT3.->GetRemark
+Who is the contact person for SDT1?->GetContactPerson
+Who is the contact person for SDT2?->GetContactPerson
+Who is the contact person for SDT3?->GetContactPerson
+What is the purchase order for SDT1?->GetPurchaseOrder
+What is the purchase order for SDT2?->GetPurchaseOrder
+What is the purchase order for SDT3?->GetPurchaseOrder
+Which company purchased SDT1?->GetPurchaseCompany
+Which company purchased SDT2?->GetPurchaseCompany
+Which company purchased SDT3?->GetPurchaseCompany
+When was SDT1 purchased?->GetPurchaseDate
+When was SDT2 purchased?->GetPurchaseDate
+When was SDT3 purchased?->GetPurchaseDate
+What is the item description for SDT1?->GetItemDescription
+What is the item description for SDT2?->GetItemDescription
+What is the item description for SDT3?->GetItemDescription
+How much of the item has been loaded for SDT1?->GetLoadedQuantity
+How much of the item has been loaded for SDT2?->GetLoadedQuantity
+How much of the item has been loaded for SDT3?->GetLoadedQuantity
+How many items are remaining for SDT1?->GetRemainingQuantity
+How many items are remaining for SDT2?->GetRemainingQuantity
+How many items are remaining for SDT3?->GetRemainingQuantity
+What is the unit price for SDT1?->GetUnitPrice
+What is the unit price for SDT2?->GetUnitPrice
+What is the unit price for SDT3?->GetUnitPrice
+Show me all items in SDT1.->GetAllItemsInTransaction
+Show me all items in SDT2.->GetAllItemsInTransaction
+Show me all items in SDT3.->GetAllItemsInTransaction
+What is the first item in SDT1? -> GetItemDescription
+Tell me the second item description for SDT1. -> GetItemDescription
+Show the third item of SDT1. -> GetItemDescription
+What items are included in SDT2? -> GetItemDescription
+Give me the description of the first item in SDT2. -> GetItemDescription
+How many units of the first item are in SDT1? -> GetQuantity
+What is the quantity of the second item in SDT1? -> GetQuantity
+Show me the quantity of the third item in SDT1? -> GetQuantity
+How much of the first item is in SDT2? -> GetQuantity
+Total quantity for the second item in SDT2? -> GetQuantity
+How much of the first item in SDT1 has been loaded? -> GetLoadedQuantity
+Show loaded quantity for the second item of SDT1? -> GetLoadedQuantity
+What’s the loaded amount for the third item in SDT1? -> GetLoadedQuantity
+How many units of the first item in SDT2 are loaded? -> GetLoadedQuantity
+Loaded quantity for the second item in SDT2? -> GetLoadedQuantity
+How many units are remaining for the first item in SDT1? -> GetRemainingQuantity
+Show remaining quantity for the second item in SDT1? -> GetRemainingQuantity
+Remaining units of the third item in SDT1? -> GetRemainingQuantity
+How much of the first item in SDT2 is left? -> GetRemainingQuantity
+Remaining quantity for the second item in SDT2? -> GetRemainingQuantity
+What is the unit price of the first item in SDT1? -> GetUnitPrice
+Show the unit price for the second item in SDT1? -> GetUnitPrice
+Unit cost of the third item in SDT1? -> GetUnitPrice
+Price per unit for the first item in SDT2? -> GetUnitPrice
+How much does one unit of the second item in SDT2 cost? -> GetUnitPrice
+What is the UOM for the first item in SDT1? -> GetUom
+Unit of measure for the second item in SDT1? -> GetUom
+Show the UOM of the third item in SDT1? -> GetUom
+What is the unit type of the first item in SDT2? -> GetUom
+UOM for the second item in SDT2? -> GetUom
+List all items in SDT1? -> GetAllItemsInTransaction
+Show all items and their quantities for SDT1? -> GetAllItemsInTransaction
+Give me all items in SDT2? -> GetAllItemsInTransaction
+List all items for SDT2 with details? -> GetAllItemsInTransaction
+Show the complete item list for SDT3? -> GetAllItemsInTransaction
+What is the second item in SDT1 and its quantity? -> GetItemDescription
+How many units of the third item in SDT1 have been loaded? -> GetLoadedQuantity
+What is left to load for the first item in SDT1? -> GetRemainingQuantity
+Show unit price and quantity of the first item in SDT2? -> GetUnitPrice
+Give me the second item description and UOM for SDT2? -> GetItemDescription
+How much of the third item in SDT2 is remaining? -> GetRemainingQuantity
+Loaded quantity of the first item in SDT3? -> GetLoadedQuantity
+Unit price of the second item in SDT3? -> GetUnitPrice
+What’s the UOM for the third item in SDT3? -> GetUom
+List all items in SDT3 and their quantities? -> GetAllItemsInTransaction
+First item in SDT4 and its loaded quantity? -> GetItemDescription
+Remaining quantity of the second item in SDT4? -> GetRemainingQuantity
+Unit price of the first item in SDT4? -> GetUnitPrice
+What is the UOM for the second item in SDT4? -> GetUom
+Show all items in SDT4 with unit price and quantity? -> GetAllItemsInTransaction
 
-
-@Component({
-  imports: [CommonModule, FormsModule],
-  selector: 'app-reusable-table',
-  templateUrl: './reusable-table.html',
-  styleUrls: ['./reusable-table.css'],
-})
-export class ReusableTable implements OnInit, OnChanges {
-  // ============================================================
-  // ---------------------- Inputs / Outputs --------------------
-  // ============================================================
-  @Input() headers: { label: string; key: string }[] = [];
-  @Input() data: any[] = [];
-  @Input() detailRow: any;
-  @Input() paymentTerms: any[] = [];
-  @Input() editData: any = {};
-  @Input() showEditModal: boolean = false;
-  @Input() intransitOptions: any[] = []; // all TransactionIds + Items
-
-  @Output() add = new EventEmitter<any>();
-  @Output() edit = new EventEmitter<any>();
-  @Output() delete = new EventEmitter<any>();
-  @Output() addPayment = new EventEmitter<any>();
-
-  // Intransit & Logistics shared events
-  @Output() transactionChange = new EventEmitter<any>();
-  @Output() itemChange = new EventEmitter<any>();
-  @Output() addItemEvent = new EventEmitter<void>();
-  @Output() removeItemEvent = new EventEmitter<number>();
-  @Output() intransitOptionsChange = new EventEmitter<any[]>();
-
-  // Logistics-specific
-  @Output() logisticsAdd = new EventEmitter<any>();
-  @Output() logisticsRemove = new EventEmitter<any>();
-
- 
-  updateIntransitOptions(newOptions: any[]) {
-    this.intransitOptionsChange.emit(newOptions);
-  }
-
-  // ============================================================
-  // ---------------- Common State / Constants ------------------
-  // ============================================================
-  filteredData: any[] = [];
-  searchQuery: string = '';
-  currentPage: number = 1;
-  rowsPerPage: number = 13;
-
-  showModal = {
-    add: false,
-    edit: false,
-    delete: false,
-    detail: false,
-    payment: false,
-    main: false,
-  };
-
-  selectedRow: any = null;
-  newPayments: any[] = [];
-  addData: any = {};
-  deleteRowData: any = null;
-  activeTab: string = 'detail';
-
-  uoms: string[] = [
-    'mg', 'g', 'kg', 'ton', 'lb', 'oz', 'ml', 'l', 'pcs', 'box', 'roll', 'pack',
-    'dozen', 'set', 'bottle', 'can', 'bag', 'sheet', 'meter', 'cm', 'inch',
-    'yard', 'sqft', 'sqm', 'gallon', 'quart', 'pint', 'fluid_oz', 'tube',
-    'carton', 'crate', 'pail', 'jar', 'packaging_unit', 'bundle', 'set', 'pair',
-    'reel', 'sheet_metal', 'roll_fabric', 'drum'
-  ];
-
-  origins: string[] = [
-    'china', 'india', 'usa', 'germany', 'japan', 'south_korea', 'france', 'uk',
-    'italy', 'canada', 'mexico', 'brazil', 'russia', 'turkey', 'australia',
-    'singapore', 'netherlands', 'belgium', 'switzerland', 'uae', 'thailand',
-    'vietnam', 'malaysia', 'indonesia'
-  ];
-
-
-  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open Top', 'Flat Rack'];
-
-  isBrowser: boolean;
-  pageType: string | null = null;
-  buttonVisibility = {
-    add: true,
-    edit: true,
-    delete: true,
-    detail: true,
-    payment: true,
-  };
-
-  routeConfigs = [
-    { match: '/intransit', pageType: 'intransit', add: true, edit: true, delete: true, detail: true, payment: true },
-    { match: '/logistics', pageType: 'logistics', add: true, edit: true, delete: true, detail: true, payment: false },
-    { match: '/reports', pageType: 'reports', add: false, edit: true, delete: false, detail: true, payment: false },
-    { match: '/history', pageType: 'history', add: false, edit: false, delete: false, detail: true, payment: false },
-    { match: '/donelogistics', pageType: 'donelogisticshistory', add: false, edit: false, delete: false, detail: true, payment: false },
-    { match: '/doneintransit', pageType: 'doneintransithistory', add: false, edit: false, delete: false, detail: true, payment: false },
-    { match: '/cancelledintransit', pageType: 'cancelledintransithistory', add: false, edit: false, delete: false, detail: true, payment: false },
-    { match: '/cancelledlogistics', pageType: 'cancelledlogisticshistory', add: false, edit: false, delete: false, detail: true, payment: false },
-  ];
-
-  // ============================================================
-  // ---------------------- Constructor -------------------------
-  // ============================================================
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    public router: Router,
-    public intransitService: IntransitFollowupService,
-    private logisticsService: LogisticsFollowupService,
-
-    private cdr: ChangeDetectorRef
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-
-    // Update page type & buttons on route change
-    this.router.events
-      .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => {
-        this.updatePageTypeAndButtons();
-      });
-  }
-
-  // ============================================================
-  // ---------------------- Lifecycle Hooks ---------------------
-  // ============================================================
-ngOnInit(): void {
-    this.filteredData = Array.isArray(this.data) ? [...this.data] : [];
-    if (this.isBrowser) this.setRowsPerPage(window.innerWidth);
-    this.applyFilterAndPagination();
-    this.updatePageTypeAndButtons();
-}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.applyFilterAndPagination();
-
-    if (changes['detailRow'] && this.detailRow) {
-      this.selectedRow = this.detailRow;
-      this.openModal('detail', this.detailRow);
-      this.fetchPayments(this.detailRow.transactionId);
-    }
-  }
-
-  // ============================================================
-  // ------------------- Common Utilities -----------------------
-  // ============================================================
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    if (this.isBrowser) this.setRowsPerPage(event.target.innerWidth);
-  }
-
-  private setRowsPerPage(width: number) {
-    this.rowsPerPage = width <= 480 ? 1 : 13;
-    this.currentPage = 1;
-  }
-
-  get paginatedData(): any[] {
-    const start = (this.currentPage - 1) * this.rowsPerPage;
-    return this.filteredData.slice(start, start + this.rowsPerPage);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.filteredData.length / this.rowsPerPage);
-  }
-
-  setPage(page: number) { this.currentPage = page; }
-  prevPage() { if (this.currentPage > 1) this.currentPage--; }
-  nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
-
-onSearch(): void {
-  const query = this.searchQuery.toLowerCase();
-
-  const matchesSearch = (value: any): boolean => {
-    if (value === null || value === undefined) return false;
-    if (typeof value === 'string' || typeof value === 'number')
-      return String(value).toLowerCase().includes(query);
-    if (Array.isArray(value))
-      return value.some((item) => matchesSearch(item));
-    if (typeof value === 'object')
-      return Object.values(value).some((val) => matchesSearch(val));
-    return false;
-  };
-
-  // Ensure data is always an array
-  const sourceData = Array.isArray(this.data) ? this.data : [];
-  this.filteredData = sourceData.filter((row) => matchesSearch(row));
-  this.currentPage = 1;
-}
-
-
-  private applyFilterAndPagination() {
-    this.onSearch();
-    if (this.currentPage > this.totalPages)
-      this.currentPage = this.totalPages || 1;
-  }
-
-  hasAnyActionButton(): boolean {
-    return (
-      this.buttonVisibility.detail ||
-      this.buttonVisibility.edit ||
-      this.buttonVisibility.payment ||
-      this.buttonVisibility.delete
-    );
-  }
-
-  private updatePageTypeAndButtons() {
-    const currentRoute = this.router.url;
-    const config = this.routeConfigs.find((cfg) => currentRoute.includes(cfg.match));
-    if (config) {
-      this.pageType = config.pageType;
-      Object.assign(this.buttonVisibility, {
-        add: config.add ?? false,
-        edit: config.edit ?? false,
-        delete: config.delete ?? false,
-        detail: config.detail ?? false,
-        payment: config.payment ?? false,
-      });
-    } else {
-      this.pageType = null;
-      Object.assign(this.buttonVisibility, {
-        add: false,
-        edit: false,
-        delete: false,
-        detail: false,
-        payment: false,
-      });
-    }
-  }
-
-  // ============================================================
-  // ------------------- Modals & Scroll ------------------------
-  // ============================================================
-  openModal(modal: keyof typeof this.showModal, row?: any) {
-    this.showModal[modal] = true;
-    if (row) this.selectedRow = row;
-    this.toggleBodyScroll(true);
-  }
-
-  closeModal(modal?: keyof typeof this.showModal) {
-    if (modal) this.showModal[modal] = false;
-    else Object.keys(this.showModal).forEach(
-      (key) => (this.showModal[key as keyof typeof this.showModal] = false)
-    );
-    this.selectedRow = null;
-    this.newPayments = [];
-    this.toggleBodyScroll(false);
-  }
-
-  private toggleBodyScroll(disable: boolean) {
-    if (!this.isBrowser) return;
-    document.body.classList.toggle('modal-open', disable);
-  }
-
-  // ============================================================
-  // ---------------------- Payments ----------------------------
-  // ============================================================
-  private fetchPayments(transactionId: string): void {
-    this.intransitService.getPaymentData(transactionId).subscribe({
-      next: (payments) => {
-        this.paymentTerms = payments.length
-          ? payments
-          : [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }];
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.paymentTerms = [{ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' }];
-        this.cdr.detectChanges();
-      },
-    });
-  }
-
-  addPaymentRow(): void {
-    this.newPayments.push({ amountPaid: '', paidBy: '', accountPaidFrom: '', paidDate: '' });
-  }
-
-  removePaymentRow(index: number): void {
-    this.newPayments.splice(index, 1);
-  }
-
-  submitPayments(): void {
-    if (this.newPayments.some(p =>
-      !p.amountPaid || !p.paidBy?.trim() || !p.accountPaidFrom?.trim() || !p.paidDate
-    )) {
-      alert('Please fill out all required fields before saving.');
-      return;
-    }
-
-    const transactionId = this.selectedRow?.transactionId;
-    if (!transactionId) {
-      alert('Missing transaction id');
-      return;
-    }
-
-    this.addPayment.emit({ transactionId, payments: this.newPayments });
-    this.closeModal('payment');
-  }
-
-  // ============================================================
-  // -------------------- Intransit Related ---------------------
-  // ============================================================
-openAddModal() {
-  if (this.pageType === 'intransit') {
-    this.addData = {
-      purchaseDate: '',
-      purchaseOrder: '',
-      purchaseCompany: '',
-      contactPerson: '',
-      origin: '',
-      remark: '',
-      items: [
-        { itemDescription: '', uom: '', quantity: '', unitPrice: '' }
-      ]
-    };
-  } else if (this.pageType === 'logistics') {
-    this.addData = {
-      LoadedOnfcl: '',
-      containerType: '',
-      remark: '',
-      items: [
-        {
-          transactionId: '',
-          availableItems: [],
-          selectedItem: null,
-          itemDescription: '',
-          uom: '',
-          quantity: 0,
-          LoadedQnty: 0
-        }
-      ]
-    };
-  }
-
-  // console.log('Modal addData initializedfffffffffffffffff:', this.addData); // ✅ log here
-  this.openModal('add');
-}
-
-  addItem(target: 'add' | 'edit') {
-    const arr = target === 'add' ? this.addData.items : this.editData.items;
-    arr.push({ itemDescription: '', quantity: '', unitPrice: '', uom: '', loadedQnty: '', remainingQnty: '' });
-  }
-
-  removeItem(target: 'add' | 'edit', index: number) {
-    const arr = target === 'add' ? this.addData.items : this.editData.items;
-    if (arr.length > 1) arr.splice(index, 1);
-  }
-
-  saveAddClick(): void {
-    const missing: string[] = [];
-    const d = this.addData;
-
-    if (!d.purchaseOrder?.trim()) missing.push('Purchase Order');
-    if (!d.purchaseDate) missing.push('Purchase Date');
-    if (!d.origin?.trim()) missing.push('Origin');
-    if (!d.purchaseCompany?.trim()) missing.push('Purchase Company');
-    if (!d.contactPerson?.trim()) missing.push('Contact Person');
-
-    d.items.forEach((i: any, idx: number) => {
-      if (!i.itemDescription?.trim()) missing.push(`Item #${idx + 1} Description`);
-      if (!i.uom?.trim()) missing.push(`Item #${idx + 1} UOM`);
-      if (!i.quantity || isNaN(Number(i.quantity))) missing.push(`Item #${idx + 1} Quantity`);
-      if (!i.unitPrice || isNaN(Number(i.unitPrice))) missing.push(`Item #${idx + 1} Unit Price`);
-      i.loadedQnty = 0;
-      i.remainingQnty = Number(i.quantity) || 0;
-    });
-
-    if (missing.length > 0) {
-      alert('Please fill: ' + missing.join(', '));
-      return;
-    }
-
-    this.add.emit(d);
-    this.closeModal('add');
-  }
-
-  // ============================================================
-  // ------------------- Edit / Delete / Main -------------------
-  // ============================================================
-  openEditModal(row: any) {
-    this.editData = JSON.parse(JSON.stringify(row));
-    this.openModal('edit', row);
-    if (!this.editData.payments) this.editData.payments = [];
-  }
-
-  saveEditClick(): void {
-    this.edit.emit(this.editData);
-    this.closeModal('edit');
-  }
-
-  openDeleteModal(row: any) {
-    this.selectedRow = row;
-    this.activeTab = 'delete';
-    this.showModal.main = true;
-  }
-
-  confirmDeleteClick(): void {
-    if (!this.selectedRow) {
-      alert('No row selected!');
-      return;
-    }
-    this.delete.emit(this.selectedRow);
-    this.closeModal('main');
-  }
-
-  openMainModal(row: any) {
-    this.selectedRow = row;
-    this.editData = JSON.parse(JSON.stringify(row));
-    this.activeTab = 'detail';
-    this.paymentTerms = row.payments ?? [];
-    this.openModal('main');
-    if (!this.editData.payments) this.editData.payments = [];
-  }
-
-  setActiveTab(tab: string) {
-    this.activeTab = tab;
-    if (tab === 'detail') this.paymentTerms = this.selectedRow?.payments ?? [];
-  }
-
-  // ============================================================
-  // ------------------- Logistics Related ----------------------
-  // ============================================================
-  onTransactionSelect(row: any) {
-    this.transactionChange.emit(row);
-  }
-
-  onItemSelect(row: any) {
-    this.itemChange.emit(row);
-  }
-
-  addLogistics() {
-    if (!this.addData.items) this.addData.items = [];
-
-    this.addData.items.push({
-      transactionId: '',
-      availableItems: [],
-      selectedItem: null,
-      itemDescription: '',
-      uom: '',
-      quantity: '',
-      LoadedQnty: ''
-    });
-  }
-
-  onLoadedQntyInput(event: Event, item: any) {
-    const input = event.target as HTMLInputElement;
-    let value = parseInt(input.value, 10);
-
-    if (isNaN(value) || value < 0) {
-      value = 0;
-    } else if (value > item.quantity) {
-      value = item.quantity;
-    }
-
-    item.LoadedQnty = value;
-    input.value = String(value);
-  }
-
-  removeLogistics(index: number) {
-    if (index === 0) return;
-    if (this.addData?.items?.length > index) {
-      this.addData.items.splice(index, 1);
-    }
-  }
-
-  onTransactionChange(item: any) {
-    const selectedTransaction = this.intransitOptions.find(
-      opt => opt.transactionId === item.transactionId
-    );
-
-    item.availableItems = selectedTransaction ? selectedTransaction.items : [];
-    item.selectedItem = null;
-    item.itemDescription = '';
-    item.uom = '';
-    item.quantity = '';
-  }
-
-  onItemChange(itemRow: any) {
-    const selected = itemRow.selectedItem;
-    if (selected) {
-      itemRow.itemDescription = selected.itemDescription;
-      itemRow.uom = selected.uom;
-      itemRow.quantity = selected.quantity;
-    }
-  }
-
-
-saveAddLogsticsClick() {
-  // Build a clean payload
-  const payload = {
-    LoadedOnfcl: Number(this.addData.LoadedOnfcl), // ensure numeric
-    containerType: this.addData.containerType,
-    remark: this.addData.remark,
-    items: this.addData.items.map((item: { transactionId: any; itemDescription: any; uom: any; LoadedQnty: any; quantity:any; }) => ({
-      transactionId: item.transactionId,
-      itemDescription: item.itemDescription,
-      uom: item.uom,
-      quantity: item.LoadedQnty ,  // Send the actual loaded quantity
-
-        totalQuantity: item.quantity    // send the original available quantity too
-    }))
-  };
-
-  console.log("🚀 Clean Logistics payload emitted:", payload);
-
-  // Emit payload to parent
-  this.logisticsAdd.emit(payload);
-
-  this.closeModal('add'); // close modal if needed
-}
-
-
-}

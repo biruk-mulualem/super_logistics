@@ -4,6 +4,7 @@ using server.Models;
 using System.Text.Json; // for JsonSerializer
 using server.Models;
 
+
 namespace server.Controllers
 {
     [Route("api/[controller]")]
@@ -242,25 +243,80 @@ public async Task<IActionResult> UpdateLogistics(int id, LogisticsCreateDto dto)
     followup.Etadjb = dto.Etadjb;
 
     // ================== Items ==================
-    if (dto.Items != null && dto.Items.Any())
-    {
-        var existingItems = _context.logisticsItemsDetails
-            .Where(i => i.TransactionId == followup.TransactionId);
-        _context.logisticsItemsDetails.RemoveRange(existingItems);
+if (dto.Items != null && dto.Items.Any())
+{
+    // ===============================
+    // 🚚 Fetch existing logistics items
+    // ===============================
+    var existingItems = _context.logisticsItemsDetails
+        .Where(i => i.TransactionId == followup.TransactionId)
+        .ToList();
 
-        var newItems = dto.Items.Select(it => new logisticsItemsDetail
+    // ===============================
+    // 🚚 Update logisticsItemsDetails
+    // ===============================
+    _context.logisticsItemsDetails.RemoveRange(existingItems);
+
+    var newLogisticsItems = dto.Items.Select(it =>
+    {
+        // Get the IntransitId from existing item if available
+        var matched = existingItems
+            .FirstOrDefault(x => x.TransactionId == followup.TransactionId
+                              && x.ItemDescription == it.ItemDescription);
+
+        var db_intransitId = matched?.IntransitId;
+        var db_itemDescription = matched?.ItemDescription;
+
+        return new logisticsItemsDetail
         {
             TransactionId = followup.TransactionId,
-            IntransitId = it.IntransitId,
-            ItemDescription = it.ItemDescription,
+            IntransitId = db_intransitId ?? it.IntransitId,
+            ItemDescription = db_itemDescription ?? it.ItemDescription,
             Uom = it.Uom,
             TotalQnty = it.TotalQnty ?? 0,
             LoadedQnty = it.LoadedQnty ?? 0,
+            Date = DateOnly.FromDateTime(DateTime.Now),
             RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0)
-        }).ToList();
+        };
+    }).ToList();
 
-        _context.logisticsItemsDetails.AddRange(newItems);
+    _context.logisticsItemsDetails.AddRange(newLogisticsItems);
+
+    // ==================================
+    // 📦 Update IntransitItemsDetails
+    // ==================================
+    foreach (var it in dto.Items)
+    {
+        // Use the previously fetched logistics data
+        var matched = existingItems
+            .FirstOrDefault(x => x.TransactionId == followup.TransactionId
+                              && x.ItemDescription == it.ItemDescription);
+
+        var db_intransitId = matched?.IntransitId;
+        var db_itemDescription = matched?.ItemDescription;
+
+        if (!string.IsNullOrEmpty(db_intransitId) && !string.IsNullOrEmpty(db_itemDescription))
+        {
+            // Update the corresponding IntransitItemsDetail
+            var intransitItem = _context.IntransitItemsDetails
+                .FirstOrDefault(x => x.TransactionId == db_intransitId
+                                  && x.ItemDescription == db_itemDescription);
+
+            if (intransitItem != null)
+            {
+                intransitItem.LoadedQnty = it.LoadedQnty ?? 0;
+                intransitItem.RemaningQnty = (it.TotalQnty ?? 0) - (it.LoadedQnty ?? 0);
+            }
+        }
     }
+
+    // ✅ Save all changes at once
+    _context.SaveChanges();
+}
+
+
+
+
 
     // ================== DJB Departed Rows ==================
     if (dto.DjbDepartedRows != null)
@@ -362,3 +418,5 @@ public async Task<IActionResult> UpdateStatusToZero(int id)
         }
     }
 }
+
+

@@ -762,299 +762,388 @@
           </div>
         </ng-container>
         <ng-container *ngIf="pageType === 'logistics'">
-          <span>Product Detail</span>
 
-          <div
-            *ngFor="let item of editData.items; let i = index"
-            class="detail-row">
-            <div class="modal-form">
-              <div class="modal-input-group">
-                <label>Item Description:</label>
-                <input
-                  type="text"
-                  [(ngModel)]="item.itemDescription"
-                  required />
-              </div>
-            </div>
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <span>Loading Details</span>
 
-            <div class="modal-form">
-              <div class="modal-input-group">
-                <label>UOM:</label>
-                <select [(ngModel)]="item.uom" required>
-                  <option *ngFor="let u of uoms" [value]="u">{{ u }}</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="modal-form">
-              <div class="modal-input-group">
-                <label>Loaded Quantity:</label>
-                <input type="number" [(ngModel)]="item.loadedQnty" required />
-              </div>
-            </div>
-
-            <div class="modal-form">
-              <div class="modal-input-group">
-                <label>Remaining Quantity:</label>
-                <input type="number" [(ngModel)]="item.remaningQnty" required />
-              </div>
-            </div>
-          </div>
-
-          <hr />
-          <span>Common Data</span>
-
-          <div class="detail-row">
-            <div class="modal-input-group">
-              <label>Bill-No:</label>
-              <input type="text" [(ngModel)]="editData.billNo" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Track-Waybill:</label>
-              <input type="text" [(ngModel)]="editData.truckWayBill" />
-            </div>
-            <div class="modal-input-group">
-              <label>Shipper:</label>
-              <input type="text" [(ngModel)]="editData.shipper" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Transitor:</label>
-              <input type="text" [(ngModel)]="editData.transitor" />
-            </div>
-            <div class="modal-input-group">
-              <label>No-Cont:</label>
-              <input type="text" [(ngModel)]="editData.loadedOnfcl" />
-            </div>
-          </div>
-
-          <div class="detail-row">
-            <div class="modal-input-group">
-              <label>Loading Date:</label>
-              <input type="date" [(ngModel)]="editData.loadingDate" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Bill Collected:</label>
-              <input type="date" [(ngModel)]="editData.billCollected" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Origin:</label>
-              <select [(ngModel)]="editData.origin">
-                <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
-              </select>
-            </div>
-
-            <div class="modal-input-group">
-              <label>Doc-Owner:</label>
-              <input type="text" [(ngModel)]="editData.docOwner" />
-            </div>
-            <div class="modal-input-group">
-              <label>Cont-Type</label>
-              <select [(ngModel)]="editData.containerType" required>
-                <option *ngFor="let c of containerTypes" [value]="c">
-                  {{ c }}
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <hr />
-          <span>Djibouti status</span>
-          <div class="detail-row">
-            <div class="modal-input-group">
-              <label>ETADJB:</label>
-              <input type="date" [(ngModel)]="editData.etadjb" />
-            </div>
-            <div class="modal-input-group">
-              <label>DJB Arrived:</label>
-              <input type="date" [(ngModel)]="editData.djbArrived" />
-            </div>
-            <div class="modal-input-group">
-              <label>Doc Sent DJB:</label>
-              <input type="date" [(ngModel)]="editData.docSentDjb" />
-            </div>
-            <div class="modal-input-group">
-              <label>Tax Paid:</label>
-              <input type="date" [(ngModel)]="editData.taxPaid" />
-            </div>
-
-            <div class="modal-input-group">
-              <label>Doc Collected:</label>
-              <input type="date" [(ngModel)]="editData.docCollected" />
-            </div>
-          </div>
-
-          <div class="modal-section">
-            <!-- Labels aligned horizontally with background color -->
-            <div class="header-row">
-              <label class="header-label">Containers Dispatched Djb</label>
-              <label class="header-label">Remark</label>
-              <label class="header-label">Date</label>
-
-              <!-- Button below the labels -->
-              <div class="modal-buttons">
-                <button (click)="addRowDjbDeparted()"
-                  class="btn btn-success add-btn">
-                  + Add
-                </button>
-              </div>
-            </div>
-
-            <div *ngFor="let row of rowDjbDeparted; let i = index"
-              class="item-row">
-              <div class="modal-input-group">
-                <input type="number" [(ngModel)]="row.numberOfContainer"
-                  class="row-input input-number" style=" width: 200px;" />
+            <div
+              *ngFor="let item of editData.items; let i = index"
+              class="detail-row">
+              <div class="modal-form">
+                <div class="modal-input-group">
+                  <label>Item Description:</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="item.itemDescription"
+                    required readonly />
+                </div>
               </div>
 
-              <div class="modal-input-group">
-                <input type="text" [(ngModel)]="row.remark"
-                  class="row-input input-remark" style=" width: 210px;" />
+              <div class="modal-form">
+                <div class="modal-input-group">
+                  <label>UOM:</label>
+                  <input type="text" [value]="item.uom" readonly />
+
+                </div>
               </div>
 
-              <div class="modal-input-group">
-                <input type="date" [(ngModel)]="row.date"
-                  class="row-input input-date" style=" width: 210px;" />
-              </div>
-
-              <button type="button" (click)="removeRowDjbDeparted(i)">X</button>
-
-            </div>
-          </div>
-          <hr>
-          <!-- ================== AAK Arrived ================== -->
-          <div class="modal-section">
-            <!-- <h3>Number of container AAK Arrived</h3> -->
-            <div class="header-row">
-              <label class="header-label">Containers Arrived to AAk</label>
-              <label class="header-label">Remark</label>
-              <label class="header-label">Date</label>
-              <div class="modal-buttons">
-                <button (click)="addRowAakArrived()"
-                  class="btn btn-success add-btn">
-                  + add
-                </button>
-              </div>
-            </div>
-
-            <!-- Dynamic rows -->
-            <div *ngFor="let row of rowAakArrived; let i = index"
-              class="item-row">
-              <div class="modal-input-group">
-                <input type="number" [(ngModel)]="row.numberOfContainer"
-                  class="row-input input-number" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="text" [(ngModel)]="row.remark"
-                  class="row-input input-remark" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="date" [(ngModel)]="row.date"
-                  class="row-input input-date" style=" width: 210px;" />
-              </div>
-
-              <button type="button" (click)="removeRowAakArrived(i)">X</button>
-
-            </div>
-          </div>
-
-          <hr>
-
-          <!-- ================== SDT Arrived ================== -->
-          <div class="modal-section">
-            <!-- <h3>Number of container arrived sdt</h3> -->
-            <div class="header-row">
-              <label class="header-label"> Containers Arrived SDT</label>
-              <label class="header-label">Remark</label>
-              <label class="header-label">Date</label>
-              <div class="modal-buttons">
-                <button (click)="addRowSdtArrived()"
-                  class="btn btn-success add-btn">
-                  + add
-                </button>
-              </div>
-            </div>
-
-            <!-- Dynamic rows -->
-            <div *ngFor="let row of rowSdtArrived; let i = index"
-              class="item-row">
-              <div class="modal-input-group">
-                <input type="number" [(ngModel)]="row.numberOfContainer"
-                  class="row-input input-number" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="text" [(ngModel)]="row.remark"
-                  class="row-input input-remark" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="date" [(ngModel)]="row.date"
-                  class="row-input input-date" style=" width: 210px;" />
-              </div>
-
-              <button type="button" (click)="removeRowSdtArrived(i)">X</button>
-
-            </div>
-          </div>
-
-          <hr>
-
-          <!-- ================== Containers Returned ================== -->
-          <div class="modal-section">
-            <!-- Header row -->
-            <!-- <h3>Number of empity container returned</h3> -->
-            <div class="header-row">
-              <label class="header-label">Empity Container Returned</label>
-              <label class="header-label">Remark</label>
-              <label class="header-label">Date</label>
-              <div class="modal-buttons">
-                <button (click)="addRowContainerReturned()"
-                  class="btn btn-success add-btn">
-                  + add
-                </button>
-              </div>
-            </div>
-
-            <!-- Dynamic rows -->
-            <div *ngFor="let row of rowsContainerReturned; let i = index"
-              class="item-row">
-              <div class="modal-input-group">
-                <input type="number" [(ngModel)]="row.numberOfContainer"
-                  class="row-input input-number" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="text" [(ngModel)]="row.remark"
-                  class="row-input input-remark" style=" width: 210px;" />
-              </div>
-
-              <div class="modal-input-group">
-                <input type="date" [(ngModel)]="row.date"
-                  class="row-input input-date" style=" width: 210px;" />
+              <div class="modal-form">
+                <div class="modal-input-group">
+                  <label>Loaded Quantity:</label>
+                  <input type="number" [(ngModel)]="item.loadedQnty" required
+                     />
+                </div>
               </div>
 
               <button type="button"
-                (click)="removeRowContainerReturned(i)">X</button>
+                (click)="removeItemFromLogisticsedit(i)">X</button>
+            </div>
 
+            <div class="modal-section">
+              <!-- Labels aligned horizontally with background color -->
+              <div class="header-row">
+                <label class="header-label">Transaction ID</label>
+                <label class="header-label">Item Description</label>
+                <label class="header-label">UOM</label>
+                <label class="header-label">Loaded Qnty</label>
+
+                <!-- Button below the labels -->
+                <div
+                  class="modal-buttons"
+                  style="display: flex; gap: 10px; align-items: center;">
+                  <button (click)="addRow('logistics')"
+                    class="btn btn-success add-btn">
+                    + Add
+                  </button>
+                </div>
+
+              </div>
+
+              <div *ngFor="let item of addData.items; let i = index"
+                class="item-row">
+                <!-- Transaction ID Selector -->
+                <div class="modal-input-group">
+
+                  <select
+                    [(ngModel)]="item.transactionId"
+                    (ngModelChange)="onTransactionChange(item)">
+                    <option
+                      *ngFor="let trx of intransitOptions"
+                      [value]="trx.transactionId">
+                      {{ trx.transactionId }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Item Description Selector -->
+                <div class="modal-input-group">
+
+                  <select
+                    [(ngModel)]="item.selectedItem"
+                    (ngModelChange)="onItemChange(item)">
+                    <option *ngFor="let itm of item.availableItems"
+                      [ngValue]="itm">
+                      {{ itm.itemDescription }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Auto-filled UOM -->
+                <div class="modal-input-group">
+
+                  <input type="text" [(ngModel)]="item.uom" readonly />
+                </div>
+
+                <!-- Editable Loaded Quantity -->
+                <div class="modal-input-group">
+
+                  <input
+                    type="number"
+                    [value]="item.LoadedQnty"
+                    (input)="onLoadedQntyInput($event, item)"
+                    min="0" placeholder="Available:{{item.quantity|| 0 }}" />
+                </div>
+                <!-- Remove Button -->
+
+                <button type="button"
+                  (click)="removeRow('logistics', i)">X</button>
+
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <span>Common Data</span>
+
+            <div class="detail-row">
+              <div class="modal-input-group">
+                <label>Bill-No:</label>
+                <input type="text" [(ngModel)]="editData.billNo" />
+              </div>
+
+              <div class="modal-input-group">
+                <label>Track-Waybill:</label>
+                <input type="text" [(ngModel)]="editData.truckWayBill" />
+              </div>
+              <div class="modal-input-group">
+                <label>Shipper:</label>
+                <input type="text" [(ngModel)]="editData.shipper" />
+              </div>
+
+              <div class="modal-input-group">
+                <label>Transitor:</label>
+                <input type="text" [(ngModel)]="editData.transitor" />
+              </div>
+              <div class="modal-input-group">
+                <label>No-Cont:</label>
+                <input type="text" [(ngModel)]="editData.loadedOnfcl" />
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="modal-input-group">
+                <label>Loading Date:</label>
+                <input type="date" [(ngModel)]="editData.loadingDate" />
+              </div>
+
+              <div class="modal-input-group">
+                <label>Bill Collected:</label>
+                <input type="date" [(ngModel)]="editData.billCollected" />
+              </div>
+
+              <div class="modal-input-group">
+                <label>Origin:</label>
+                <select [(ngModel)]="editData.origin">
+                  <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
+                </select>
+              </div>
+
+              <div class="modal-input-group">
+                <label>Doc-Owner:</label>
+                <input type="text" [(ngModel)]="editData.docOwner" />
+              </div>
+              <div class="modal-input-group">
+                <label>Cont-Type</label>
+                <select [(ngModel)]="editData.containerType" required>
+                  <option *ngFor="let c of containerTypes" [value]="c">
+                    {{ c }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <hr>
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <span>Djibouti status</span>
+            <div class="detail-row">
+              <div class="modal-input-group">
+                <label>ETADJB:</label>
+                <input type="date" [(ngModel)]="editData.etadjb" />
+              </div>
+              <div class="modal-input-group">
+                <label>DJB Arrived:</label>
+                <input type="date" [(ngModel)]="editData.djbArrived" />
+              </div>
+              <div class="modal-input-group">
+                <label>Doc Sent DJB:</label>
+                <input type="date" [(ngModel)]="editData.docSentDjb" />
+              </div>
+              <div class="modal-input-group">
+                <label>Tax Paid:</label>
+                <input type="date" [(ngModel)]="editData.taxPaid" />
+              </div>
+
+              <div class="modal-input-group">
+                <label>Doc Collected:</label>
+                <input type="date" [(ngModel)]="editData.docCollected" />
+              </div>
+            </div>
+
+            <div class="modal-section">
+              <!-- Labels aligned horizontally with background color -->
+              <div class="header-row">
+                <label class="header-label">Containers Dispatched Djb</label>
+                <label class="header-label">Remark</label>
+                <label class="header-label">Date</label>
+
+                <!-- Button below the labels -->
+                <div class="modal-buttons">
+                  <button (click)="addRowDjbDeparted()"
+                    class="btn btn-success add-btn">
+                    + Add
+                  </button>
+                </div>
+              </div>
+
+              <div *ngFor="let row of rowDjbDeparted; let i = index"
+                class="item-row">
+                <div class="modal-input-group">
+                  <input type="number" [(ngModel)]="row.numberOfContainer"
+                    class="row-input input-number" style=" width: 200px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="text" [(ngModel)]="row.remark"
+                    class="row-input input-remark" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="date" [(ngModel)]="row.date"
+                    class="row-input input-date" style=" width: 210px;" />
+                </div>
+
+                <button type="button"
+                  (click)="removeRowDjbDeparted(i)">X</button>
+
+              </div>
             </div>
           </div>
 
           <hr />
-          <div class="modal-form">
-            <div class="modal-input-group full-width">
-              <label>Remark:</label>
-              <textarea [(ngModel)]="editData.remark"></textarea>
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <!-- ================== AAK Arrived ================== -->
+            <div class="modal-section">
+              <!-- <h3>Number of container AAK Arrived</h3> -->
+              <div class="header-row">
+                <label class="header-label">Containers Arrived to AAk</label>
+                <label class="header-label">Remark</label>
+                <label class="header-label">Date</label>
+                <div class="modal-buttons">
+                  <button (click)="addRowAakArrived()"
+                    class="btn btn-success add-btn">
+                    + add
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic rows -->
+              <div *ngFor="let row of rowAakArrived; let i = index"
+                class="item-row">
+                <div class="modal-input-group">
+                  <input type="number" [(ngModel)]="row.numberOfContainer"
+                    class="row-input input-number" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="text" [(ngModel)]="row.remark"
+                    class="row-input input-remark" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="date" [(ngModel)]="row.date"
+                    class="row-input input-date" style=" width: 210px;" />
+                </div>
+
+                <button type="button"
+                  (click)="removeRowAakArrived(i)">X</button>
+
+              </div>
             </div>
           </div>
-          <hr />
 
           <hr />
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <!-- ================== SDT Arrived ================== -->
+            <div class="modal-section">
+              <!-- <h3>Number of container arrived sdt</h3> -->
+              <div class="header-row">
+                <label class="header-label"> Containers Arrived SDT</label>
+                <label class="header-label">Remark</label>
+                <label class="header-label">Date</label>
+                <div class="modal-buttons">
+                  <button (click)="addRowSdtArrived()"
+                    class="btn btn-success add-btn">
+                    + add
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic rows -->
+              <div *ngFor="let row of rowSdtArrived; let i = index"
+                class="item-row">
+                <div class="modal-input-group">
+                  <input type="number" [(ngModel)]="row.numberOfContainer"
+                    class="row-input input-number" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="text" [(ngModel)]="row.remark"
+                    class="row-input input-remark" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="date" [(ngModel)]="row.date"
+                    class="row-input input-date" style=" width: 210px;" />
+                </div>
+
+                <button type="button"
+                  (click)="removeRowSdtArrived(i)">X</button>
+
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <!-- ================== Containers Returned ================== -->
+            <div class="modal-section">
+              <!-- Header row -->
+              <!-- <h3>Number of empity container returned</h3> -->
+              <div class="header-row">
+                <label class="header-label">Empity Container Returned</label>
+                <label class="header-label">Remark</label>
+                <label class="header-label">Date</label>
+                <div class="modal-buttons">
+                  <button (click)="addRowContainerReturned()"
+                    class="btn btn-success add-btn">
+                    + add
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dynamic rows -->
+              <div *ngFor="let row of rowsContainerReturned; let i = index"
+                class="item-row">
+                <div class="modal-input-group">
+                  <input type="number" [(ngModel)]="row.numberOfContainer"
+                    class="row-input input-number" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="text" [(ngModel)]="row.remark"
+                    class="row-input input-remark" style=" width: 210px;" />
+                </div>
+
+                <div class="modal-input-group">
+                  <input type="date" [(ngModel)]="row.date"
+                    class="row-input input-date" style=" width: 210px;" />
+                </div>
+
+                <button type="button"
+                  (click)="removeRowContainerReturned(i)">X</button>
+
+              </div>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+            <div class="modal-form">
+              <div class="modal-input-group full-width">
+                <label>Remark:</label>
+                <textarea [(ngModel)]="editData.remark"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
           <div class="modal-buttons">
             <button (click)="saveEditedLogisticsData()" class="btn btn-primary">
               Save Changes

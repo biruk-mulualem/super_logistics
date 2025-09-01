@@ -17,6 +17,7 @@ namespace server.Controllers
             _responseGenerator = responseGenerator;
         }
 
+
         [HttpPost]
         public IActionResult PostMessage([FromBody] ChatRequest request)
         {
@@ -25,6 +26,10 @@ namespace server.Controllers
 
             // Predict intent and extract entities
             var prediction = _classifier.PredictWithEntities(request.Message);
+            // Print result to console in JSON format
+            Console.WriteLine("🔮 Prediction Result:");
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(prediction,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
 
             // Generate response using separate service
             string botReply = _responseGenerator.GenerateResponse(prediction.Intent);
@@ -33,8 +38,8 @@ namespace server.Controllers
             return Ok(new
             {
                 Response = botReply,
-                TransactionId = prediction.TransactionId,
-                Date = prediction.Date
+                // TransactionId = prediction.TransactionId,
+                // Date = prediction.Date
             });
         }
     }

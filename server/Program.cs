@@ -15,14 +15,14 @@ namespace server
             // Add services to the container for the application
             builder.Services.AddControllers();
             // This registers your MVC controllers, which are responsible for handling HTTP requests.
-builder.Services.AddSingleton<IntentClassifier>(); // Register IntentClassifier as a singleton
-builder.Services.AddSingleton<ResponseGenerator>();
+            builder.Services.AddSingleton<IntentClassifier>(); // Register IntentClassifier as a singleton
+            builder.Services.AddSingleton<ResponseGenerator>();
             // Configure MySQL with your connection string (connecting to the database)
             builder.Services.AddDbContext<LogisticsContext>(options =>
                 options.UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection"), // Get the connection string from the config
                     ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-                    // AutoDetect the version of MySQL from the connection string (helps in compatibility)
+                // AutoDetect the version of MySQL from the connection string (helps in compatibility)
                 )
             );
 

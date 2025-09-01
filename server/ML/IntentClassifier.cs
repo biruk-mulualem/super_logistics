@@ -21,7 +21,6 @@ namespace server.Models
         private static string modelPath = Path.Combine(Environment.CurrentDirectory, "ML", "model.zip");
         private readonly MLContext mlContext;
         private PredictionEngine<ModelInput, ModelOutput> predEngine;
-
         // Use the EntityExtractor for entity extraction
         private readonly EntityExtractor _extractor;
 
@@ -78,25 +77,50 @@ namespace server.Models
             mlContext.Model.Save(model, dataView.Schema, modelPath);
             Console.WriteLine($"Model trained and saved to: {modelPath}");
         }
-
         /// <summary>
         /// Predict the intent and extract entities using EntityExtractor.
         /// </summary>
-        public PredictionResult PredictWithEntities(string userMessage)
-        {
-            var input = new ModelInput { Message = userMessage };
-            var result = predEngine.Predict(input);
-
-            // Use the extractor class instead of inline regex
-            var transactionId = _extractor.ExtractTransactionId(userMessage);
-            var date = _extractor.ExtractDate(userMessage);
-
-            return new PredictionResult
-            {
-                Intent = result.PredictedIntent,
-                TransactionId = transactionId,
-                Date = date
-            };
-        }
+public PredictionResult PredictWithEntities(string userMessage)
+{
+    var input = new ModelInput { Message = userMessage };
+    var result = predEngine.Predict(input);
+    // Extract entities using the extractor
+    var transactionId = _extractor.ExtractTransactionId(userMessage);
+    var date = _extractor.ExtractDate(userMessage);
+    var totalPrice = _extractor.ExtractTotalPrice(userMessage);
+    var totalAmountPaid = _extractor.ExtractTotalAmountPaid(userMessage);
+    var totalAmountRemaining = _extractor.ExtractTotalAmountRemaining(userMessage);
+    var loadedQuantity = _extractor.ExtractLoadedQuantity(userMessage);
+    var remainingQuantity = _extractor.ExtractRemainingQuantity(userMessage);
+    var unitPrice = _extractor.ExtractUnitPrice(userMessage);
+    var itemDescriptionList = _extractor.ExtractItemDescriptions(userMessage);
+    var uomMentioned = _extractor.ExtractUom(userMessage);
+    var grn = _extractor.ExtractGrn(userMessage);
+    var purchaseOrder = _extractor.ExtractPurchaseOrder(userMessage);
+    var purchaseDate = _extractor.ExtractDate(userMessage);
+    var contactPerson = _extractor.ExtractContactPerson(userMessage);
+    var purchaseCompany = _extractor.ExtractContactPerson(userMessage); // You may want a separate ExtractCompany
+    var transactionStatusList = _extractor.ExtractItemDescriptions(userMessage);
+    return new PredictionResult
+    {
+        Intent = result.PredictedIntent,
+        TransactionId = transactionId,
+        Date = date,
+        TotalPrice = totalPrice,
+        TotalAmountPaid = totalAmountPaid,
+        TotalAmountRemaining = totalAmountRemaining,
+        LoadedQuantity = loadedQuantity,
+        RemainingQuantity = remainingQuantity,
+        UnitPrice = unitPrice,
+        ItemDescription = itemDescriptionList.Count > 0 ? string.Join(", ", itemDescriptionList) : null,
+        Uom = uomMentioned,
+        Grn = grn,
+        PurchaseOrder = purchaseOrder,
+        PurchaseDate = purchaseDate,
+        ContactPerson = contactPerson,
+        PurchaseCompany = purchaseCompany,
+        TransactionStatus = transactionStatusList.Count > 0 ? string.Join(", ", transactionStatusList) : null
+    };
+}
     }
 }

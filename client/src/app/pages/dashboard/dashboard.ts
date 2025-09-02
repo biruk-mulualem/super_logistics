@@ -3,6 +3,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewChecked,
+  AfterViewInit,
 } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +12,8 @@ import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatbotService } from '../../services/chatbot/chatbot.service';
+
+
 @Component({
   standalone: true,
   selector: 'app-dashboard',
@@ -20,6 +23,8 @@ import { ChatbotService } from '../../services/chatbot/chatbot.service';
 })
 export class Dashboard implements AfterViewChecked {
   @ViewChild('chatBody') private chatBody!: ElementRef;
+ 
+
 
   isChatOpen = false;
   chatInput = '';
@@ -29,8 +34,7 @@ export class Dashboard implements AfterViewChecked {
 
   constructor(
     private chatbotService: ChatbotService,
-     private cdr: ChangeDetectorRef
-  
+    private cdr: ChangeDetectorRef
   ) {}
 
   toggleChat() {
@@ -50,54 +54,55 @@ export class Dashboard implements AfterViewChecked {
     }
   }
 
-  // ============================================== Backend Interaction =========================================
+  sendMessage() {
+    const input = this.chatInput.trim();
+    if (!input) return; // Prevent empty messages
 
-sendMessage() {
-  const input = this.chatInput.trim();
-  if (!input) return; // Prevent empty messages
+    // Push user message immediately
+    this.messages.push({ from: 'user', text: input });
 
-  // Push user message immediately
-  this.messages.push({ from: 'user', text: input });
+    // Clear input field
+    this.chatInput = '';
 
-  // Clear input field
-  this.chatInput = '';
+    // Show typing indicator and set sending flag
+    this.isBotTyping = true; // Set typing flag to true when sending the message
+    this.isSending = true; // Set sending flag to true while waiting for the response
 
-  // Show typing indicator and set sending flag
-  this.isBotTyping = true;  // Set typing flag to true when sending the message
-  this.isSending = true;    // Set sending flag to true while waiting for the response
+    // Manually trigger change detection to ensure the view is updated
+    this.cdr.detectChanges();
 
-  // Manually trigger change detection to ensure the view is updated
-  this.cdr.detectChanges();
+    // Call the chatbot service API
+    this.chatbotService.sendMessageToApi(input).subscribe(
+      (res) => {
+        // Push bot's response to the messages array
+        this.messages.push({ from: 'bot', text: res.response });
 
-  // Call the chatbot service API
-  this.chatbotService.sendMessageToApi(input).subscribe(
-    (res) => {
-      // Push bot's response to the messages array
-      this.messages.push({ from: 'bot', text: res.response });
+        // Hide typing indicator and reset sending flag
+        this.isBotTyping = false;
+        this.isSending = false;
 
-      // Hide typing indicator and reset sending flag
-      this.isBotTyping = false;
-      this.isSending = false;
+        // Trigger change detection after receiving the response
+        this.cdr.detectChanges(); // Manually trigger change detection
+      },
+      (err) => {
+        // Handle errors
+        this.messages.push({
+          from: 'bot',
+          text: 'Sorry, something went wrong.',
+        });
 
-      // Trigger change detection after receiving the response
-      this.cdr.detectChanges();  // Manually trigger change detection
-    },
-    (err) => {
-      // Handle errors
-      this.messages.push({
-        from: 'bot',
-        text: 'Sorry, something went wrong.',
-      });
+        // Reset typing indicator and sending flag
+        this.isBotTyping = false;
+        this.isSending = false;
 
-      // Reset typing indicator and sending flag
-      this.isBotTyping = false;
-      this.isSending = false;
+        // Trigger change detection after error
+        this.cdr.detectChanges(); // Manually trigger change detection
+      }
+    );
+  }
 
-      // Trigger change detection after error
-      this.cdr.detectChanges();  // Manually trigger change detection
-    }
-  );
-}
+ //from this is the shipment chart==============================================
 
 
+  
 }

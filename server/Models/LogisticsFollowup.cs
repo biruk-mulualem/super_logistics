@@ -25,6 +25,6 @@ namespace server.Models
         public DateOnly? TaxPaid { get; set; }
           public string? Origin { get; set; }
         public string? Remark { get; set; }
-            public string? status { get; set; }
+            public int? status { get; set; }
     }
 }

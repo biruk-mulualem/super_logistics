@@ -1,23 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Resolve } from '@angular/router';
 import { firstValueFrom, Observable } from 'rxjs';
-import { IntransitFollowupService } from '../intransit-followup.service';
+import { IntransitFollowupService } from '../../../services/intransit/intransit-followup.service';
+
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class IntransitResolverService implements Resolve<any> {
-  constructor(private service: IntransitFollowupService) {}
+  constructor(
+    private intransitservice: IntransitFollowupService,
+  
+  ) {}
 
   async resolve() {
-    const data = await firstValueFrom(this.service.getIntransitData());
+    const data = await firstValueFrom(this.intransitservice.getIntransitData());
     
     const tableWithDetails = await Promise.all(
       data.map(async row => {
         const [items, payments] = await Promise.all([
-          firstValueFrom(this.service.getIntransitItemsDetailData(row.transactionId)),
-          firstValueFrom(this.service.getPaymentData(row.transactionId))
+          firstValueFrom(this.intransitservice.getIntransitItemsDetailData(row.transactionId)),
+          firstValueFrom(this.intransitservice.getPaymentData(row.transactionId))
         ]);
         return { ...row, items, payments };
       })
@@ -25,4 +29,10 @@ export class IntransitResolverService implements Resolve<any> {
 
     return tableWithDetails;
   }
+
+
+
+
+
+
 }

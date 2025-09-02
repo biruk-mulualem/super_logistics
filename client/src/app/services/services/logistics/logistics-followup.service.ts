@@ -25,25 +25,36 @@ export class LogisticsFollowupService {
     return this.http.get<any[]>(`${this.apiUrl}/IntransitData`)
   }
 
-
+//all
 getLogisticsData(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/LogisticsData`)
 }
+
+
+ //when cancelled
+  // --- GET all Intransit rows by status ---done
+  getLogisticsStatus0Data(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status0`);
+  }
+ //when complted
+  getLogisticsStatus1Data(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status1`);
+  }
+
+    // --- GET item details for a followup by transactionId ---
+  getLogisticsItemsDetailStatus0Data(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status0/${transactionId}`);
+  }
+
+  getLogisticsItemsDetailStatus1Data(transactionId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/status1/${transactionId}`);
+  }
+
 
 // Update main followup + items
 updateLogisticsDetailData(id: number, data: any): Observable<any> {
   return this.http.put<any>(`${this.apiUrl}/logisticsDetail/${id}`, data);
 }
-
-// Update main followup + items
-
-
-// logistics.service.ts
-// updateDeletedLogisticsData(id: number): Observable<any> {
-//   return this.http.delete(`${this.apiUrl}/logisticsDeleteDetail/${id}`, {});
-// }
-
-
 
   deleteIntransitData(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/logisticsDeleteDetail/${id}`);

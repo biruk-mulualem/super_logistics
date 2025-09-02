@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-
 import { IntransitFollowupService } from './intransit-followup.service';
+
 
 describe('IntransitFollowupService', () => {
   let service: IntransitFollowupService;

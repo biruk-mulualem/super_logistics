@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Header } from '../../../shared/components/header/header';
 import { Sidebar } from '../../../shared/components/sidebar/sidebar';
 import { ReusableTable } from '../../../shared/components/reusable-table/reusable-table';
-import { IntransitFollowupService } from '../../../services/intransit-followup.service';
+
 import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { IntransitFollowupService } from '../../../services/services/intransit/intransit-followup.service';
 
 @Component({
   selector: 'app-cancelled-intransit-history',
@@ -38,11 +40,15 @@ export class CancelledIntransitHistory implements OnInit {
 
   tableData: any[] = [];
 
-  constructor(private intransitService: IntransitFollowupService) {}
+  constructor(
+    private intransitService: IntransitFollowupService,
+     private route: ActivatedRoute
+  ) {}
 
-  ngOnInit(): void {
-    this.loadFollowups();
-  }
+   ngOnInit() {
+  // Load table data from resolver
+  this.tableData = this.route.snapshot.data['tableData'] || [];
+}
 
 
 

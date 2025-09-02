@@ -203,7 +203,7 @@
       <!-- Item Rows -->
       <div *ngFor="let item of addData.items; let i = index" class="item-row">
         <!-- Transaction ID Selector -->
-        <div class="modal-input-group">
+        <!-- <div class="modal-input-group">
           <label>Transaction ID</label>
           <select
             [(ngModel)]="item.transactionId"
@@ -214,6 +214,15 @@
               {{ trx.transactionId }}
             </option>
           </select>
+        </div> -->
+
+        <div class="modal-input-group">
+          <label>Transaction ID</label>
+          <input
+            type="text"
+            [(ngModel)]="item.transactionId"
+            (ngModelChange)="onTransactionChange(item)"
+            placeholder="Enter transaction ID manually" />
         </div>
 
         <!-- Item Description Selector -->
@@ -338,7 +347,6 @@
     <div class="main-modal-body">
       <!-- DETAIL TAB -->
       <ng-container *ngIf="activeTab === 'detail' && buttonVisibility.detail">
-
         <ng-container *ngIf="pageType === 'intransit' 
                   || pageType === 'doneintransithistory' 
                   || pageType === 'cancelledintransithistory'">
@@ -421,7 +429,6 @@
           <ng-template #noPayments>
             <p>No payment records available.</p>
           </ng-template>
-
           <div class="modal-buttons">
             <button (click)="closeModal()" class="btn btn-secondary">
               Close
@@ -429,7 +436,11 @@
           </div>
         </ng-container>
 
-        <ng-container *ngIf="pageType === 'logistics' && selectedRow">
+        <!-- <pre>Selected Row: {{ selectedRow | json }}</pre> -->
+        <ng-container *ngIf="(pageType === 'logistics' 
+          || pageType === 'donelogisticshistory' 
+          || pageType === 'cancelledlogisticshistory')
+         && selectedRow">
           <!-- Product Detail -->
           <span>Product Detail</span>
           <div *ngFor="let item of selectedRow.items">
@@ -761,9 +772,11 @@
             </button>
           </div>
         </ng-container>
+  
         <ng-container *ngIf="pageType === 'logistics'">
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <span>Loading Details</span>
 
             <div
@@ -790,8 +803,7 @@
               <div class="modal-form">
                 <div class="modal-input-group">
                   <label>Loaded Quantity:</label>
-                  <input type="number" [(ngModel)]="item.loadedQnty" required
-                     />
+                  <input type="number" [(ngModel)]="item.loadedQnty" required />
                 </div>
               </div>
 
@@ -835,6 +847,15 @@
                   </select>
                 </div>
 
+                <!-- <div class="modal-input-group">
+           
+                  <input
+                    type="text"
+                    [(ngModel)]="item.transactionId"
+                    (ngModelChange)="onTransactionChange(item)"
+                    placeholder="Enter transaction ID " />
+                </div> -->
+
                 <!-- Item Description Selector -->
                 <div class="modal-input-group">
 
@@ -873,7 +894,8 @@
           </div>
           <hr>
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <span>Common Data</span>
 
             <div class="detail-row">
@@ -935,7 +957,8 @@
           </div>
           <hr>
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <span>Djibouti status</span>
             <div class="detail-row">
               <div class="modal-input-group">
@@ -1003,12 +1026,14 @@
 
           <hr />
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <!-- ================== AAK Arrived ================== -->
+            <span>AAk status</span>
             <div class="modal-section">
               <!-- <h3>Number of container AAK Arrived</h3> -->
               <div class="header-row">
-                <label class="header-label">Containers Arrived to AAk</label>
+                <label class="header-label">number of container</label>
                 <label class="header-label">Remark</label>
                 <label class="header-label">Date</label>
                 <div class="modal-buttons">
@@ -1046,12 +1071,14 @@
 
           <hr />
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <!-- ================== SDT Arrived ================== -->
+            <span>SDT status</span>
             <div class="modal-section">
               <!-- <h3>Number of container arrived sdt</h3> -->
               <div class="header-row">
-                <label class="header-label"> Containers Arrived SDT</label>
+                <label class="header-label"> number of container</label>
                 <label class="header-label">Remark</label>
                 <label class="header-label">Date</label>
                 <div class="modal-buttons">
@@ -1089,13 +1116,16 @@
 
           <hr />
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <!-- ================== Containers Returned ================== -->
+
+            <span>Container Status</span>
             <div class="modal-section">
               <!-- Header row -->
               <!-- <h3>Number of empity container returned</h3> -->
               <div class="header-row">
-                <label class="header-label">Empity Container Returned</label>
+                <label class="header-label">number of container</label>
                 <label class="header-label">Remark</label>
                 <label class="header-label">Date</label>
                 <div class="modal-buttons">
@@ -1133,10 +1163,12 @@
 
           <hr />
 
-          <div class="combined-section" style="background-color: #eef3f3; padding: 15px; border-radius: 6px;">
+          <div class="combined-section"
+            style="background-color: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);border: 1px solid #e0e0e0;">
             <div class="modal-form">
               <div class="modal-input-group full-width">
-                <label>Remark:</label>
+
+                <span>Remark</span>
                 <textarea [(ngModel)]="editData.remark"></textarea>
               </div>
             </div>

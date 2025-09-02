@@ -15,12 +15,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { IntransitFollowupService } from '../../../services/intransit-followup.service';
-import { LogisticsFollowupService } from '../../../services/logistics-followup.service';
+import { IntransitFollowupService } from '../../../services/services/intransit/intransit-followup.service';
+import { LogisticsFollowupService } from '../../../services/services/logistics/logistics-followup.service';
 
 @Component({
-    standalone: true, // ✅ Add this
-  imports: [CommonModule,FormsModule],
+  standalone: true, // ✅ Add this
+  imports: [CommonModule, FormsModule],
   selector: 'app-reusable-table',
   templateUrl: './reusable-table.html',
   styleUrls: ['./reusable-table.css'],
@@ -275,6 +275,9 @@ export class ReusableTable implements OnInit, OnChanges {
 
     // Automatically open detail modal if detailRow changes
     if (changes['detailRow'] && this.detailRow) {
+
+
+
       this.selectedRow = this.detailRow;
       this.openModal('detail', this.detailRow);
       this.fetchPayments(this.detailRow.transactionId);
@@ -425,6 +428,18 @@ export class ReusableTable implements OnInit, OnChanges {
     this.selectedRow = row;
     this.fetchPayments(row.transactionId);
   }
+// openRowModal(row: any) {
+//   console.log('Row data:', row);
+//   row.djbDeparted = row.djbDeparted || [];
+//   row.arrivedAAk = row.arrivedAAk || [];
+//   row.arrivedSDT = row.arrivedSDT || [];
+//   row.containerReturned = row.containerReturned || [];
+//   this.selectedRow = row;
+//   this.fetchPayments(row.transactionId);
+// }
+
+
+
 
   submitPayments(): void {
     const missingFields = this.validateIntransitPayments(this.newPayments);
@@ -557,123 +572,88 @@ export class ReusableTable implements OnInit, OnChanges {
     this.closeModal();
   }
 
+  saveEditedLogisticsData(): void {
+    if (!this.editData) return;
 
+    const payload = {
+      Id: this.editData.id,
+      TransactionId: this.editData.transactionId,
+      Remark: this.editData.remark,
+      BillNo: this.editData.billNo,
+      TruckWayBill: this.editData.truckWayBill,
+      Transitor: this.editData.transitor,
+      ContainerType: this.editData.containerType,
+      LoadedOnfcl: this.editData.loadedOnfcl,
+      Origin: this.editData.origin,
+      Shipper: this.editData.shipper,
+      DjbArrived: this.editData.djbArrived,
+      BillCollected: this.editData.billCollected,
+      TaxPaid: this.editData.taxPaid,
+      DocSentDjb: this.editData.docSentDjb,
+      DocCollected: this.editData.docCollected,
+      DocOwner: this.editData.docOwner,
+      LoadingDate: this.editData.loadingDate,
+      Etadjb: this.editData.etadjb,
+      Items: [
+        ...(this.editData?.items ?? []).map(
+          (i: {
+            IntransitId: any;
+            itemDescription: any;
+            uom: any;
+            totalQnty: any;
+            loadedQnty: any;
+          }) => ({
+            IntransitId: i.IntransitId,
+            ItemDescription: i.itemDescription,
+            Uom: i.uom,
+            TotalQnty: i.totalQnty ?? 0,
+            LoadedQnty: i.loadedQnty ?? 0,
+          })
+        ),
+        ...(this.addData?.items ?? []).map(
+          (i: {
+            transactionId: any;
+            selectedItem: { itemDescription: any };
+            itemDescription: any;
+            uom: any;
+            quantity: any;
+            loadedQnty: any;
+            LoadedQnty: any;
+          }) => ({
+            IntransitId: i.transactionId,
+            ItemDescription:
+              i.selectedItem?.itemDescription || i.itemDescription || '',
+            Uom: i.uom,
+            TotalQnty: i.quantity ?? 0,
+            LoadedQnty: i.loadedQnty ?? i.LoadedQnty ?? 0,
+          })
+        ),
+      ],
+      DjbDepartedRows: this.rowDjbDeparted.map((r) => ({
+        NumberOfContainer: r.numberOfContainer,
+        Remark: r.remark,
+        Date: r.date,
+      })),
+      AakArrivedRows: this.rowAakArrived.map((r) => ({
+        NumberOfContainer: r.numberOfContainer,
+        Remark: r.remark,
+        Date: r.date,
+      })),
+      SdtArrivedRows: this.rowSdtArrived.map((r) => ({
+        NumberOfContainer: r.numberOfContainer,
+        Remark: r.remark,
+        Date: r.date,
+      })),
+      ContainersReturnedRows: this.rowsContainerReturned.map((r) => ({
+        NumberOfContainer: r.numberOfContainer,
+        Remark: r.remark,
+        Date: r.date,
+      })),
+    };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-saveEditedLogisticsData(): void {
-  if (!this.editData) return;
-
-  const payload = {
-    Id: this.editData.id,
-    TransactionId: this.editData.transactionId,
-    Remark: this.editData.remark,
-    BillNo: this.editData.billNo,
-    TruckWayBill: this.editData.truckWayBill,
-    Transitor: this.editData.transitor,
-    ContainerType: this.editData.containerType,
-    LoadedOnfcl: this.editData.loadedOnfcl,
-    Origin: this.editData.origin,
-    Shipper: this.editData.shipper,
-    DjbArrived: this.editData.djbArrived,
-    BillCollected: this.editData.billCollected,
-    TaxPaid: this.editData.taxPaid,
-    DocSentDjb: this.editData.docSentDjb,
-    DocCollected: this.editData.docCollected,
-    DocOwner: this.editData.docOwner,
-    LoadingDate: this.editData.loadingDate,
-    Etadjb: this.editData.etadjb,
-Items: [
-  ...(this.editData?.items ?? []).map((i: { IntransitId: any; itemDescription: any; uom: any; totalQnty: any; loadedQnty: any; }) => ({
-    IntransitId: i.IntransitId,
-    ItemDescription: i.itemDescription,
-    Uom: i.uom,
-    TotalQnty: i.totalQnty ?? 0,
-    LoadedQnty: i.loadedQnty ?? 0,
-  })),
-  ...(this.addData?.items ?? []).map((i: { transactionId: any; selectedItem: { itemDescription: any; }; itemDescription: any; uom: any; quantity: any; loadedQnty: any; LoadedQnty: any; }) => ({
-    IntransitId: i.transactionId,
-    ItemDescription: i.selectedItem?.itemDescription || i.itemDescription || '',
-    Uom: i.uom,
-    TotalQnty: i.quantity ?? 0,
-    LoadedQnty: i.loadedQnty ?? i.LoadedQnty ?? 0,
-  }))
-]
-,
-    DjbDepartedRows: this.rowDjbDeparted.map(r => ({
-      NumberOfContainer: r.numberOfContainer,
-      Remark: r.remark,
-      Date: r.date,
-    })),
-    AakArrivedRows: this.rowAakArrived.map(r => ({
-      NumberOfContainer: r.numberOfContainer,
-      Remark: r.remark,
-      Date: r.date,
-    })),
-    SdtArrivedRows: this.rowSdtArrived.map(r => ({
-      NumberOfContainer: r.numberOfContainer,
-      Remark: r.remark,
-      Date: r.date,
-    })),
-    ContainersReturnedRows: this.rowsContainerReturned.map(r => ({
-      NumberOfContainer: r.numberOfContainer,
-      Remark: r.remark,
-      Date: r.date,
-    })),
-  };
-
-  this.edit.emit(payload);
-  this.closeModal();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    this.edit.emit(payload);
+    this.closeModal();
+  }
 
   openDeleteModal(row: any) {
     this.selectedRow = row;
@@ -863,7 +843,7 @@ Items: [
     if (target === 'logistics') {
       if (!this.addData.items) this.addData.items = [];
       arr = this.addData.items;
-        
+
       arr.push({
         transactionId: '',
         availableItems: [],
@@ -927,7 +907,7 @@ Items: [
 
     if (target === 'logistics') {
       arr = this.addData.items;
-      if (arr.length > 1) arr.splice(index, 1); // keep at least one
+      arr.splice(index, 1); // remove any row, no limit
     } else if (target === 'payment') {
       arr = this.newPayments;
       if (arr.length > 1) arr.splice(index, 1); // keep at least one
@@ -958,16 +938,11 @@ Items: [
     date: string;
   }[] = [];
 
-
-    rowsNewLoadingAdded: {
+  rowsNewLoadingAdded: {
     itemDescription: string;
     uom: string;
     loadedQnty: number;
   }[] = [];
-
-
-
-
 
   // ================== DJB Departed ==================
   addRowDjbDeparted() {
@@ -1009,12 +984,12 @@ Items: [
     this.rowsContainerReturned.splice(index, 1);
   }
 
-    // ================== Add new Loading ==================
+  // ================== Add new Loading ==================
   addRowNewLoading() {
     this.rowsNewLoadingAdded.push({
       itemDescription: '',
       uom: '',
-      loadedQnty:0,
+      loadedQnty: 0,
     });
   }
 
@@ -1022,17 +997,7 @@ Items: [
     this.rowsNewLoadingAdded.splice(index, 1);
   }
 
-
-
-  //  removeItemFromLogisticsedit(index: number) {
-  //   this.rowsNewLoadingAdded.splice(index, 1);
-  // }
-
-
   removeItemFromLogisticsedit(index: number) {
-  this.editData.items.splice(index, 1);
-}
-
-
-
+    this.editData.items.splice(index, 1);
+  }
 }

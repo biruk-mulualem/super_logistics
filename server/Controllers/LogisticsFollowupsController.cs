@@ -27,7 +27,7 @@ public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
         {
             f.TransactionId,
             Items = _context.IntransitItemsDetails
-                .Where(i => i.TransactionId == f.TransactionId)
+                .Where(i => i.TransactionId == f.TransactionId  && i.RemaningQnty != 0)
                 .Select(i => new { i.ItemDescription, i.Uom, quantity = i.RemaningQnty })
                 .ToList()
         }).ToListAsync();
@@ -36,11 +36,207 @@ public async Task<ActionResult<IEnumerable<object>>> GetIntransitsWithItems()
     
 }
 
+
+
+
+
+
+       // ===========================
+        // GET: LogisticsFollowup by Status
+        // ===========================
+      [HttpGet("status0")]
+public async Task<ActionResult<IEnumerable<object>>> GetStatus0()
+{
+    var data = await _context.LogisticsFollowups
+        .Where(x => x.status == 0)
+        .ToListAsync();
+
+    var results = new List<object>();
+
+    foreach (var row in data)
+    {
+        var transactionId = row.TransactionId;
+
+        var items = await _context.logisticsItemsDetails
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var djbDeparted = await _context.LogisticsDjboutiDeparts
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var arrivedAAk = await _context.LogisticsArrivedAAks
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var arrivedSDT = await _context.LogisticsArrivedSDTs
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var containerReturned = await _context.LogisticsContainerReturns
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        results.Add(new
+        {
+            row.Id,
+            row.TransactionId,
+            row.LoadedOnfcl,
+            row.ContainerType,
+            row.BillNo,
+            row.truckWayBill,
+            row.DocOwner,
+            row.Shipper,
+            row.Transitor,
+            row.Etadjb,
+            row.LoadingDate,
+            row.DjbArrived,
+            row.DocSentDjb,
+            row.DocCollected,
+            row.BillCollected,
+            row.TaxPaid,
+            row.Origin,
+            row.Remark,
+            row.status,
+            items,
+            djbDeparted,
+            arrivedAAk,
+            arrivedSDT,
+            containerReturned
+        });
+    }
+
+    return Ok(results);
+}
+
+
+        [HttpGet("status0/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<logisticsItemsDetail>>> GetItemDetailstatus0ByTransactionId(string transactionId)
+        {
+            var itemsDetail = await _context.logisticsItemsDetails
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(itemsDetail);
+        }
+
+   [HttpGet("status1")]
+public async Task<ActionResult<IEnumerable<object>>> GetStatus1()
+{
+    var data = await _context.LogisticsFollowups
+        .Where(x => x.status == 1)
+        .ToListAsync();
+
+    var results = new List<object>();
+
+    foreach (var row in data)
+    {
+        var transactionId = row.TransactionId;
+
+        var items = await _context.logisticsItemsDetails
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var djbDeparted = await _context.LogisticsDjboutiDeparts
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var arrivedAAk = await _context.LogisticsArrivedAAks
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var arrivedSDT = await _context.LogisticsArrivedSDTs
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        var containerReturned = await _context.LogisticsContainerReturns
+            .Where(p => p.TransactionId == transactionId)
+            .ToListAsync();
+
+        results.Add(new
+        {
+            row.Id,
+            row.TransactionId,
+            row.LoadedOnfcl,
+            row.ContainerType,
+            row.BillNo,
+            row.truckWayBill,
+            row.DocOwner,
+            row.Shipper,
+            row.Transitor,
+            row.Etadjb,
+            row.LoadingDate,
+            row.DjbArrived,
+            row.DocSentDjb,
+            row.DocCollected,
+            row.BillCollected,
+            row.TaxPaid,
+            row.Origin,
+            row.Remark,
+            row.status,
+            items,
+            djbDeparted,
+            arrivedAAk,
+            arrivedSDT,
+            containerReturned
+        });
+    }
+
+    return Ok(results);
+}
+
+
+        [HttpGet("status1/{transactionId}")]
+        public async Task<ActionResult<IEnumerable<logisticsItemsDetail>>> GetItemDetailstatus1ByTransactionId(string transactionId)
+        {
+            var itemsDetail = await _context.logisticsItemsDetails
+                .Where(p => p.TransactionId == transactionId)
+                .ToListAsync();
+            return Ok(itemsDetail);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [HttpGet("LogisticsData")]
 public async Task<ActionResult<IEnumerable<object>>> GetLogisticsWithItems()
 {
     var data = await _context.LogisticsFollowups
-            .Where(lf => lf.status != "0" && lf.status != "1")
+            .Where(lf => lf.status != 0 && lf.status != 1)
         .Select(lf => new 
         {
             lf.Id,
@@ -402,7 +598,7 @@ public async Task<IActionResult> UpdateStatusToZero(int id)
     var followup = await _context.LogisticsFollowups.FindAsync(id);
     if (followup == null) return NotFound();
 
-    followup.status = "0"; // string, not number
+    followup.status = 0; // string, not number
     _context.LogisticsFollowups.Update(followup);
     await _context.SaveChangesAsync();
 

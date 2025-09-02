@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { LogisticsFollowupService } from '../../services/logistics-followup.service';
+
 import { Header } from '../../shared/components/header/header';
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { ReusableTable } from '../../shared/components/reusable-table/reusable-table';
 import { firstValueFrom } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { LogisticsFollowupService } from '../../services/services/logistics/logistics-followup.service';
 
 @Component({
   imports: [Header, Sidebar, ReusableTable],
@@ -51,13 +53,23 @@ export class Logistics implements OnInit {
 
   constructor(
     private logisticsService: LogisticsFollowupService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+      private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
-    this.fetchIntransitOptions();
-    this.loadLogisticsData();
-  }
+  // ngOnInit(): void {
+  //   this.fetchIntransitOptions();
+  //   this.loadLogisticsData();
+  // }
+
+
+ngOnInit() {
+  const data = this.route.snapshot.data['tableData'] || {};
+  this.tableData = data.logistics || [];
+  this.intransitOptions = data.intransitOptions || [];
+}
+
+
 
   fetchIntransitOptions() {
     this.logisticsService.getIntransitDataForLogistics().subscribe({
@@ -207,15 +219,31 @@ export class Logistics implements OnInit {
     });
   }
 
-  loadLogisticsData() {
-    this.logisticsService.getLogisticsData().subscribe({
-      next: (data) => {
+  // loadLogisticsData() {
+  //   this.logisticsService.getLogisticsData().subscribe({
+  //     next: (data) => {
     
-        this.tableData = data;
-      },
-      error: (err) => {
-        console.error('❌ Error fetching data:', err);
-      },
-    });
-  }
+  //       this.tableData = data;
+  //     },
+  //     error: (err) => {
+  //       console.error('❌ Error fetching data:', err);
+  //     },
+  //   });
+  // }
+
+
+loadLogisticsData() {
+  this.logisticsService.getLogisticsData().subscribe({
+    next: (data) => {
+      console.log("📦 Full Logistics Data received:", data);
+      this.tableData = data || [];
+    },
+    error: (err) => {
+      console.error('❌ Error fetching data:', err);
+      this.tableData = [];
+    }
+  });
+}
+
+
 }

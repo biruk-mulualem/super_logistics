@@ -14,7 +14,7 @@ export class IntransitFollowupService {
 
   constructor(private http: HttpClient) {}
 
-  // --- GET all Intransit rows by status ---
+  // --- GET all Intransit rows by status ---done
   getIntransitStatus0Data(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/status0`);
   }

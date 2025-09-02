@@ -5,7 +5,7 @@ import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { IntransitFollowupService } from '../../services/intransit-followup.service';
+import { IntransitFollowupService } from '../../services/services/intransit/intransit-followup.service';
 
 @Component({
   selector: 'app-intransit',

@@ -10,66 +10,71 @@
 
       <!-- Grid Cards -->
       <div class="dashboard-grid">
-    <div class="card payment-status-card">
-  <h2>Intransit Payment</h2>
-  <div class="status-item full-payment">
-    <span class="status-label">Full Payment</span>
-    <span class="status-count">33 </span>
-  </div>
-  <div class="status-item advance-payment">
-    <span class="status-label">Advance Payment</span>
-    <span class="status-count">22 </span>
-  </div>
-  <div class="status-item pending-payment">
-    <span class="status-label">Pending</span>
-    <span class="status-count">4444 </span>
-  </div>
-</div>
+        <div class="card payment-status-card">
+          <h3> Advance Payment</h3>
 
+          <div class="status-item advance-payment">
 
-        <div class="card">
-          <h4>Intransit Status</h4>
-          <h2>no payment</h2>
-          <h2>partil payment</h2>
-          <h2>full payment</h2>
-         
+           <span class="status-count">{{ advancePayment }}</span>
+          </div>
+
         </div>
 
-        <div class="card">
-          <h4>Market Share</h4>
-          <div class="market-chart">26M</div>
-          <ul class="legend">
-            <li><span class="dot blue"></span> Samsung</li>
-            <li><span class="dot green"></span> Huawei</li>
-            <li><span class="dot gray"></span> Apple</li>
-          </ul>
-        </div>
+        <div class="card payment-status-card">
+          <h3> Pending Payments</h3>
 
-        <div class="card weather-card">
-          <h4>Weather</h4>
-          <div class="weather">
-            <div class="icon">☀️</div>
-            <div class="info">
-              <h3>New York City</h3>
-              <p>Sunny</p>
-              <p>31°C</p>
-            </div>
+          <div class="status-item pending-payment">
+
+             <span class="status-count">{{ pendingPayment }}</span>
           </div>
         </div>
+        <div class="card payment-status-card">
+          <h3>In Route</h3>
+          <div class="status-item full-payment">
+
+            <span class="status-count">33 </span>
+          </div>
+
+        </div>
+        <div class="card payment-status-card">
+          <h3>In Djibouti</h3>
+          <div class="status-item full-payment">
+
+            <span class="status-count">33 </span>
+          </div>
+
+        </div>
+        <div class="card payment-status-card">
+          <h3>In AAK</h3>
+          <div class="status-item full-payment">
+
+            <span class="status-count">33 </span>
+          </div>
+
+        </div>
+        <div class="card payment-status-card">
+          <h3>In SDT</h3>
+          <div class="status-item full-payment">
+
+            <span class="status-count">33 </span>
+          </div>
+
+        </div>
+
       </div>
 
       <!-- Bottom Panels -->
       <div class="dashboard-grid">
         <div class="card sales">
-          <h4>Total Sales</h4>
+          <!-- <h4>Total Sales</h4> -->
           <canvas id="salesChart"></canvas>
         </div>
         <div class="card sales">
-          <h4>Total Sales</h4>
+          <!-- <h4>Total Sales</h4> -->
           <canvas id="salesChart"></canvas>
         </div>
         <div class="card sales">
-          <h4>Total Sales</h4>
+          <!-- <h4>Total Sales</h4> -->
           <canvas id="salesChart"></canvas>
         </div>
       </div>
@@ -94,7 +99,8 @@
 
         <div class="card storage-warning">
           <h4>Running out of your space?</h4>
-          <p>Your storage will be running out soon. Get more space and powerful productivity features.</p>
+          <p>Your storage will be running out soon. Get more space and powerful
+            productivity features.</p>
           <a href="#">Upgrade storage →</a>
         </div>
       </div>
@@ -102,7 +108,8 @@
   </div>
 
   <!-- Chatbot Trigger Button -->
-  <button class="chatbot-toggle" (click)="toggleChat()" aria-label="Toggle chatbot">💬</button>
+  <button class="chatbot-toggle" (click)="toggleChat()"
+    aria-label="Toggle chatbot">💬</button>
 
   <!-- Chatbot Window -->
   <div
@@ -110,11 +117,11 @@
     [class.open]="isChatOpen"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="chatbotTitle"
-  >
+    aria-labelledby="chatbotTitle">
     <div class="chatbot-header">
       <h4 id="chatbotTitle">Logistics Assistant</h4>
-      <button class="close-btn" (click)="toggleChat()" aria-label="Close chatbot">✖</button>
+      <button class="close-btn" (click)="toggleChat()"
+        aria-label="Close chatbot">✖</button>
     </div>
 
     <div class="chatbot-body" #chatBody>
@@ -122,8 +129,7 @@
         *ngFor="let msg of messages"
         [class.user]="msg.from === 'user'"
         [class.bot]="msg.from === 'bot'"
-        class="chat-message"
-      >
+        class="chat-message">
         <strong *ngIf="msg.from === 'user'">You:</strong>
         <strong *ngIf="msg.from === 'bot'">Bot:</strong>
         {{ msg.text }}
@@ -141,13 +147,11 @@
         [(ngModel)]="chatInput"
         (keyup.enter)="sendMessage()"
         placeholder="Ask something..."
-        aria-label="Chat input"
-      />
+        aria-label="Chat input" />
       <button
         (click)="sendMessage()"
         aria-label="Send message"
-        [disabled]="isSending || !chatInput.trim()"
-      >
+        [disabled]="isSending || !chatInput.trim()">
         ➤
       </button>
     </div>

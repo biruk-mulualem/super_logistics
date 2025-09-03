@@ -4,6 +4,7 @@ import {
   ElementRef,
   AfterViewChecked,
   AfterViewInit,
+  OnInit,
 } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +13,8 @@ import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatbotService } from '../../services/chatbot/chatbot.service';
-
+import { DashboardService } from '../../services/services/dashboard/dashboard.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -21,20 +23,29 @@ import { ChatbotService } from '../../services/chatbot/chatbot.service';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements AfterViewChecked {
+export class Dashboard implements AfterViewChecked, OnInit {
   @ViewChild('chatBody') private chatBody!: ElementRef;
- 
-
 
   isChatOpen = false;
   chatInput = '';
   messages: { from: 'user' | 'bot'; text: string }[] = [];
   isSending = false; // To handle when the bot is processing the request
   isBotTyping = false; // To show the typing indicator
+  advancePayment = 0;
+  pendingPayment = 0;
+  fullPayment = 0;
+  totalItems = 0;
+
+    inRoute = 0;
+inDjibouti = 0;
+inAak = 0;
+inSdt = 0;
+
 
   constructor(
     private chatbotService: ChatbotService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dashboardService: DashboardService
   ) {}
 
   toggleChat() {
@@ -53,6 +64,66 @@ export class Dashboard implements AfterViewChecked {
       // Ignore if chatBody is not yet available
     }
   }
+
+  ngOnInit(): void {
+    this.loadFollowups();
+    this.loadInRouteStats();
+  }
+
+
+
+
+  async loadFollowups() {
+    try {
+      const data = await firstValueFrom(this.dashboardService.getPaymentData());
+
+      // Support both array responses and single-object responses:
+      const payload: any = Array.isArray(data) ? data[0] ?? {} : data ?? {};
+
+      // Accept either PascalCase or camelCase keys and default to 0 if missing
+      this.advancePayment =
+        payload.AdvancePayment ?? payload.advancePayment ?? 0;
+      this.pendingPayment =
+        payload.PendingPayment ?? payload.pendingPayment ?? 0;
+      this.fullPayment = payload.FullPayment ?? payload.fullPayment ?? 0;
+      this.totalItems = payload.TotalItems ?? payload.totalItems ?? 0;
+    } catch (error) {
+      console.error('❌ Error loading payments:', error);
+    }
+  }
+
+
+
+
+async loadInRouteStats() {
+  console.log('🔹 loadInRouteStats() called'); // check if method runs
+  try {
+    const stats = await firstValueFrom(
+      this.dashboardService.getInRouteDjbAakSdtData()
+    );
+
+    console.log('🔹 HTTP Response:', stats);
+
+this.inRoute = stats.inRoute;
+this.inDjibouti = stats.inDjibouti;
+this.inAak = stats.inAak;
+this.inSdt = stats.inSdt;
+
+    console.log('✅ Stats assigned to component variables:', {
+      inRoute: this.inRoute,
+      inDjibouti: this.inDjibouti,
+      inAak: this.inAak,
+      inSdt: this.inSdt,
+    });
+  } catch (err) {
+    console.error('❌ Error loading InRoute stats:', err);
+  }
+}
+
+
+
+
+
 
   sendMessage() {
     const input = this.chatInput.trim();
@@ -101,8 +172,5 @@ export class Dashboard implements AfterViewChecked {
     );
   }
 
- //from this is the shipment chart==============================================
-
-
-  
+  //from this is the shipment chart==============================================
 }

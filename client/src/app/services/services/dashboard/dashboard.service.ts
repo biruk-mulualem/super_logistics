@@ -24,7 +24,7 @@ export class DashboardService {
   // ✅ new method with correct typing
 getInRouteDjbAakSdtData(): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/InRouteDjbAakSdt`)
-    .pipe(tap(data => console.log('[DEBUG] InRoute Stats:', data)));
+    // .pipe(tap(data => console.log('[DEBUG] InRoute Stats:', data)));
 }
 
 

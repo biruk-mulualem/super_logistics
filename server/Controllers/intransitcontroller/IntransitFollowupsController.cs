@@ -278,6 +278,14 @@ public async Task<IActionResult> UpdateIntransit(int id, IntransitCreateDto dto)
         ? 0
         : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
 
+
+    // Update status if fully paid
+    if (followup.Grn != null)
+    {
+        followup.status = 1;
+    }
+
+
     // 5️⃣ Save changes
     await _context.SaveChangesAsync();
 
@@ -327,11 +335,7 @@ public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentUpdateD
         ? 0
         : (followup.TotalAmountRemaning / followup.TotalPrice) * 100;
 
-    // Update status if fully paid
-    if (followup.TotalAmountRemaning == 0)
-    {
-        followup.status = 1;
-    }
+
 
     await _context.SaveChangesAsync();
 

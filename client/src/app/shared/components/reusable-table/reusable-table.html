@@ -203,7 +203,7 @@
       <!-- Item Rows -->
       <div *ngFor="let item of addData.items; let i = index" class="item-row">
         <!-- Transaction ID Selector -->
-        <!-- <div class="modal-input-group">
+        <div class="modal-input-group">
           <label>Transaction ID</label>
           <select
             [(ngModel)]="item.transactionId"
@@ -214,16 +214,16 @@
               {{ trx.transactionId }}
             </option>
           </select>
-        </div> -->
+        </div>
 
-        <div class="modal-input-group">
+        <!-- <div class="modal-input-group">
           <label>Transaction ID</label>
           <input
             type="text"
             [(ngModel)]="item.transactionId"
             (ngModelChange)="onTransactionChange(item)"
             placeholder="Enter transaction ID manually" />
-        </div>
+        </div> -->
 
         <!-- Item Description Selector -->
         <div class="modal-input-group">
@@ -847,17 +847,17 @@
                   </select>
                 </div>
 
-                <!-- <div class="modal-input-group">
+                <div class="modal-input-group">
            
                   <input
                     type="text"
                     [(ngModel)]="item.transactionId"
                     (ngModelChange)="onTransactionChange(item)"
                     placeholder="Enter transaction ID " />
-                </div> -->
+                </div>
 
                 <!-- Item Description Selector -->
-                <div class="modal-input-group">
+                <!-- <div class="modal-input-group">
 
                   <select
                     [(ngModel)]="item.selectedItem"
@@ -867,7 +867,7 @@
                       {{ itm.itemDescription }}
                     </option>
                   </select>
-                </div>
+                </div> -->
 
                 <!-- Auto-filled UOM -->
                 <div class="modal-input-group">

@@ -19,13 +19,13 @@ namespace server.Controllers
         public async Task<ActionResult<object>> GetPaymentData()
         {
             var data = await _context.IntransitFollowups.ToListAsync();
-            // Count pending payments (TotalRemaningInPercent == 0)
-            int pendingPaymentCount = data.Count(d => d.TotalRemaningInPercent == 0m);
+            // Count pending payments (TotalRemaningInPercent == 100)
+            int pendingPaymentCount = data.Count(d => d.TotalRemaningInPercent == 100m);
             // Count advance payments (TotalRemaningInPercent > 0 && < 100)
             int advancePaymentCount = data.Count(d => d.TotalRemaningInPercent > 0m && d.TotalRemaningInPercent < 100m);
 
             // Count full payments (TotalRemaningInPercent == 100)
-            int fullPaymentCount = data.Count(d => d.TotalRemaningInPercent == 100m);
+            int fullPaymentCount = data.Count(d => d.TotalRemaningInPercent == 0m);
             return Ok(new
             {
                 PendingPayment = pendingPaymentCount,

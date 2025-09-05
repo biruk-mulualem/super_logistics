@@ -109,12 +109,12 @@ this.inDjibouti = stats.inDjibouti;
 this.inAak = stats.inAak;
 this.inSdt = stats.inSdt;
 
-    console.log('✅ Stats assigned to component variables:', {
-      inRoute: this.inRoute,
-      inDjibouti: this.inDjibouti,
-      inAak: this.inAak,
-      inSdt: this.inSdt,
-    });
+    // console.log('✅ Stats assigned to component variables:', {
+    //   inRoute: this.inRoute,
+    //   inDjibouti: this.inDjibouti,
+    //   inAak: this.inAak,
+    //   inSdt: this.inSdt,
+    // });
   } catch (err) {
     console.error('❌ Error loading InRoute stats:', err);
   }

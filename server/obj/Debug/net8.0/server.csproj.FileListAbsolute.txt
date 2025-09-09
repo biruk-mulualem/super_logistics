@@ -576,3 +576,4 @@ D:\sharp\logistics\server\obj\Debug\net8.0\refint\server.dll
 D:\sharp\logistics\server\obj\Debug\net8.0\server.pdb
 D:\sharp\logistics\server\obj\Debug\net8.0\server.genruntimeconfig.cache
 D:\sharp\logistics\server\obj\Debug\net8.0\ref\server.dll
+D:\sharp\logistics\server\bin\Debug\net8.0\BCrypt.Net-Next.dll

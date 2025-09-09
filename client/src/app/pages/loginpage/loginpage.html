@@ -2,45 +2,41 @@
     <!-- Toggle Checkboxes -->
     <input type="checkbox" id="toggle-signup" hidden />
     <input type="checkbox" id="toggle-forgot" hidden />
-
     <div class="container">
         <!-- Login Form -->
-        <form class="form-login form-section" autocomplete="off" novalidate>
+        <form class="form-login form-section" autocomplete="off" novalidate (ngSubmit)="login()">
             <h2 class="form-login-heading">SIGN IN NOW</h2>
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="User ID" class="form-control" required />
+            <label for="username" >Username</label>
+            <input type="text" id="username" [(ngModel)]="username" name="username" placeholder="User ID" class="form-control" required />
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Password" class="form-control" required />
+            <input type="password" id="password" name="password" [(ngModel)]="password" placeholder="Password" class="form-control" required />
             <button type="submit" class="btn btn-theme btn-block">Login</button>
-            <p style="text-align: center; margin-top: 15px;">
-                <label for="toggle-forgot" class="link-toggle">Forgot Password?</label><br /> Don't have an account?
-                <label for="toggle-signup" class="link-toggle">Sign Up</label>
-            </p>
+            <p style="text-align: center; margin-top: 15px"></p>
         </form>
-
         <!-- Sign Up Form -->
         <form class="form-signup form-section" autocomplete="off" novalidate>
             <h2 class="form-login-heading">SIGN UP</h2>
             <label for="new-username">Username</label>
-            <input type="text" id="new-username" name="new-username" placeholder="Choose Username" class="form-control" required />
+            <input type="text" id="new-username" name="new-username" placeholder="Choose Username" class="form-control"
+                required />
             <label for="new-password">Password</label>
-            <input type="password" id="new-password" name="new-password" placeholder="Create Password" class="form-control" required />
+            <input type="password" id="new-password" name="new-password" placeholder="Create Password"
+                class="form-control" required />
             <label for="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" class="form-control" required />
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password"
+                class="form-control" required />
             <button type="submit" class="btn btn-theme btn-block">Sign Up</button>
-            <p style="text-align: center; margin-top: 15px;">
-                Already have an account?
-                <label for="toggle-signup" class="link-toggle">Sign In</label>
-            </p>
         </form>
-
         <!-- Forgot Password Form -->
         <form class="form-forgot form-section" autocomplete="off" novalidate>
             <h2 class="form-login-heading">RESET PASSWORD</h2>
             <label for="reset-email">Email Address</label>
-            <input type="email" id="reset-email" name="reset-email" placeholder="Enter your email" class="form-control" required />
-            <button type="submit" class="btn btn-theme btn-block">Send Reset Link</button>
-            <p style="text-align: center; margin-top: 15px;">
+            <input type="email" id="reset-email" name="reset-email" placeholder="Enter your email" class="form-control"
+                required />
+            <button type="submit" class="btn btn-theme btn-block">
+                Send Reset Link
+            </button>
+            <p style="text-align: center; margin-top: 15px">
                 Remember your password?
                 <label for="toggle-forgot" class="link-toggle">Back to Sign In</label>
             </p>

@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using server.Models;
 
+// using server.Helpers; // For PasswordHelper and JwtService
+
+// using BCrypt.Net;
 namespace server.Controllers
 {
     [Route("api/[controller]")]
@@ -37,15 +40,32 @@ namespace server.Controllers
         }
 
         // POST: api/users
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-        }
+[HttpPost("login")]
+public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
+{
+    if (loginDto == null || string.IsNullOrWhiteSpace(loginDto.Username) || string.IsNullOrWhiteSpace(loginDto.Password))
+        return BadRequest("Username and password are required");
 
+    // Plain text check
+    var user = await _context.Users
+        .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.Password == loginDto.Password);
+
+    if (user == null)
+        return Unauthorized("Invalid username or password");
+
+    // Return some user info
+    return Ok(new
+    {
+       user.Id,
+        user.UserId,
+        user.Username,
+        user.Fullname,
+        user.Department,
+        user.Role,
+        user.RegisteredDate
+    });
+}
         // PUT: api/users/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)

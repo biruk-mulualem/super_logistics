@@ -8,13 +8,18 @@
       class="search-input"
       placeholder="Search..." />
 
-    <button
-      *ngIf="buttonVisibility.add"
-      class="add-btn"
-      title="Add"
-      (click)="openAddModal()">
-      <i class="fas fa-plus"></i>
-    </button>
+
+ 
+
+  <button
+    *ngIf="buttonVisibility.add"
+    class="add-btn"
+    title="Add"
+    (click)="openAddModal()">
+    <i class="fas fa-plus"></i> 
+  </button>
+
+
   </div>
 
   <!-- Table -->
@@ -74,6 +79,7 @@
     </button>
   </div>
 </div>
+
 
 <!-- ================= ADD MODAL ================= -->
 <div class="modal" *ngIf="showModal.add" (click)="closeModal('add')">
@@ -183,7 +189,6 @@
       </div>
     </ng-container>
     <!-- ================= ADD MODAL (Logistics) ================= -->
-
     <ng-container *ngIf="pageType === 'logistics'">
       <!-- Modal Header -->
       <div class="modal-header">
@@ -215,15 +220,6 @@
             </option>
           </select>
         </div>
-
-        <!-- <div class="modal-input-group">
-          <label>Transaction ID</label>
-          <input
-            type="text"
-            [(ngModel)]="item.transactionId"
-            (ngModelChange)="onTransactionChange(item)"
-            placeholder="Enter transaction ID manually" />
-        </div> -->
 
         <!-- Item Description Selector -->
         <div class="modal-input-group">
@@ -772,7 +768,7 @@
             </button>
           </div>
         </ng-container>
-  
+
         <ng-container *ngIf="pageType === 'logistics'">
 
           <div class="combined-section"
@@ -848,7 +844,7 @@
                 </div>
 
                 <div class="modal-input-group">
-           
+
                   <input
                     type="text"
                     [(ngModel)]="item.transactionId"

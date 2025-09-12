@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using server.Models; // <-- adjust as needed to match your actual namespace
 using Microsoft.Extensions.DependencyInjection;
 using server.Services;
+// using Microsoft.AspNetCore.SpaServices;
+
 namespace server
 {
     // Main entry point for the application
@@ -57,8 +59,21 @@ builder.Services.AddScoped<ResponseGenerator>();
             // Enable authorization middleware (necessary for handling authentication/authorization)
             app.UseAuthorization();
 
-            // Map the controllers' routes (this means your API controllers can start responding to HTTP requests)
+ 
+
+
+
+// Serve Angular static files (dist folder)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+           // Map the controllers' routes (this means your API controllers can start responding to HTTP requests)
             app.MapControllers();
+// Map API controllers
+
+
+// Angular fallback: any route not matched goes to index.html
+app.MapFallbackToFile("index.html");
+
 
             // Finally, the application starts running and starts listening for incoming requests
             app.Run();

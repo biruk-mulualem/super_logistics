@@ -1,6 +1,4 @@
 
-
-
         /* ------------------ Base Layout ------------------ */
     
     .container {
@@ -46,17 +44,16 @@
         justify-content: center;
         cursor: pointer;
     }
-    
     .add-btn {
-        background-color: #5cb85c;
+        background-color: #007BFF;
     }
     
     .add-btn:hover {
-        background-color: #4cae4c;
+        background-color: #007BFF;
     }
     
     .edit-btn {
-        background-color: #0eb1f1;
+        background-color: #007BFF;
         margin-right: 5px;
     }
     
@@ -66,7 +63,7 @@
     }
     
     .payment-btn {
-        background-color: #096ada;
+        background-color: #007BFF;
         margin-right: 5px;
     }
     

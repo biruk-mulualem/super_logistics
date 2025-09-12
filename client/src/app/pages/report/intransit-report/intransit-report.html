@@ -1,0 +1,132 @@
+<div id="dashboard_page">
+  <div class="main">
+    <app-header></app-header>
+
+    <div class="content">
+      <h1>Intransit Report</h1>
+
+      <!-- Thick Horizontal Panel -->
+      <div class="report-panel-horizontal">
+
+        <!-- Left Body 80% -->
+        <div class="panel-body">
+            Report content / charts / tables go here
+            ddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            dddddddddddddddddddddddddddddddddddddddddddddddddyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddddddd
+            dddddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddd
+            ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+          <!-- You can bind your filtered data table here -->
+        </div>
+
+        <!-- Right Filter Section 20% -->
+<div class="panel-filter">
+  <h3>Filter Report</h3>
+
+  <div class="filter-row">
+    <div class="filter-item">
+      <label>Status</label>
+      <select [(ngModel)]="filters.status" name="status">
+        <option value="">All</option>
+        <option value="InTransit">In Transit</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Customer</label>
+      <input type="text" [(ngModel)]="filters.customer" name="customer" placeholder="Customer name" />
+    </div>
+  </div>
+    <div class="filter-row">
+    <div class="filter-item">
+      <label>Status</label>
+      <select [(ngModel)]="filters.status" name="status">
+        <option value="">All</option>
+        <option value="InTransit">In Transit</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Customer</label>
+      <input type="text" [(ngModel)]="filters.customer" name="customer" placeholder="Customer name" />
+    </div>
+  </div>
+    <div class="filter-row">
+    <div class="filter-item">
+      <label>Status</label>
+      <select [(ngModel)]="filters.status" name="status">
+        <option value="">All</option>
+        <option value="InTransit">In Transit</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Customer</label>
+      <input type="text" [(ngModel)]="filters.customer" name="customer" placeholder="Customer name" />
+    </div>
+  </div>
+
+    <div class="filter-row">
+    <div class="filter-item">
+      <label>Status</label>
+      <select [(ngModel)]="filters.status" name="status">
+        <option value="">All</option>
+        <option value="InTransit">In Transit</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <label>Customer</label>
+      <input type="text" [(ngModel)]="filters.customer" name="customer" placeholder="Customer name" />
+    </div>
+  </div>
+
+  
+
+
+  <button class="print-btn" (click)="fetchAndPrint()">
+    <i class="fas fa-filter"></i> Filter
+  </button>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <app-sidebar></app-sidebar>
+  </div>
+</div>

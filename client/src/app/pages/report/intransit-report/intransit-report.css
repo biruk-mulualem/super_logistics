@@ -1,0 +1,100 @@
+.report-panel-horizontal {
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 650px; /* adjust height as needed */
+  margin-left: 70px;
+}
+/* Left Body 80% */
+.panel-body {
+  background-color: #dfdcdc;
+  flex: 8; /* 80% */
+  padding: 20px;
+}
+
+/* Right Filter 20% */
+.panel-filter {
+  background-color: #1a2a5a;
+  color: white;
+  flex: 2; /* 20% */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-filter h3 {
+  margin-bottom: 10px;
+}
+
+.panel-filter label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.panel-filter select,
+.panel-filter input {
+  padding: 15px;
+  border-radius: 4px;
+  border: none;
+  width: 100%;
+  gap: 1;
+  margin-top: 5px;
+}
+
+.print-btn {
+  margin-top: auto;
+  background-color: white;
+  color: #007bff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.print-btn i {
+  margin-right: 5px;
+}
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.filter-item {
+  flex: 1; /* each item takes equal width */
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-filter label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.panel-filter input,
+.panel-filter select {
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+  width: 100%;
+}
+
+.print-btn {
+  margin-top: 10px;
+  background-color: white;
+  color: #007bff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.print-btn i {
+  margin-right: 5px;
+}

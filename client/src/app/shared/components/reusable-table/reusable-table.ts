@@ -71,6 +71,7 @@ export class ReusableTable implements OnInit, OnChanges {
   showModal = {
     add: false,
     edit: false,
+        print: false,
     delete: false,
     detail: false,
     payment: false,
@@ -162,6 +163,7 @@ export class ReusableTable implements OnInit, OnChanges {
   buttonVisibility = {
     add: true,
     edit: true,
+    print:true,
     delete: true,
     detail: true,
     payment: true,
@@ -173,6 +175,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'intransit',
       add: true,
       edit: true,
+        print:true,
       delete: true,
       detail: true,
       payment: false,
@@ -182,6 +185,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'logistics',
       add: true,
       edit: true,
+        print:true,
       delete: true,
       detail: true,
       payment: false,
@@ -191,6 +195,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'reports',
       add: false,
       edit: true,
+        print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -200,6 +205,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'history',
       add: false,
       edit: false,
+        print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -209,6 +215,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'donelogisticshistory',
       add: false,
       edit: false,
+        print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -217,7 +224,8 @@ export class ReusableTable implements OnInit, OnChanges {
       match: '/doneintransit',
       pageType: 'doneintransithistory',
       add: false,
-      edit: false,
+      edit: false, 
+       print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -227,6 +235,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'cancelledintransithistory',
       add: false,
       edit: false,
+        print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -236,6 +245,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'cancelledlogisticshistory',
       add: false,
       edit: false,
+        print:true,
       delete: false,
       detail: true,
       payment: false,
@@ -346,6 +356,7 @@ export class ReusableTable implements OnInit, OnChanges {
     return (
       this.buttonVisibility.detail ||
       this.buttonVisibility.edit ||
+       this.buttonVisibility.print ||
       this.buttonVisibility.payment ||
       this.buttonVisibility.delete
     );
@@ -362,6 +373,7 @@ export class ReusableTable implements OnInit, OnChanges {
       Object.assign(this.buttonVisibility, {
         add: config.add ?? false,
         edit: config.edit ?? false,
+        print: config.print ?? false,
         delete: config.delete ?? false,
         detail: config.detail ?? false,
         payment: config.payment ?? false,
@@ -371,6 +383,7 @@ export class ReusableTable implements OnInit, OnChanges {
       Object.assign(this.buttonVisibility, {
         add: false,
         edit: false,
+        print: false,
         delete: false,
         detail: false,
         payment: false,
@@ -428,16 +441,6 @@ export class ReusableTable implements OnInit, OnChanges {
     this.selectedRow = row;
     this.fetchPayments(row.transactionId);
   }
-// openRowModal(row: any) {
-//   console.log('Row data:', row);
-//   row.djbDeparted = row.djbDeparted || [];
-//   row.arrivedAAk = row.arrivedAAk || [];
-//   row.arrivedSDT = row.arrivedSDT || [];
-//   row.containerReturned = row.containerReturned || [];
-//   this.selectedRow = row;
-//   this.fetchPayments(row.transactionId);
-// }
-
 
 
 
@@ -471,6 +474,15 @@ export class ReusableTable implements OnInit, OnChanges {
 
     return missing;
   }
+
+    // ============================================================
+  // -------------------- Intransit Add / Edit ------------------
+  // ============================================================
+ openPrintModal() {
+
+    this.openModal('print');
+
+ }
 
   // ============================================================
   // -------------------- Intransit Add / Edit ------------------

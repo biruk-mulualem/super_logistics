@@ -6,37 +6,33 @@ namespace server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReportsController : ControllerBase
+    public class LogisticsReportController : ControllerBase
     {
         private readonly LogisticsContext _context;
 
-        public ReportsController(LogisticsContext context)
+        public LogisticsReportController(LogisticsContext context)
         {
             _context = context;
         }
 
-        // GET: api/reports
+        // GET: api/logisticsreport
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Report>>> GetReports()
         {
             return await _context.Reports.ToListAsync();
         }
 
-        // GET: api/reports/{id}
+        // GET: api/logisticsreport/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReport(int id)
         {
             var report = await _context.Reports.FindAsync(id);
-
             if (report == null)
-            {
                 return NotFound();
-            }
-
             return report;
         }
 
-        // POST: api/reports
+        // POST: api/logisticsreport
         [HttpPost]
         public async Task<ActionResult<Report>> PostReport(Report report)
         {
@@ -46,14 +42,12 @@ namespace server.Controllers
             return CreatedAtAction(nameof(GetReport), new { id = report.Id }, report);
         }
 
-        // PUT: api/reports/{id}
+        // PUT: api/logisticsreport/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReport(int id, Report report)
         {
             if (id != report.Id)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(report).State = EntityState.Modified;
 
@@ -64,24 +58,20 @@ namespace server.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!ReportExists(id))
-                {
                     return NotFound();
-                }
                 throw;
             }
 
             return NoContent();
         }
 
-        // DELETE: api/reports/{id}
+        // DELETE: api/logisticsreport/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReport(int id)
         {
             var report = await _context.Reports.FindAsync(id);
             if (report == null)
-            {
                 return NotFound();
-            }
 
             _context.Reports.Remove(report);
             await _context.SaveChangesAsync();

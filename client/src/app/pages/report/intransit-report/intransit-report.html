@@ -1,37 +1,37 @@
 <div id="dashboard_page">
   <div class="main">
     <app-header></app-header>
-
     <div class="content">
-      <h1>Intransit Report</h1>
-
+      <h1 class="report-header">Intransit Report</h1>
       <!-- Horizontal Panel -->
       <div class="report-panel-horizontal">
+
         <!-- Left Body: Table -->
         <div class="panel-body">
+
           <div class="table-container">
+
             <table id="reportTable" class="report-table">
               <thead>
                 <tr>
                   <!-- Common Data -->
                   <th>Id</th>
-                    <!-- Item Data -->
-                    <th>Purchase Date</th>
+                  <!-- Item Data -->
+                  <th>Purchase Date</th>
                   <th>Item Description</th>
-                 
+
                   <th>Purchase Order</th>
 
                   <th>Company</th>
                   <th>Contact</th>
                   <th>Origin</th>
-                 
 
-                
                   <th>Quantity</th>
                   <th>Unit Price</th>
 
                   <!-- Dynamic Payment Headers -->
-                  <ng-container *ngFor="let i of getMaxPayments(reportData); let idx = index">
+                  <ng-container
+                    *ngFor="let i of getMaxPayments(reportData); let idx = index">
                     <th>Payment {{ idx + 1 }} Amount</th>
                     <th>Payment {{ idx + 1 }} %</th>
                   </ng-container>
@@ -41,46 +41,65 @@
                   <th>Total Paid %</th>
                   <th>Total Remaining</th>
                   <th>Total Remaining %</th>
-                      <th>Remark</th>
-                   <th>GRN</th>
+                  <th>Remark</th>
+                  <th>GRN</th>
                 </tr>
               </thead>
 
               <tbody>
                 <ng-container *ngFor="let report of reportData">
-                  <ng-container *ngFor="let item of report.items; let i = index">
+                  <ng-container
+                    *ngFor="let item of report.items; let i = index">
                     <tr>
-                        
-                      <!-- Merge common data across item rows -->
-                      <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.transactionId }}</td>
- <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.purchaseDate | date:'dd-MM-yyyy' }}</td>
-                            <!-- Item Data -->
-                      <td>{{ item.itemDescription }}</td>
-                      <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.purchaseOrder }}</td>
-                    
-                      <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.purchaseCompany }}</td>
-                      <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.contactPerson }}</td>
-                      <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.origin }}</td>
-                
 
-                
+                      <!-- Merge common data across item rows -->
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{
+                        report.transactionId }}</td>
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{
+                        report.purchaseDate | date:'dd-MM-yyyy' }}</td>
+                      <!-- Item Data -->
+                      <td>{{ item.itemDescription }}</td>
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{
+                        report.purchaseOrder }}</td>
+
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{
+                        report.purchaseCompany }}</td>
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{
+                        report.contactPerson }}</td>
+                      <td *ngIf="i === 0"
+                        [attr.rowspan]="report.items.length">{{ report.origin
+                        }}</td>
                       <td>{{ item.quantity }}</td>
                       <td>{{ item.unitPrice }}</td>
-
                       <!-- Payments -->
                       <ng-container *ngIf="i === 0">
-                        <ng-container *ngFor="let pay of report.normalizedPayments">
-                          <td [attr.rowspan]="report.items.length">{{ pay.Amount }}</td>
-                          <td [attr.rowspan]="report.items.length">{{ pay.Percent | number:'1.2-2' }}%</td>
+                        <ng-container
+                          *ngFor="let pay of report.normalizedPayments">
+                          <td [attr.rowspan]="report.items.length">{{ pay.Amount
+                            }}</td>
+                          <td [attr.rowspan]="report.items.length">{{
+                            pay.Percent | number:'1.2-2' }}%</td>
                         </ng-container>
-
                         <!-- Totals -->
-                        <td [attr.rowspan]="report.items.length">{{ report.TotalAmountPaid }}</td>
-                        <td [attr.rowspan]="report.items.length">{{ report.TotalPaidInPercent | number:'1.2-2' }}%</td>
-                        <td [attr.rowspan]="report.items.length">{{ report.TotalAmountRemaning }}</td>
-                        <td [attr.rowspan]="report.items.length">{{ report.TotalRemaningInPercent | number:'1.2-2' }}%</td>
-                         <td [attr.rowspan]="report.items.length">{{ report.remark }}</td> <!-- Display remark -->
-                              <td *ngIf="i === 0" [attr.rowspan]="report.items.length">{{ report.grn }}</td>
+                        <td [attr.rowspan]="report.items.length">{{
+                          report.TotalAmountPaid }}</td>
+                        <td [attr.rowspan]="report.items.length">{{
+                          report.TotalPaidInPercent | number:'1.2-2' }}%</td>
+                        <td [attr.rowspan]="report.items.length">{{
+                          report.TotalAmountRemaning }}</td>
+                        <td [attr.rowspan]="report.items.length">{{
+                          report.TotalRemaningInPercent | number:'1.2-2'
+                          }}%</td>
+                        <td [attr.rowspan]="report.items.length">{{
+                          report.remark }}</td> <!-- Display remark -->
+                        <td *ngIf="i === 0"
+                          [attr.rowspan]="report.items.length">{{ report.grn
+                          }}</td>
                       </ng-container>
                     </tr>
                   </ng-container>
@@ -91,71 +110,71 @@
         </div>
 
         <!-- Right Filter Section -->
-     <form autocomplete="off" novalidate (ngSubmit)="fetchAndPrint()">
-  <div class="panel-filter">
-    <h3>Filter In-Transit Report</h3>
+        <form autocomplete="off" novalidate (ngSubmit)="fetchAndPrint()">
+          <div class="panel-filter">
+            <h3>Filter In-Transit Report</h3>
 
-    <!-- Row 1: Transaction & Purchase Order -->
-    <div class="filter-row">
-      <div class="filter-item">
-        <label>Transaction ID</label>
-        <input type="text" [(ngModel)]="filters.transactionId" name="transactionId" placeholder="e.g. SDT000123" />
-      </div>
-      <div class="filter-item">
-        <label>Purchase Order</label>
-        <input type="text" [(ngModel)]="filters.purchaseOrder" name="purchaseOrder" placeholder="Enter PO number" />
-      </div>
-    </div>
+            <!-- Row 1: Transaction & Purchase Order -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Transaction ID</label>
+                <input type="text" [(ngModel)]="filters.transactionId"
+                  name="transactionId" placeholder="e.g. SDT000123" />
+              </div>
+              <div class="filter-item">
+                <label>Purchase Order</label>
+                <input type="text" [(ngModel)]="filters.purchaseOrder"
+                  name="purchaseOrder" placeholder="Enter PO number" />
+              </div>
+            </div>
+            <!-- Row 2: Date Range -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Purchase Date (From)</label>
+                <input type="date" [(ngModel)]="filters.startDate"
+                  name="startDate" />
+              </div>
+              <div class="filter-item">
+                <label>Purchase Date (To)</label>
+                <input type="date" [(ngModel)]="filters.endDate"
+                  name="endDate" />
+              </div>
+            </div>
+            <!-- Row 3: Origin & Status -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Origin</label>
+                <select [(ngModel)]="filters.origin" name="origin">
+                  <option value>All</option>
+                  <option *ngFor="let origin of origins" [value]="origin">{{
+                    origin }}</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Status</label>
+                <select [(ngModel)]="filters.status" name="status">
+                  <option value="all">All</option>
+                  <option value="full">Full Payment</option>
+                  <option value="partial">Partial Payment</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="print-btn">
+              <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            <!-- Buttons: Apply Filter, Print, Export -->
+            <div class="filter-buttons">
 
-    <!-- Row 2: Date Range -->
-    <div class="filter-row">
-      <div class="filter-item">
-        <label>Purchase Date (From)</label>
-        <input type="date" [(ngModel)]="filters.startDate" name="startDate" />
-      </div>
-      <div class="filter-item">
-        <label>Purchase Date (To)</label>
-        <input type="date" [(ngModel)]="filters.endDate" name="endDate" />
-      </div>
-    </div>
-
-    <!-- Row 3: Origin & Status -->
-    <div class="filter-row">
-      <div class="filter-item">
-        <label>Origin</label>
-        <select [(ngModel)]="filters.origin" name="origin">
-          <option value="">All</option>
-          <option *ngFor="let origin of origins" [value]="origin">{{ origin }}</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <label>Status</label>
-        <select [(ngModel)]="filters.status" name="status">
-          <option value="all">All</option>
-          <option value="full">Full Payment</option>
-          <option value="partial">Partial Payment</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-      </div>
-    </div>
-
-
-      <button type="submit" class="print-btn">
-        <i class="fas fa-filter"></i> Apply Filters
-      </button>
-    <!-- Buttons: Apply Filter, Print, Export -->
-    <div class="filter-buttons">
-    
-      <button type="button" class="print-btn" (click)="printReport()">
-        <i class="fas fa-print"></i> Print
-      </button>
-      <button type="button" class="print-btn" (click)="exportToCSV()">
+              <button type="button" class="print-btn" (click)="printReport()">
+                <i class="fas fa-print"></i> Print
+              </button>
+              <!-- <button type="button" class="print-btn" (click)="exportToCSV()">
         <i class="fas fa-file-csv"></i> Export CSV
-      </button>
-    </div>
-  </div>
-</form>
-
+      </button> -->
+            </div>
+          </div>
+        </form>
 
       </div>
     </div>

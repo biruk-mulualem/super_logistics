@@ -145,3 +145,10 @@
     flex-direction: column;
   }
 }
+
+
+.report-header {
+  margin: 40px 0 20px 100px; /* top margin instead of <br>, bottom margin optional, left margin kept */
+  font-size: 24px;           /* adjust size as needed */
+  font-weight: 700;
+}

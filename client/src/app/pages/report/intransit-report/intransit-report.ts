@@ -98,7 +98,6 @@ getMaxPayments(reportData: any[]): number[] {
 }
 
 
-
 printReport() {
   const table = document.getElementById('reportTable');
   if (!table) return;
@@ -110,15 +109,19 @@ printReport() {
   popupWin.document.write(`
     <html>
       <head>
-        <title>Intransit Report</title>
+        <title>Super Double T General Trading Plc - Intransit Report</title>
         <style>
-          table { width: 100%; border-collapse: collapse; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; }
-          th, td { border: 1px solid #444; padding: 5px; text-align: center; }
-          th { background-color: #0440f5ff; color: white; font-weight: 700; }
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; margin: 20px; }
+          h1 { text-align: center; font-size: 20px; margin-bottom: 5px; color: #ff0000; } /* header color */
+          h2 { text-align: center; font-size: 16px; margin-bottom: 20px; color: #0440f5; } /* subheader color */
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #030303ff; padding: 5px; text-align: center; }
+          th { background-color: #0440f5ff; color: black; font-weight: 700; }
           tbody tr:nth-child(even) { background-color: #f3f3f3; }
         </style>
       </head>
       <body onload="window.print(); window.close();">
+    
         ${table.outerHTML}
       </body>
     </html>
@@ -126,31 +129,7 @@ printReport() {
   popupWin.document.close();
 }
 
-exportToCSV() {
-  const table = document.getElementById('reportTable');
-  if (!table) return;
 
-  let csv = '';
-  const rows = table.querySelectorAll('tr');
-
-  rows.forEach(row => {
-    const cols = row.querySelectorAll('th, td');
-    const rowData: string[] = [];
-    cols.forEach(col => {
-      let data = col.textContent?.trim() ?? '';
-      data = data.replace(/,/g, ';'); // prevent breaking CSV
-      rowData.push(data);
-    });
-    csv += rowData.join(',') + '\n';
-  });
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'intransit_report.csv';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
 
 
 

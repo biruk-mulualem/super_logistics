@@ -1,21 +1,152 @@
-<!-- Sidebar -->
 <div id="dashboard_page">
+  <div class="main">
+    <app-header></app-header>
+    <div class="content">
+      <h1 class="report-header">Logistics Report</h1>
+      <!-- Horizontal Panel -->
+      <div class="report-panel-horizontal">
 
-    <!-- Main Content Area -->
-    <div class="main">
+        <!-- Left Body: Table -->
+        <div class="panel-body">
 
-
-        <app-header></app-header>
-
-        <div class="content">
-            <br>
-            <br>
-            <br>
-            <h1> <span style="visibility: hidden;">-------</span> Logistics Report
-            </h1>
-           
         </div>
-        <app-sidebar></app-sidebar>
 
+        <!-- Right Filter Section -->
+        <form autocomplete="off" novalidate (ngSubmit)="fetchAndPrint()">
+          <div class="panel-filter">
+            <h3>Filter Logistics Report</h3>
+
+            <!-- Row 1: Transaction ID & Bill No -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Transaction ID</label>
+                <input type="text" [(ngModel)]="filters.transactionId"
+                  name="transactionId" placeholder="e.g. SDT000123" />
+              </div>
+              <div class="filter-item">
+                <label>Bill No</label>
+                <input type="text" [(ngModel)]="filters.billNo" name="billNo"
+                  placeholder="Enter Bill Number" />
+              </div>
+            </div>
+
+            <!-- Row 2: Shipper & Transitor -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Shipper</label>
+                <input type="text" [(ngModel)]="filters.shipper" name="shipper"
+                  placeholder="Enter Shipper Name" />
+              </div>
+              <div class="filter-item">
+                <label>Transitor</label>
+                <input type="text" [(ngModel)]="filters.transitor"
+                  name="transitor" placeholder="Enter Transitor Name" />
+              </div>
+            </div>
+
+            <!-- Row 3: Origin & Container Type -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Origin</label>
+                <select [(ngModel)]="filters.origin" name="origin">
+                  <option value>All</option>
+                  <option *ngFor="let origin of origins" [value]="origin">{{
+                    origin }}</option>
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Container Type</label>
+                <select [(ngModel)]="filters.containerType"
+                  name="containerType">
+                  <option value>All</option>
+                  <option *ngFor="let type of containerTypes" [value]="type">{{
+                    type }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 4: Dates -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>ETA DJB (From)</label>
+                <input type="date" [(ngModel)]="filters.etaStart"
+                  name="etaStart" />
+              </div>
+              <div class="filter-item">
+                <label>ETA DJB (To)</label>
+                <input type="date" [(ngModel)]="filters.etaEnd" name="etaEnd" />
+              </div>
+              <!-- <div class="filter-item">
+                <label>Loading Date (From)</label>
+                <input type="date" [(ngModel)]="filters.loadingStart"
+                  name="loadingStart" />
+              </div> -->
+              <!-- <div class="filter-item">
+                <label>Doc Sent DJB:</label>
+                <input type="date" [(ngModel)]="filters.DocSentDJB"
+                  name="loadingEnd" />
+              </div> -->
+            </div>
+            <!-- Row 5: Status & Document Owner -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Status</label>
+                <select [(ngModel)]="filters.status" name="status">
+                  <option value="13">All</option>
+                  <option value="0">Recently Loaded</option>
+                  <option value="1">Arrived at DJB</option>
+                  <option value="2">Not Arrived at DJB</option>
+                  <option value="3">Arrived at DJB but Dispatched from DJB</option>
+                  <option value="4">Not Dispatched from DJB</option>
+                  <option value="5">Arrived at AAK</option>
+                  <option value="6">Dispatched from DJB but Not Arrived at AAK</option>
+                  <option value="7">Arrived at SDT</option>
+                  <option value="8">Not Arrived at SDT</option>
+                  <option value="9">Container Returned</option>
+                  <option value="10">Container Not Returned</option>
+                  <option value="11">Tax Paid</option>
+                  <option value="12">Tax Not Paid</option>
+
+                </select>
+              </div>
+              <div class="filter-item">
+                <label>Document Owner</label>
+                <input type="text" [(ngModel)]="filters.docOwner"
+                  name="docOwner" placeholder="Enter Doc Owner Name" />
+              </div>
+            </div>
+
+            <!-- Row 6: Additional Fields -->
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>Truck Way Bill</label>
+                <input type="text" [(ngModel)]="filters.truckWayBill"
+                  name="truckWayBill" placeholder="Enter Truck Way Bill" />
+              </div>
+              <div class="filter-item">
+                <label>Bill Collected</label>
+                <input type="date" [(ngModel)]="filters.billCollected"
+                  name="billCollected" />
+              </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="filter-buttons">
+              <button type="submit" class="print-btn">
+                <i class="fas fa-filter"></i> Apply Filter
+              </button>
+              <button type="button" class="print-btn">
+                <i class="fas fa-print"></i> Print
+              </button>
+
+            </div>
+          </div>
+        </form>
+
+      </div>
     </div>
+
+    <app-sidebar></app-sidebar>
+  </div>
 </div>

@@ -52,12 +52,12 @@
 .report-table tbody tr:nth-child(even) {
   background-color: #f3f3f3;
 }
-
 /* Filter Panel */
+/* Filter Panel - Sticky */
 .panel-filter {
   background-color: #1a2a5a;
   color: white;
-  flex: 1 1 15%; /* further reduced width */
+  flex: 1 1 15%;
   min-width: 150px;
   padding: 15px;
   display: flex;
@@ -65,9 +65,13 @@
   gap: 15px;
   box-sizing: border-box;
   font-weight: 500;
-  font-size: 12px; /* smaller font */
+  font-size: 12px;
+  
+  /* Sticky addition */
+  position: sticky;
+  top: 20px; /* distance from top when scrolling */
+  align-self: flex-start; /* ensures proper stickiness in flex layout */
 }
-
 /* Inputs & Selects */
 .panel-filter input,
 .panel-filter select {

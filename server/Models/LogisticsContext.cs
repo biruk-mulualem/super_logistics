@@ -23,5 +23,6 @@ namespace server.Models
                  public DbSet<LogisticsArrivedSDT> LogisticsArrivedSDTs { get; set; }
                      public DbSet<LogisticsContainerReturned> LogisticsContainerReturns { get; set; }
                          public DbSet<LogisticsDjboutiDeparted> LogisticsDjboutiDeparts { get; set; }
+        public IEnumerable<object> LogisticsDjboutiDeparted { get; internal set; }
     }
 }

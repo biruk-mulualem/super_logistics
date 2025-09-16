@@ -2,7 +2,7 @@
   <div class="main">
     <app-header></app-header>
     <div class="content">
-      <h1 class="report-header">Intransit Report</h1>
+ 
       <!-- Horizontal Panel -->
       <div class="report-panel-horizontal">
 
@@ -10,7 +10,8 @@
         <div class="panel-body">
 
           <div class="table-container">
-
+            <br>
+     <h1 class="report-header">Intransit Report</h1>
             <table id="reportTable" class="report-table">
               <thead>
                 <tr>
@@ -47,6 +48,13 @@
               </thead>
 
               <tbody>
+                <!-- Show placeholder row if there is no data -->
+                <tr *ngIf="reportData.length === 0">
+                  <td colspan="24"
+                    style="text-align: left; color: #555353; font-style: italic; font-size: 20px;">
+                    No intransit to display yet. Apply filters to load the data.
+                  </td>
+                </tr>
                 <ng-container *ngFor="let report of reportData">
                   <ng-container
                     *ngFor="let item of report.items; let i = index">
@@ -112,7 +120,8 @@
         <!-- Right Filter Section -->
         <form autocomplete="off" novalidate (ngSubmit)="fetchAndPrint()">
           <div class="panel-filter">
-            <h3>Filter In-Transit Report</h3>
+              <br><br><br>
+            <h2>Filter In-Transit Report</h2>
 
             <!-- Row 1: Transaction & Purchase Order -->
             <div class="filter-row">

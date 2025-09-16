@@ -111,23 +111,50 @@ printReport() {
       <head>
         <title>Super Double T General Trading Plc - Intransit Report</title>
         <style>
-          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 12px; margin: 20px; }
-          h1 { text-align: center; font-size: 20px; margin-bottom: 5px; color: #ff0000; } /* header color */
-          h2 { text-align: center; font-size: 16px; margin-bottom: 20px; color: #0440f5; } /* subheader color */
-          table { width: 100%; border-collapse: collapse; }
-          th, td { border: 1px solid #030303ff; padding: 5px; text-align: center; }
-          th { background-color: #0440f5ff; color: black; font-weight: 700; }
+          body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-size: 12px; 
+            margin: 20px; 
+          }
+          h1 { 
+            text-align: center; 
+            font-size: 20px; 
+            margin-bottom: 5px; 
+            color: #ff0000; 
+          }
+          h2 { 
+            text-align: center; 
+            font-size: 16px; 
+            margin-bottom: 20px; 
+            color: #0440f5; 
+          }
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: auto; /* allow cells to expand naturally */
+          }
+          th, td { 
+            border: 1px solid #030303ff; 
+            padding: 5px; 
+            text-align: center;
+            white-space: nowrap; /* stop wrapping */
+          }
+          th { 
+            background-color: #0440f5ff; 
+            color: black; 
+            font-weight: 700; 
+          }
           tbody tr:nth-child(even) { background-color: #f3f3f3; }
         </style>
       </head>
       <body onload="window.print(); window.close();">
-    
         ${table.outerHTML}
       </body>
     </html>
   `);
   popupWin.document.close();
 }
+
 
 
 

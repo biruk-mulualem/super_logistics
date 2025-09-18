@@ -1,0 +1,27 @@
+<p>calander works!</p>
+        <div class="box full-height">
+          <h3>Calendar</h3>
+          <div class="calendar">
+            <div class="calendar-header">
+              <button (click)="prevMonth()">&#8249;</button>
+              <span>{{ monthNames[currentMonth] }} {{ currentYear }}</span>
+              <button (click)="nextMonth()">&#8250;</button>
+            </div>
+
+            <div class="day-names">
+              <div *ngFor="let day of dayNames">{{ day }}</div>
+            </div>
+
+            <div class="days">
+              <div *ngFor="let day of days" [class.today]="day && isToday(day)">
+                {{ day ? day.getDate() : "" }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Ethiopian Date -->
+          <div class="ethiopian-date">
+            Ethiopian date today:
+            <span class="value">{{ getTodayEthiopianDate() }}</span>
+          </div>
+        </div>

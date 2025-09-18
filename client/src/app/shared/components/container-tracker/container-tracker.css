@@ -1,0 +1,149 @@
+
+/* ---------------------- */
+/* Rows and Boxes */
+.row {
+  display: flex;
+  gap: 20px;
+}
+.box {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 20px;
+  min-height: 100px;
+  flex-grow: 1;
+  border-radius: 12px;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Row-specific layouts */
+.row-6-cols .box {
+  flex: 1 1 calc(100% / 6 - 8.4px);
+}
+.row-3-cols .box {
+  flex: 1 1 calc(100% / 3 - 6.7px);
+}
+.row-3-uneven .wide {
+  flex: 2;
+}
+.row-3-uneven .box:not(.wide) {
+  flex: 1;
+}
+.row-1-col .box {
+  flex: 1 1 100%;
+}
+
+/* Responsive behavior */
+@media (max-width: 1024px) {
+  .row-6-cols .box,
+  .row-3-cols .box,
+  .row-3-uneven .box {
+    flex: 1 1 100%;
+  }
+
+  .dashboard-sidebar {
+    display: none;
+  }
+}
+
+.tracker-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.tracker-container input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+.tracker-container button {
+  padding: 8px 16px;
+  background-color: #00aaff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.shipment-tracker {
+  display: flex;
+  justify-content: space-between; /* spread stops */
+  align-items: center;
+  position: relative;
+  margin: 40px 0;
+}
+
+/* Horizontal road line */
+.shipment-tracker::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  right: 5%;
+  height: 4px;
+  background-color: #ccc;
+  z-index: 0;
+  transform: translateY(-50%);
+}
+
+/* Icon styling */
+.step-icon {
+  font-size: 30px;
+  padding: 12px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: #fff;
+  color: #ccc;
+  transition: all 0.3s;
+}
+
+/* Tracker step */
+.tracker-step {
+  position: relative;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tracker-step:hover {
+  transform: translateY(-5px);
+}
+
+.tracker-step::after {
+  content: attr(data-info);
+  position: absolute;
+  bottom: 50px;
+  left: 100%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  line-height: 1.4em;
+  white-space: normal; /* allow text to wrap */
+  word-break: break-word; /* break long words */
+  width: auto; /* allow tooltip to expand naturally */
+  max-width: 400px; /* controls maximum width */
+  min-width: 150px; /* optional: set a minimum width */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, bottom 0.3s;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.tracker-step:hover::after {
+  opacity: 1;
+  bottom: 65px;
+}

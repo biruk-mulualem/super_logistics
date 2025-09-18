@@ -25,7 +25,9 @@ export const routes: Routes = [
   { path: 'login', component: Loginpage },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: Dashboard,
+    //  canActivate: [AuthGuard] 
+    },
 
   {
     path: 'logistics',

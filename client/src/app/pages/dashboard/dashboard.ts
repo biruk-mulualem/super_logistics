@@ -1,46 +1,56 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  AfterViewChecked,
-  AfterViewInit,
-  OnInit,
-} from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewChecked, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+
 import { Sidebar } from '../../shared/components/sidebar/sidebar';
 import { Header } from '../../shared/components/header/header';
-import { HttpClientModule } from '@angular/common/http';
 import { ChatbotService } from '../../services/chatbot/chatbot.service';
 import { DashboardService } from '../../services/services/dashboard/dashboard.service';
-import { firstValueFrom } from 'rxjs';
+import EthiopianCalendar from 'ethiopian-calendar-new';
+import { toEthiopian } from 'ethiopian-calendar-new';
+import { ContainerTracker } from '../../shared/components/container-tracker/container-tracker';
+import { Calander } from '../../shared/components/calander/calander';
 
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [Sidebar, Header, FormsModule, CommonModule, HttpClientModule],
+  imports: [Sidebar, Header, FormsModule, CommonModule, HttpClientModule,ContainerTracker,Calander],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements AfterViewChecked, OnInit {
   @ViewChild('chatBody') private chatBody!: ElementRef;
 
+  // Chat
   isChatOpen = false;
   chatInput = '';
   messages: { from: 'user' | 'bot'; text: string }[] = [];
-  isSending = false; // To handle when the bot is processing the request
-  isBotTyping = false; // To show the typing indicator
+  isSending = false;
+  isBotTyping = false;
+
+  // Payment stats
   advancePayment = 0;
   pendingPayment = 0;
   fullPayment = 0;
   totalItems = 0;
 
-    inRoute = 0;
-inDjibouti = 0;
-inAak = 0;
-inSdt = 0;
+  // Shipment stats
+  inRoute = 0;
+  inDjibouti = 0;
+  inAak = 0;
+  inSdt = 0;
 
+  // Calendar
+  currentMonth: number = new Date().getMonth();
+  currentYear: number = new Date().getFullYear();
+  days: (Date | null)[] = [];
+  dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
 
   constructor(
     private chatbotService: ChatbotService,
@@ -48,6 +58,7 @@ inSdt = 0;
     private dashboardService: DashboardService
   ) {}
 
+  // -------------------- Chat Methods --------------------
   toggleChat() {
     this.isChatOpen = !this.isChatOpen;
   }
@@ -58,117 +69,98 @@ inSdt = 0;
 
   private scrollToBottom() {
     try {
-      this.chatBody.nativeElement.scrollTop =
-        this.chatBody.nativeElement.scrollHeight;
-    } catch (err) {
-      // Ignore if chatBody is not yet available
+      this.chatBody.nativeElement.scrollTop = this.chatBody.nativeElement.scrollHeight;
+    } catch (err) {}
+  }
+
+  sendMessage() {
+    const input = this.chatInput.trim();
+    if (!input) return;
+
+    this.messages.push({ from: 'user', text: input });
+    this.chatInput = '';
+    this.isBotTyping = true;
+    this.isSending = true;
+    this.cdr.detectChanges();
+
+    this.chatbotService.sendMessageToApi(input).subscribe(
+      (res) => {
+        this.messages.push({ from: 'bot', text: res.response });
+        this.isBotTyping = false;
+        this.isSending = false;
+        this.cdr.detectChanges();
+      },
+      (err) => {
+        this.messages.push({ from: 'bot', text: 'Sorry, something went wrong.' });
+        this.isBotTyping = false;
+        this.isSending = false;
+        this.cdr.detectChanges();
+      }
+    );
+  }
+
+  // -------------------- Calendar Methods --------------------
+  generateCalendar(year: number, month: number) {
+    this.days = [];
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    for (let i = 1; i <= lastDay; i++) {
+      this.days.push(new Date(year, month, i));
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-today = new Date();
-currentYear = this.today.getFullYear();
-currentMonth = this.today.getMonth();
-currentMonthName = this.today.toLocaleString('default', { month: 'long' });
-
-monthDays: number[] = [];
-firstDayOfWeek: number = 0;
-weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-
-generateCalendar(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  this.firstDayOfWeek = firstDay;
-  this.monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+  getTodayEthiopianDate(): string {
+    const today = new Date();
+    const eth = EthiopianCalendar.toEthiopian(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    return `${eth.day}/${eth.month}/${eth.year}`;
+  }
+
+  prevMonth() {
+    if (this.currentMonth === 0) {
+      this.currentMonth = 11;
+      this.currentYear--;
+    } else {
+      this.currentMonth--;
+    }
+    this.generateCalendar(this.currentYear, this.currentMonth);
+  }
+
+  nextMonth() {
+    if (this.currentMonth === 11) {
+      this.currentMonth = 0;
+      this.currentYear++;
+    } else {
+      this.currentMonth++;
+    }
+    this.generateCalendar(this.currentYear, this.currentMonth);
+  }
+
+  isToday(date: Date) {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  }
+
+  // -------------------- Initialization --------------------
   ngOnInit(): void {
     this.loadFollowups();
     this.loadInRouteStats();
-    
+
+    const today = new Date();
+    this.currentMonth = today.getMonth();
+    this.currentYear = today.getFullYear();
+    this.generateCalendar(this.currentYear, this.currentMonth);
+    this.cdr.detectChanges();
   }
 
-
-
-
+  // -------------------- Load Data Methods --------------------
   async loadFollowups() {
     try {
       const data = await firstValueFrom(this.dashboardService.getPaymentData());
-
-      // Support both array responses and single-object responses:
       const payload: any = Array.isArray(data) ? data[0] ?? {} : data ?? {};
 
-      // Accept either PascalCase or camelCase keys and default to 0 if missing
-      this.advancePayment =
-        payload.AdvancePayment ?? payload.advancePayment ?? 0;
-      this.pendingPayment =
-        payload.PendingPayment ?? payload.pendingPayment ?? 0;
+      this.advancePayment = payload.AdvancePayment ?? payload.advancePayment ?? 0;
+      this.pendingPayment = payload.PendingPayment ?? payload.pendingPayment ?? 0;
       this.fullPayment = payload.FullPayment ?? payload.fullPayment ?? 0;
       this.totalItems = payload.TotalItems ?? payload.totalItems ?? 0;
     } catch (error) {
@@ -176,94 +168,16 @@ generateCalendar(date: Date) {
     }
   }
 
+  async loadInRouteStats() {
+    try {
+      const stats = await firstValueFrom(this.dashboardService.getInRouteDjbAakSdtData());
 
-
-
-async loadInRouteStats() {
-  console.log('🔹 loadInRouteStats() called'); // check if method runs
-  try {
-    const stats = await firstValueFrom(
-      this.dashboardService.getInRouteDjbAakSdtData()
-    );
-
-    console.log('🔹 HTTP Response:', stats);
-
-this.inRoute = stats.inRoute;
-this.inDjibouti = stats.inDjibouti;
-this.inAak = stats.inAak;
-this.inSdt = stats.inSdt;
-
-    // console.log('✅ Stats assigned to component variables:', {
-    //   inRoute: this.inRoute,
-    //   inDjibouti: this.inDjibouti,
-    //   inAak: this.inAak,
-    //   inSdt: this.inSdt,
-    // });
-  } catch (err) {
-    console.error('❌ Error loading InRoute stats:', err);
+      this.inRoute = stats.inRoute;
+      this.inDjibouti = stats.inDjibouti;
+      this.inAak = stats.inAak;
+      this.inSdt = stats.inSdt;
+    } catch (err) {
+      console.error('❌ Error loading InRoute stats:', err);
+    }
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  sendMessage() {
-    const input = this.chatInput.trim();
-    if (!input) return; // Prevent empty messages
-
-    // Push user message immediately
-    this.messages.push({ from: 'user', text: input });
-
-    // Clear input field
-    this.chatInput = '';
-
-    // Show typing indicator and set sending flag
-    this.isBotTyping = true; // Set typing flag to true when sending the message
-    this.isSending = true; // Set sending flag to true while waiting for the response
-
-    // Manually trigger change detection to ensure the view is updated
-    this.cdr.detectChanges();
-
-    // Call the chatbot service API
-    this.chatbotService.sendMessageToApi(input).subscribe(
-      (res) => {
-        // Push bot's response to the messages array
-        this.messages.push({ from: 'bot', text: res.response });
-
-        // Hide typing indicator and reset sending flag
-        this.isBotTyping = false;
-        this.isSending = false;
-
-        // Trigger change detection after receiving the response
-        this.cdr.detectChanges(); // Manually trigger change detection
-      },
-      (err) => {
-        // Handle errors
-        this.messages.push({
-          from: 'bot',
-          text: 'Sorry, something went wrong.',
-        });
-
-        // Reset typing indicator and sending flag
-        this.isBotTyping = false;
-        this.isSending = false;
-
-        // Trigger change detection after error
-        this.cdr.detectChanges(); // Manually trigger change detection
-      }
-    );
-  }
-
-  //from this is the shipment chart==============================================
 }

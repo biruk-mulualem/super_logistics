@@ -11,183 +11,205 @@
 
         <!-- Row 1: 6 equal boxes - Key Metrics -->
         <div class="row row-6-cols">
-          <div class="box kpi">
-           <h3>Total Shipments</h3>
-           
+          <div class="box kpi" style="width: 140px; flex: 0 0 auto">
+            <h3>Total Shipments</h3>
             <p class="kpi-number">1254</p>
           </div>
-          <div class="box kpi">
-            <h3>Total Intransit</h3>
-            <p class="kpi-number warning">340</p>
-          </div>
-        
+
           <div class="box kpi">
             <h3>In Route</h3>
-            <p class="kpi-number warning">50</p>
+            <p class="kpi-number">50</p>
           </div>
           <div class="box kpi">
-            <h3>In Djbouti</h3>
-            <p class="kpi-number danger">12</p>
+            <h3>In Djibouti</h3>
+            <p class="kpi-number">12</p>
           </div>
           <div class="box kpi">
             <h3>In AAk</h3>
             <p class="kpi-number">8</p>
           </div>
-            <div class="box kpi">
+          <div class="box kpi">
             <h3>In SDT</h3>
-            <p class="kpi-number success">820</p>
+            <p class="kpi-number">820</p>
+          </div>
+          <div class="box kpi" style="width: 120px; flex: 0 0 auto">
+            <h3>Total Intransit</h3>
+            <p class="kpi-number">340</p>
           </div>
         </div>
 
-        <!-- Row 2: 3 boxes, left one larger -->
+        <!-- Row 2: 3 boxes -->
         <div class="row row-3-uneven">
           <div class="box wide">
             <h3>Doc-Owner</h3>
             <ul class="alerts">
-              <li class="success">Shimlis Adugna: 820 Documents</li>
-              <li class="warning">Fikadu Terefe: 340 Documents</li>
-              <li class="warning">Others: 50 Documents</li>
-
+              <li class="success">
+                Shimlis Adugna: <span class="value">820 Documents</span>
+              </li>
+              <li class="warning">
+                Fikadu Terefe: <span class="value">340 Documents</span>
+              </li>
+              <li class="warning">
+                Others: <span class="value">50 Documents</span>
+              </li>
             </ul>
           </div>
           <div class="box">
-            <h3>logistics</h3>
+            <h3>Logistics</h3>
             <ul class="alerts">
-              <li class="success">20ft container - 120 containers</li>
-              <li class="success">40ft container - 85 containers</li>
-              <li class="success">40ft hq conatiner - 60 containers</li>
-              
-
+              <li class="success">
+                20ft container - <span class="value">120</span>
+              </li>
+              <li class="success">
+                40ft container - <span class="value">85</span>
+              </li>
+              <li class="success">
+                40ft_hq container - <span class="value">60</span>
+              </li>
             </ul>
           </div>
           <div class="box">
-            <h3>intransit</h3>
-
-            <!-- Logistics summary -->
+            <h3>Intransit</h3>
             <ul class="alerts">
-              <li class="success">Fully Paid - 220 items</li>
-              <li class="warning">Partially Paid - 50 items</li>
-              <li class="danger">Cancelled - 44 items</li>
+              <li class="success">
+                Fully Paid - <span class="value">220 items</span>
+              </li>
+              <li class="warning">
+                Partially Paid - <span class="value">50 items</span>
+              </li>
+              <li class="danger">
+                Cancelled - <span class="value">44 items</span>
+              </li>
             </ul>
           </div>
-
         </div>
 
         <!-- Row 3: Full-width -->
-        <div class="row row-1-col">
-          <div class="box">
-
-            <h3>Performance</h3>
-            <ul class="alerts">
-              <li class="success">On-time Delivery Rate: 92%</li>
-              <li class="warning">Average Delay: 1.2 hrs</li>
-            </ul>
-          </div>
-        </div>
-
+     <app-container-tracker></app-container-tracker>
         <!-- Row 4: 3 equal boxes -->
         <div class="row row-3-cols">
           <div class="box">
             <h3>Common Data</h3>
             <ul class="alerts">
-              <li class="success">Bill Not Collected: 120 Documents</li>
-              <li class="success">Tax Not Paid: 145 Documents</li>
-              <li class="success">Doc Not Collected: 130 Documents</li>
-              <li class="success">Doc Not Sent DJB: 90 Documents</li>
-
+              <li class="success">
+                Bill Not Collected: <span class="value">120 Documents</span>
+              </li>
+              <li class="success">
+                Tax Not Paid: <span class="value">145 Documents</span>
+              </li>
+              <li class="success">
+                Doc Not Collected: <span class="value">130 Documents</span>
+              </li>
+              <li class="success">
+                Doc Not Sent DJB: <span class="value">90 Documents</span>
+              </li>
             </ul>
           </div>
           <div class="box">
             <h3>Recent Activity</h3>
             <ul class="activity-feed">
-              <li><strong>09:21</strong> - Shipment #123 reached Djibouti</li>
-              <li><strong>08:45</strong> - Shipment #987 dispatched</li>
-              <li><strong>07:10</strong> - Shipment #654 delayed due to
-                weather</li>
+              <li>Shipment #123 reached Djibouti</li>
+              <li>Shipment #987 dispatched</li>
+              <li>Shipment #654 delayed</li>
             </ul>
           </div>
           <div class="box">
             <h3>Top Origins</h3>
             <ul class="alerts">
-              <li class="success">China - 220 items</li>
-              <li class="warning">Uae - 50 items</li>
-              <li class="danger">India - 44 items</li>
-              <li class="warning">Egypt - 44 items</li>
+              <li class="success">
+                China - <span class="value">220 items</span>
+              </li>
+              <li class="warning">Uae - <span class="value">50 items</span></li>
+              <li class="danger">
+                India - <span class="value">44 items</span>
+              </li>
+              <li class="warning">
+                Egypt - <span class="value">44 items</span>
+              </li>
             </ul>
           </div>
         </div>
       </div>
 
-      <!-- Sidebar - Reminder -->
-   <div class="dashboard-sidebar">
-  <!-- Reminders & Alerts -->
-  <div class="box full-height">
-    <h3>Reminders & Alerts</h3>
-    <ul>
-      <li class="warning">3 shipments near deadline ⚠️</li>
-      <li class="danger">Shipment #452 is delayed ❗</li>
-      <li class="success">Weekly report generated ✅</li>
-    </ul>
-  </div>
+      <!-- Sidebar -->
+      <div class="dashboard-sidebar">
+        <!-- Calendar -->
 
-  <!-- Calendar Placeholder -->
-  <div class="box full-height" style="margin-top: 20px;">
-    <h3>Calendar</h3>
-    <div class="calendar-placeholder">
-      <!-- You can replace this div with a real calendar component later -->
-
-    </div>
-  </div>
-</div>
-
-
-      <!-- Chatbot Trigger Button -->
-      <button class="chatbot-toggle" (click)="toggleChat()"
-        aria-label="Toggle chatbot">💬</button>
-
-      <!-- Chatbot Window -->
-      <div
-        class="chatbot-window"
-        [class.open]="isChatOpen"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="chatbotTitle">
-        <div class="chatbot-header">
-          <h4 id="chatbotTitle">Logistics Assistant</h4>
-          <button class="close-btn" (click)="toggleChat()"
-            aria-label="Close chatbot">✖</button>
-        </div>
-
-        <div class="chatbot-body" #chatBody>
-          <div
-            *ngFor="let msg of messages"
-            [class.user]="msg.from === 'user'"
-            [class.bot]="msg.from === 'bot'"
-            class="chat-message">
-            <strong *ngIf="msg.from === 'user'">You:</strong>
-            <strong *ngIf="msg.from === 'bot'">Bot:</strong>
-            {{ msg.text }}
-          </div>
-
-          <!-- Bot Typing Indicator -->
-          <div *ngIf="isBotTyping" class="bot-typing">
-            <strong>Bot is typing...</strong>
-          </div>
-        </div>
-
-        <div class="chatbot-input">
-          <input
-            type="text"
-            [(ngModel)]="chatInput"
-            (keyup.enter)="sendMessage()"
-            placeholder="Ask something..."
-            aria-label="Chat input" />
-          <button
-            (click)="sendMessage()"
-            aria-label="Send message"
-            [disabled]="isSending || !chatInput.trim()">
-            ➤
-          </button>
+<app-calander></app-calander>
+        <!-- Reminders -->
+        <div class="box full-height" style="margin-top: 20px">
+          <h3>Reminders & Alerts</h3>
+          <ul>
+            <li class="warning">3 shipments near deadline</li>
+            <li class="danger">Shipment #452 is delayed</li>
+            <li class="success">Weekly report generated</li>
+          </ul>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Chatbot Trigger Button -->
+  <button
+    class="chatbot-toggle"
+    (click)="toggleChat()"
+    aria-label="Toggle chatbot"
+  >
+    💬
+  </button>
+
+  <!-- Chatbot Window -->
+  <div
+    class="chatbot-window"
+    [class.open]="isChatOpen"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="chatbotTitle"
+  >
+    <div class="chatbot-header">
+      <h4 id="chatbotTitle">Logistics Assistant</h4>
+      <button
+        class="close-btn"
+        (click)="toggleChat()"
+        aria-label="Close chatbot"
+      >
+        ✖
+      </button>
+    </div>
+
+    <div class="chatbot-body" #chatBody>
+      <div
+        *ngFor="let msg of messages"
+        [class.user]="msg.from === 'user'"
+        [class.bot]="msg.from === 'bot'"
+        class="chat-message"
+      >
+        <strong *ngIf="msg.from === 'user'">You:</strong>
+        <strong *ngIf="msg.from === 'bot'">Bot:</strong>
+        {{ msg.text }}
+      </div>
+
+      <!-- Bot Typing Indicator -->
+      <div *ngIf="isBotTyping" class="bot-typing">
+        <strong>Bot is typing...</strong>
+      </div>
+    </div>
+
+    <div class="chatbot-input">
+      <input
+        type="text"
+        [(ngModel)]="chatInput"
+        (keyup.enter)="sendMessage()"
+        placeholder="Ask something..."
+        aria-label="Chat input"
+      />
+      <button
+        (click)="sendMessage()"
+        aria-label="Send message"
+        [disabled]="isSending || !chatInput.trim()"
+      >
+        ➤
+      </button>
+    </div>
+  </div>
+</div>

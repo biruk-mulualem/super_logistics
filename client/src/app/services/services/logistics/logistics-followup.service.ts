@@ -8,7 +8,7 @@ import { Observable, tap } from 'rxjs';
 export class LogisticsFollowupService {
 
   private apiUrl = 'http://localhost:5000/api/logisticsfollowups'; // Base API URL
-
+  // private apiUrl = '/api/logisticsfollowups'; // Base API URL
   constructor(private http: HttpClient) { }
 
   // Add a new logistics entry

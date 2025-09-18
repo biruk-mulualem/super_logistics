@@ -2,112 +2,153 @@
   <div class="main">
     <app-header></app-header>
     <div class="content">
-      
-    
-      
 
- 
       <!-- Horizontal Panel -->
       <div class="report-panel-horizontal">
         <!-- Left Body: Table -->
 
-    <div class="panel-body">
-  <div class="table-container">
-    <br>
-     <h1 class="report-header">Logistics Report</h1>
-    <!-- Table always visible -->
-    <table id="reportTable" class="report-table">
-      <thead>
-        <tr>
-          <th>Transaction ID</th>
-          <th>Bill No</th>
-          <th>Shipper</th>
-          <th>Transitor</th>
-          <th>Origin</th>
-          <th>Number of Container</th>
-          <th>Container Type</th>
-          <th>ETA DJB</th>
-          <th>DjbArrived</th>
-          <th>Doc Owner</th>
-          <th>Item Description</th>
-          <th>UOM</th>
-          <th>Loaded Qty</th>
-          <th>Remaining Qty</th>
-          <th>Total Qty</th>
-          <th>DJB Departed</th>
-          <th>Container Returned</th>
-          <th>Arrived To AAK</th>
-          <th>Arrived To SDT</th>
-          <th>Doc Sent DJB</th>
-          <th>Doc Collected</th>
-          <th>Bill Collected</th>
-          <th>Tax Paid</th>
-          <th>Remark</th>
-        </tr>
-      </thead>
+        <div class="panel-body">
+          <div class="table-container">
+            <br>
+            <h1 class="report-header">Logistics Report</h1>
+            <!-- Table always visible -->
+            <table id="reportTable" class="report-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Item_Description</th>
+                  <th>Container</th>
+                  <th>UOM</th>
+                  <th>Total Qty</th>
+                  <th>Loaded Qty</th>
+                  <th>Remaining Qty</th>
 
-      <tbody>
-        <!-- Show placeholder row if there is no data -->
-        <tr *ngIf="reportData.length === 0">
-          <td colspan="24" style="text-align: left; color: #555353; font-style: italic; font-size: 20px;">
-            No shipments to display yet. Apply filters to load the data.
-          </td>
-        </tr>
+                  <th>Bill_No</th>
+                    <th>Doc Owner</th>
+                  <th>Truck/Air Waybill</th>
+                  <th>DJ-Tranzit</th>
+                  <th>Shipper</th>
+                    <th>Doc Sent DJB</th>
+                  <th>Doc Collected</th>
+                  <th>Bill Collected</th>
+                  <th>Origin</th>
+                  <th>Loading date</th>
 
-        <!-- Actual data rows -->
-        <ng-container *ngFor="let t of reportData">
-          <tr *ngFor="let item of t.items; let i = index">
-            <!-- Transaction-level columns merged -->
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.transactionId }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.billNo || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.shipper || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.transitor || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.origin || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.loadedOnfcl || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.containerType || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.etadjb || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.djbArrived || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.docOwner || '-' }}</td>
+                  <!-- <th>Number of Container</th>
+                  <th>Container Type</th> -->
 
-            <!-- Item-specific columns -->
-            <td>{{ item.itemDescription || '-' }}</td>
-            <td>{{ item.uom || '-' }}</td>
-            <td>{{ item.loadedQnty || 0 }}</td>
-            <td>{{ item.remaningQnty || 0 }}</td>
-            <td>{{ item.totalQnty || 0 }}</td>
+                  <th>ETA DJB</th>
+                  <th>DjbArrived</th>
+                
 
-            <!-- Event columns (merged) -->
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length" style="white-space: pre-line">
-              {{ t.djbDepartedStack }}
-            </td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length" style="white-space: pre-line">
-              {{ t.containerReturnedStack }}
-            </td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length" style="white-space: pre-line">
-              {{ t.arrivedAAKStack }}
-            </td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length" style="white-space: pre-line">
-              {{ t.arrivedSDTStack }}
-            </td>
+                  <th>DJB Departed</th>
 
-            <!-- Other transaction-level columns -->
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.docSentDjb || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.docCollected || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.billCollected || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.taxPaid || '-' }}</td>
-            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{ t.remark || '-' }}</td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </table>
+                  <th>Arrived To AAK</th>
+                  <th>Arrived To SDT</th>
+                
+                  <th>Tax Paid</th>
+                  <th>Container Returned</th>
+                  <th>Remark</th>
+                </tr>
+              </thead>
 
-  </div>
-</div>
+              <tbody>
+                <!-- Show placeholder row if there is no data -->
+                <tr *ngIf="reportData.length === 0">
+                  <td colspan="24"
+                    style="text-align: left; color: #555353; font-style: italic; font-size: 20px;">
+                    No shipments to display yet. Apply filters to load the data.
+                  </td>
+                </tr>
 
+                <!-- Actual data rows -->
+                <ng-container *ngFor="let t of reportData">
+                  <tr *ngFor="let item of t.items; let i = index">
+                    <!-- Transaction-level columns merged -->
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.transactionId }}</td>
+                    <td>{{ item.itemDescription || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">
+                      {{ (t.loadedOnfcl || 0) + ' × ' + (t.containerType || '-')
+                      }}
+                    </td>
+                    <td>{{ item.uom || '-' }}</td>
+                    <td>{{ item.totalQnty || 0 }}</td>
+                    <td>{{ item.loadedQnty || 0 }}</td>
+                    <td>{{ item.remaningQnty || 0 }}</td>
+
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.billNo || '-' }}</td>
+                         <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.docOwner || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.truckWayBill || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.transitor || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.shipper || '-' }}</td>
+                            <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.docSentDjb || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.docCollected || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.billCollected || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.origin || '-' }}</td>
+                    <!-- Item-specific columns -->
+
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">
+                      {{ t.loadingDate ? (t.loadingDate | date:'MMM d, y') : '-'
+                      }}
+                    </td>
+
+                    <!-- <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.loadedOnfcl || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.containerType || '-' }}</td> -->
+
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.etadjb || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.djbArrived || '-' }}</td>
+                 
+
+                    <!-- Event columns (merged) -->
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length"
+                      style="white-space: pre-line">
+                      {{ t.djbDepartedStack }}
+                    </td>
+
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length"
+                      style="white-space: pre-line">
+                      {{ t.arrivedAAKStack }}
+                    </td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length"
+                      style="white-space: pre-line">
+                      {{ t.arrivedSDTStack }}
+                    </td>
+
+                    <!-- Other transaction-level columns -->
+              
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.taxPaid || '-' }}</td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length"
+                      style="white-space: pre-line">
+                      {{ t.containerReturnedStack }}
+                    </td>
+                    <td *ngIf="i === 0" [attr.rowspan]="t.items.length">{{
+                      t.remark || '-' }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
 
         <!-- Right Filter Section -->
         <form autocomplete="off" novalidate (ngSubmit)="fetchAndPrint()">
-          
+
           <div class="panel-filter">
             <br><br><br>
             <h2>Filter Logistics Report</h2>
@@ -179,17 +220,21 @@
               <div class="filter-item">
                 <label>Status</label>
                 <select [(ngModel)]="filters.status" name="status">
-                  <option value="all_shipments">All Shipments</option> 
-                  <option value="recently_loaded_no_eta">Recently Loaded no eta</option> 
+                  <option value="all_shipments">All Shipments</option>
+                  <option value="recently_loaded_no_eta">Recently Loaded no
+                    eta</option>
                   <option value="arrived_at_djb">Arrived at DJB</option>
-                  <option value="not_arrived_at_djb">Not Arrived at DJB</option> 
-                  <option value="dispatched_from_djb_but_not_arrived_aak">Dispatched from DJB but not arrived aak</option>
-                 
+                  <option value="not_arrived_at_djb">Not Arrived at DJB</option>
+                  <option
+                    value="dispatched_from_djb_but_not_arrived_aak">Dispatched
+                    from DJB but not arrived aak</option>
+
                   <option value="arrived_at_aak">Arrived at AAK</option>
                   <option value="arrived_at_sdt">Arrived at SDT</option>
-               
-                  <option value="cancelled_loading">Cancelled Loading</option> 
-                  <option value="container_not_returned">Container Not Returned</option> 
+
+                  <option value="cancelled_loading">Cancelled Loading</option>
+                  <option value="container_not_returned">Container Not
+                    Returned</option>
                   <option value="tax_paid">Tax Paid</option>
                   <option value="tax_not_paid">Tax Not Paid</option>
                 </select>

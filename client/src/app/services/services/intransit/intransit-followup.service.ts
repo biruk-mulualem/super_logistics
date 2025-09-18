@@ -11,7 +11,7 @@ export class IntransitFollowupService {
     throw new Error('Method not implemented.');
   }
   private apiUrl = 'http://localhost:5000/api/IntransitFollowups'; // Base API URL
-
+  // private apiUrl = '/api/IntransitFollowups'; // Base API URL
   constructor(private http: HttpClient) {}
 
   // --- GET all Intransit rows by status ---done

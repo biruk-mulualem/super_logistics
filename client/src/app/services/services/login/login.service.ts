@@ -8,6 +8,7 @@ import { Observable, tap } from 'rxjs';
 export class LoginService {
   // Base API URL
   private apiUrl = 'http://localhost:5000/api/Users';
+    // private apiUrl = '/api/Users';
   constructor(private http: HttpClient) {}
 
   // --- POST a new login data ---

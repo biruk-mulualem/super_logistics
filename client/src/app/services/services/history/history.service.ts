@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class HistoryService {
 
   private apiUrl = 'http://localhost:5000/api/logisticsfollowups'; // Base API URL
-
+  // private apiUrl = '/api/logisticsfollowups'; // Base API URL
   constructor(private http: HttpClient) { }
 
   // --- GET all logistics rows (filtered) ---

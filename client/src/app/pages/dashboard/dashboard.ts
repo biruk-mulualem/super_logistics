@@ -65,9 +65,93 @@ inSdt = 0;
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+today = new Date();
+currentYear = this.today.getFullYear();
+currentMonth = this.today.getMonth();
+currentMonthName = this.today.toLocaleString('default', { month: 'long' });
+
+monthDays: number[] = [];
+firstDayOfWeek: number = 0;
+weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+
+generateCalendar(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  this.firstDayOfWeek = firstDay;
+  this.monthDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   ngOnInit(): void {
     this.loadFollowups();
     this.loadInRouteStats();
+    
   }
 
 
@@ -119,6 +203,15 @@ this.inSdt = stats.inSdt;
     console.error('❌ Error loading InRoute stats:', err);
   }
 }
+
+
+
+
+
+
+
+
+
 
 
 

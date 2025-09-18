@@ -14,6 +14,9 @@ export class ChatbotService {
   // private apiUrl = '/api/chat';  // Your backend endpoint
  private apiUrl = 'http://localhost:5000/api/chatbots'; // Base API URL
 
+
+// private apiUrl = '/api/chatbots'; // Base API URL
+
   constructor(private http: HttpClient) { }
 
   sendMessageToApi(message: string): Observable<ChatResponse> {

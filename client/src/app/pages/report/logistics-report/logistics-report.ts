@@ -38,7 +38,7 @@ filters = {
   taxPaid: ''
 };
 
-  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open Top', 'Flat Rack'];
+  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open_Top', 'Flat_Rack'];
 
 
      origins: string[] = [

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class LogisticsReportsService {
    private apiUrl = 'http://localhost:5000/api/LogisticsReport';
+    //  private apiUrl = '/api/LogisticsReport';
   constructor(private http: HttpClient) {}
   GetReportData(filters: any): Observable<any> {
     // Convert filters object into HttpParams

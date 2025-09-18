@@ -23,6 +23,8 @@ namespace server.Controllers
             [FromQuery] string? shipper,
             [FromQuery] string? transitor,
             [FromQuery] string? origin,
+              [FromQuery] string? containerType,
+            
             [FromQuery] string? status,
             [FromQuery] DateOnly? etaStart,
             [FromQuery] DateOnly? etaEnd,
@@ -42,6 +44,9 @@ namespace server.Controllers
 
             if (!string.IsNullOrEmpty(transitor))
                 query = query.Where(x => x.Transitor!.Contains(transitor));
+
+                  if (!string.IsNullOrEmpty(containerType))
+                query = query.Where(x => x.ContainerType!.Contains(containerType));
 
             if (!string.IsNullOrEmpty(origin))
                 query = query.Where(x => x.Origin!.Contains(origin));
@@ -82,10 +87,6 @@ namespace server.Controllers
                             !_context.LogisticsArrivedAAks.Any(a => a.TransactionId == x.TransactionId) &&
                             x.status == null);
                         break;
-
-   
-
-
                     case "arrived_at_aak":
                         query = query.Where(x =>
                             _context.LogisticsArrivedAAks.Any(a => a.TransactionId == x.TransactionId) &&
@@ -93,7 +94,7 @@ namespace server.Controllers
                             x.status == null);
                         break;
 
-               
+
 
                     case "arrived_at_sdt":
                         query = query.Where(x =>
@@ -167,6 +168,8 @@ namespace server.Controllers
                 f.DocSentDjb,
                 f.LoadedOnfcl,
                 f.DocCollected,
+                f.truckWayBill,
+                f.DocOwner,
                 f.BillCollected,
                 f.TaxPaid,
                 f.Remark,

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 })
 export class IntransitReportService {
   private apiUrl = 'http://localhost:5000/api/IntransitReport';
+    // private apiUrl = 'api/IntransitReport';
   constructor(private http: HttpClient) {}
   GetReportData(filters: any): Observable<any> {
     // Convert filters object into HttpParams

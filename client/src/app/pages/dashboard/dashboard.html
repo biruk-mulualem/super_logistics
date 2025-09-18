@@ -4,156 +4,190 @@
   <div class="main">
     <app-header></app-header>
 
-    <div class="dashboard-content">
+    <div class="dashboard-wrapper">
+      <!-- Main Content -->
+      <div class="dashboard-main">
+        <h1 class="dashboard-title">Dashboard</h1>
 
-      <h1 class="dashboard-title">Dashboard</h1>
+        <!-- Row 1: 6 equal boxes - Key Metrics -->
+        <div class="row row-6-cols">
+          <div class="box kpi">
+           <h3>Total Shipments</h3>
+           
+            <p class="kpi-number">1254</p>
+          </div>
+          <div class="box kpi">
+            <h3>Total Intransit</h3>
+            <p class="kpi-number warning">340</p>
+          </div>
+        
+          <div class="box kpi">
+            <h3>In Route</h3>
+            <p class="kpi-number warning">50</p>
+          </div>
+          <div class="box kpi">
+            <h3>In Djbouti</h3>
+            <p class="kpi-number danger">12</p>
+          </div>
+          <div class="box kpi">
+            <h3>In AAk</h3>
+            <p class="kpi-number">8</p>
+          </div>
+            <div class="box kpi">
+            <h3>In SDT</h3>
+            <p class="kpi-number success">820</p>
+          </div>
+        </div>
 
-      <!-- Grid Cards -->
-      <div class="dashboard-grid">
-        <div class="card payment-status-card">
-          <h3> Advance Payment</h3>
+        <!-- Row 2: 3 boxes, left one larger -->
+        <div class="row row-3-uneven">
+          <div class="box wide">
+            <h3>Doc-Owner</h3>
+            <ul class="alerts">
+              <li class="success">Shimlis Adugna: 820 Documents</li>
+              <li class="warning">Fikadu Terefe: 340 Documents</li>
+              <li class="warning">Others: 50 Documents</li>
 
-          <div class="status-item advance-payment">
+            </ul>
+          </div>
+          <div class="box">
+            <h3>logistics</h3>
+            <ul class="alerts">
+              <li class="success">20ft container - 120 containers</li>
+              <li class="success">40ft container - 85 containers</li>
+              <li class="success">40ft hq conatiner - 60 containers</li>
+              
 
-           <span class="status-count">{{ advancePayment }}</span>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>intransit</h3>
+
+            <!-- Logistics summary -->
+            <ul class="alerts">
+              <li class="success">Fully Paid - 220 items</li>
+              <li class="warning">Partially Paid - 50 items</li>
+              <li class="danger">Cancelled - 44 items</li>
+            </ul>
           </div>
 
         </div>
 
-        <div class="card payment-status-card">
-          <h3> Pending Payments</h3>
+        <!-- Row 3: Full-width -->
+        <div class="row row-1-col">
+          <div class="box">
 
-          <div class="status-item pending-payment">
-
-             <span class="status-count">{{ pendingPayment }}</span>
+            <h3>Performance</h3>
+            <ul class="alerts">
+              <li class="success">On-time Delivery Rate: 92%</li>
+              <li class="warning">Average Delay: 1.2 hrs</li>
+            </ul>
           </div>
         </div>
-        <div class="card payment-status-card">
-          <h3>In Route</h3>
-          <div class="status-item full-payment">
 
-            <span class="status-count">{{inRoute}} </span>
+        <!-- Row 4: 3 equal boxes -->
+        <div class="row row-3-cols">
+          <div class="box">
+            <h3>Common Data</h3>
+            <ul class="alerts">
+              <li class="success">Bill Not Collected: 120 Documents</li>
+              <li class="success">Tax Not Paid: 145 Documents</li>
+              <li class="success">Doc Not Collected: 130 Documents</li>
+              <li class="success">Doc Not Sent DJB: 90 Documents</li>
+
+            </ul>
           </div>
-
-        </div>
-        <div class="card payment-status-card">
-          <h3>In Djibouti</h3>
-          <div class="status-item full-payment">
-
-            <span class="status-count">{{inDjibouti}} </span>
+          <div class="box">
+            <h3>Recent Activity</h3>
+            <ul class="activity-feed">
+              <li><strong>09:21</strong> - Shipment #123 reached Djibouti</li>
+              <li><strong>08:45</strong> - Shipment #987 dispatched</li>
+              <li><strong>07:10</strong> - Shipment #654 delayed due to
+                weather</li>
+            </ul>
           </div>
-
-        </div>
-        <div class="card payment-status-card">
-          <h3>In AAK</h3>
-          <div class="status-item full-payment">
-
-            <span class="status-count">{{inAak}} </span>
+          <div class="box">
+            <h3>Top Origins</h3>
+            <ul class="alerts">
+              <li class="success">China - 220 items</li>
+              <li class="warning">Uae - 50 items</li>
+              <li class="danger">India - 44 items</li>
+              <li class="warning">Egypt - 44 items</li>
+            </ul>
           </div>
-
         </div>
-        <div class="card payment-status-card">
-          <h3>In SDT</h3>
-          <div class="status-item full-payment">
-
-            <span class="status-count">{{inSdt}} </span>
-          </div>
-
-        </div>
-
       </div>
 
-      <!-- Bottom Panels -->
-      <div class="dashboard-grid">
-        <div class="card sales">
-          <!-- <h4>Total Sales</h4> -->
-          <canvas id="salesChart"></canvas>
-        </div>
-        <div class="card sales">
-          <!-- <h4>Total Sales</h4> -->
-          <canvas id="salesChart"></canvas>
-        </div>
-        <div class="card sales">
-          <!-- <h4>Total Sales</h4> -->
-          <canvas id="salesChart"></canvas>
-        </div>
-      </div>
-
-      <!-- Storage Section -->
-      <div class="storage-section">
-        <div class="card storage-bar">
-          <p>Using Storage <strong>1466 MB</strong> of 2 GB</p>
-          <div class="storage-bar-inner">
-            <div class="regular" style="width: 45%"></div>
-            <div class="system" style="width: 20%"></div>
-            <div class="shared" style="width: 10%"></div>
-            <div class="free" style="width: 25%"></div>
-          </div>
-          <div class="legend">
-            <span class="dot blue"></span> Regular
-            <span class="dot purple"></span> System
-            <span class="dot green"></span> Shared
-            <span class="dot gray"></span> Free
-          </div>
-        </div>
-
-        <div class="card storage-warning">
-          <h4>Running out of your space?</h4>
-          <p>Your storage will be running out soon. Get more space and powerful
-            productivity features.</p>
-          <a href="#">Upgrade storage →</a>
-        </div>
-      </div>
-    </div>
+      <!-- Sidebar - Reminder -->
+   <div class="dashboard-sidebar">
+  <!-- Reminders & Alerts -->
+  <div class="box full-height">
+    <h3>Reminders & Alerts</h3>
+    <ul>
+      <li class="warning">3 shipments near deadline ⚠️</li>
+      <li class="danger">Shipment #452 is delayed ❗</li>
+      <li class="success">Weekly report generated ✅</li>
+    </ul>
   </div>
 
-  <!-- Chatbot Trigger Button -->
-  <button class="chatbot-toggle" (click)="toggleChat()"
-    aria-label="Toggle chatbot">💬</button>
+  <!-- Calendar Placeholder -->
+  <div class="box full-height" style="margin-top: 20px;">
+    <h3>Calendar</h3>
+    <div class="calendar-placeholder">
+      <!-- You can replace this div with a real calendar component later -->
 
-  <!-- Chatbot Window -->
-  <div
-    class="chatbot-window"
-    [class.open]="isChatOpen"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="chatbotTitle">
-    <div class="chatbot-header">
-      <h4 id="chatbotTitle">Logistics Assistant</h4>
-      <button class="close-btn" (click)="toggleChat()"
-        aria-label="Close chatbot">✖</button>
-    </div>
-
-    <div class="chatbot-body" #chatBody>
-      <div
-        *ngFor="let msg of messages"
-        [class.user]="msg.from === 'user'"
-        [class.bot]="msg.from === 'bot'"
-        class="chat-message">
-        <strong *ngIf="msg.from === 'user'">You:</strong>
-        <strong *ngIf="msg.from === 'bot'">Bot:</strong>
-        {{ msg.text }}
-      </div>
-
-      <!-- Bot Typing Indicator -->
-      <div *ngIf="isBotTyping" class="bot-typing">
-        <strong>Bot is typing...</strong>
-      </div>
-    </div>
-
-    <div class="chatbot-input">
-      <input
-        type="text"
-        [(ngModel)]="chatInput"
-        (keyup.enter)="sendMessage()"
-        placeholder="Ask something..."
-        aria-label="Chat input" />
-      <button
-        (click)="sendMessage()"
-        aria-label="Send message"
-        [disabled]="isSending || !chatInput.trim()">
-        ➤
-      </button>
     </div>
   </div>
 </div>
+
+
+      <!-- Chatbot Trigger Button -->
+      <button class="chatbot-toggle" (click)="toggleChat()"
+        aria-label="Toggle chatbot">💬</button>
+
+      <!-- Chatbot Window -->
+      <div
+        class="chatbot-window"
+        [class.open]="isChatOpen"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="chatbotTitle">
+        <div class="chatbot-header">
+          <h4 id="chatbotTitle">Logistics Assistant</h4>
+          <button class="close-btn" (click)="toggleChat()"
+            aria-label="Close chatbot">✖</button>
+        </div>
+
+        <div class="chatbot-body" #chatBody>
+          <div
+            *ngFor="let msg of messages"
+            [class.user]="msg.from === 'user'"
+            [class.bot]="msg.from === 'bot'"
+            class="chat-message">
+            <strong *ngIf="msg.from === 'user'">You:</strong>
+            <strong *ngIf="msg.from === 'bot'">Bot:</strong>
+            {{ msg.text }}
+          </div>
+
+          <!-- Bot Typing Indicator -->
+          <div *ngIf="isBotTyping" class="bot-typing">
+            <strong>Bot is typing...</strong>
+          </div>
+        </div>
+
+        <div class="chatbot-input">
+          <input
+            type="text"
+            [(ngModel)]="chatInput"
+            (keyup.enter)="sendMessage()"
+            placeholder="Ask something..."
+            aria-label="Chat input" />
+          <button
+            (click)="sendMessage()"
+            aria-label="Send message"
+            [disabled]="isSending || !chatInput.trim()">
+            ➤
+          </button>
+        </div>
+      </div>
+    </div>

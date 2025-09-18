@@ -66,7 +66,7 @@ export class ReusableTable implements OnInit, OnChanges {
   filteredData: any[] = [];
   searchQuery: string = '';
   currentPage: number = 1;
-  rowsPerPage: number = 13;
+  rowsPerPage: number = 10;
 
   showModal = {
     add: false,
@@ -155,7 +155,7 @@ export class ReusableTable implements OnInit, OnChanges {
     'indonesia',
   ];
 
-  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open Top', 'Flat Rack'];
+  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open_Top', 'Flat_Rack'];
 
   isBrowser: boolean;
   pageType: string | null = null;
@@ -303,7 +303,7 @@ export class ReusableTable implements OnInit, OnChanges {
   }
 
   private setRowsPerPage(width: number) {
-    this.rowsPerPage = width <= 480 ? 1 : 13;
+    this.rowsPerPage = width <= 480 ? 1 : 10;
     this.currentPage = 1;
   }
 

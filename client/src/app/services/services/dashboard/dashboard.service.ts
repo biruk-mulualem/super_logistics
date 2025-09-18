@@ -10,6 +10,7 @@ import { Observable, tap } from 'rxjs';
 export class DashboardService {
   // Base API URL
   private apiUrl = 'http://localhost:5000/api/Dashboards';
+  //  private apiUrl = '/api/Dashboards';
   constructor(private http: HttpClient) { }
   // =======================================================
   // GET all payment data rows (filtered)

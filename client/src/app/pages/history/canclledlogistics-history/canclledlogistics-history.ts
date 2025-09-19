@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Header } from '../../../shared/components/header/header';
-import { Sidebar } from '../../../shared/components/sidebar/sidebar';
+
 import { ReusableTable } from '../../../shared/components/reusable-table/reusable-table';
 import { firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { LogisticsFollowupService } from '../../../services/services/logistics/l
 
 @Component({
   selector: 'app-canclledlogistics-history',
- imports: [Header, Sidebar, ReusableTable],
+ imports: [Header, ReusableTable],
   templateUrl: './canclledlogistics-history.html',
   styleUrl: './canclledlogistics-history.css'
 })

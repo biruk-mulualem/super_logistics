@@ -22,7 +22,6 @@
                   <th>Total Qty</th>
                   <th>Loaded Qty</th>
                   <th>Remaining Qty</th>
-
                   <th>Bill_No</th>
                     <th>Doc Owner</th>
                   <th>Truck/Air Waybill</th>
@@ -33,29 +32,20 @@
                   <th>Bill Collected</th>
                   <th>Origin</th>
                   <th>Loading date</th>
-
-                  <!-- <th>Number of Container</th>
-                  <th>Container Type</th> -->
-
                   <th>ETA DJB</th>
                   <th>DjbArrived</th>
-                
-
                   <th>DJB Departed</th>
-
                   <th>Arrived To AAK</th>
                   <th>Arrived To SDT</th>
-                
                   <th>Tax Paid</th>
                   <th>Container Returned</th>
                   <th>Remark</th>
                 </tr>
               </thead>
-
               <tbody>
                 <!-- Show placeholder row if there is no data -->
                 <tr *ngIf="reportData.length === 0">
-                  <td colspan="24"
+                  <td colspan="25"
                     style="text-align: left; color: #555353; font-style: italic; font-size: 20px;">
                     No shipments to display yet. Apply filters to load the data.
                   </td>
@@ -258,6 +248,6 @@
         </form>
       </div>
     </div>
-    <app-sidebar></app-sidebar>
+  
   </div>
 </div>

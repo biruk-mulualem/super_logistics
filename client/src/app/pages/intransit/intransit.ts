@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ReusableTable } from '../../shared/components/reusable-table/reusable-table';
-import { Sidebar } from '../../shared/components/sidebar/sidebar';
+
 import { Header } from '../../shared/components/header/header';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -9,7 +9,7 @@ import { IntransitFollowupService } from '../../services/services/intransit/intr
 
 @Component({
   selector: 'app-intransit',
-  imports: [FormsModule, ReusableTable, Sidebar, Header],
+  imports: [FormsModule, ReusableTable, Header],
   templateUrl: './intransit.html',
   styleUrls: ['./intransit.css']
 })

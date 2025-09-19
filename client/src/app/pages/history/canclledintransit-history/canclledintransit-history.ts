@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Header } from '../../../shared/components/header/header';
-import { Sidebar } from '../../../shared/components/sidebar/sidebar';
+
 import { ReusableTable } from '../../../shared/components/reusable-table/reusable-table';
 
 import { firstValueFrom } from 'rxjs';
@@ -9,7 +9,7 @@ import { IntransitFollowupService } from '../../../services/services/intransit/i
 
 @Component({
   selector: 'app-cancelled-intransit-history',
-  imports: [Header, Sidebar, ReusableTable],
+  imports: [Header, ReusableTable],
   templateUrl: './canclledintransit-history.html', // <-- fixed typo
   styleUrls: ['./canclledintransit-history.css']
 })

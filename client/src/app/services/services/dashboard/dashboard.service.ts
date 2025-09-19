@@ -17,15 +17,13 @@ export class DashboardService {
   // =======================================================
   getPaymentData(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/payment`)
-      // .pipe(
-      //   tap((data: any) => console.log('[DEBUG] Payment Data:', data))
-      // );
+     
   }
 
   // ✅ new method with correct typing
 getInRouteDjbAakSdtData(): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/InRouteDjbAakSdt`)
-    // .pipe(tap(data => console.log('[DEBUG] InRoute Stats:', data)));
+   
 }
 
 

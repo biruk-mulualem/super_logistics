@@ -1,9 +1,7 @@
 <div id="dashboard_page" class="dashboard-wrapper">
-  <app-sidebar></app-sidebar>
-
+  <!-- <app-sidebar></app-sidebar> -->
   <div class="main">
     <app-header></app-header>
-
     <div class="dashboard-wrapper">
       <!-- Main Content -->
       <div class="dashboard-main">
@@ -18,23 +16,23 @@
 
           <div class="box kpi">
             <h3>In Route</h3>
-            <p class="kpi-number">50</p>
+            <p class="kpi-number">{{inRoute}}</p>
           </div>
           <div class="box kpi">
             <h3>In Djibouti</h3>
-            <p class="kpi-number">12</p>
+            <p class="kpi-number">{{inDjibouti}}</p>
           </div>
           <div class="box kpi">
-            <h3>In AAk</h3>
-            <p class="kpi-number">8</p>
+            <h3>In Kaliti</h3>
+            <p class="kpi-number">{{inAak}}</p>
           </div>
           <div class="box kpi">
             <h3>In SDT</h3>
-            <p class="kpi-number">820</p>
+            <p class="kpi-number">{{inSdt}}</p>
           </div>
           <div class="box kpi" style="width: 120px; flex: 0 0 auto">
-            <h3>Total Intransit</h3>
-            <p class="kpi-number">340</p>
+            <h3>Total Items</h3>
+            <p class="kpi-number">{{totalItems}}</p>
           </div>
         </div>
 
@@ -68,24 +66,24 @@
               </li>
             </ul>
           </div>
-          <div class="box">
-            <h3>Intransit</h3>
-            <ul class="alerts">
-              <li class="success">
-                Fully Paid - <span class="value">220 items</span>
-              </li>
-              <li class="warning">
-                Partially Paid - <span class="value">50 items</span>
-              </li>
-              <li class="danger">
-                Cancelled - <span class="value">44 items</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+     <div class="box">
+  <h3>Intransit</h3>
+  <ul class="alerts">
+    <li class="success">
+      Fully Paid - <span class="value">{{ advancePayment }} items</span>
+    </li>
+    <li class="warning">
+      Partially Paid - <span class="value">{{ pendingPayment }} items</span>
+    </li>
+    <li class="danger">
+      Cancelled - <span class="value">44 items</span> <!-- static example -->
+    </li>
+  </ul>
+</div>
 
+        </div>
         <!-- Row 3: Full-width -->
-     <app-container-tracker></app-container-tracker>
+        <app-container-tracker></app-container-tracker>
         <!-- Row 4: 3 equal boxes -->
         <div class="row row-3-cols">
           <div class="box">
@@ -130,12 +128,10 @@
           </div>
         </div>
       </div>
-
       <!-- Sidebar -->
       <div class="dashboard-sidebar">
         <!-- Calendar -->
-
-<app-calander></app-calander>
+        <app-calander></app-calander>
         <!-- Reminders -->
         <div class="box full-height" style="margin-top: 20px">
           <h3>Reminders & Alerts</h3>
@@ -148,68 +144,5 @@
       </div>
     </div>
   </div>
-
-  <!-- Chatbot Trigger Button -->
-  <button
-    class="chatbot-toggle"
-    (click)="toggleChat()"
-    aria-label="Toggle chatbot"
-  >
-    💬
-  </button>
-
-  <!-- Chatbot Window -->
-  <div
-    class="chatbot-window"
-    [class.open]="isChatOpen"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="chatbotTitle"
-  >
-    <div class="chatbot-header">
-      <h4 id="chatbotTitle">Logistics Assistant</h4>
-      <button
-        class="close-btn"
-        (click)="toggleChat()"
-        aria-label="Close chatbot"
-      >
-        ✖
-      </button>
-    </div>
-
-    <div class="chatbot-body" #chatBody>
-      <div
-        *ngFor="let msg of messages"
-        [class.user]="msg.from === 'user'"
-        [class.bot]="msg.from === 'bot'"
-        class="chat-message"
-      >
-        <strong *ngIf="msg.from === 'user'">You:</strong>
-        <strong *ngIf="msg.from === 'bot'">Bot:</strong>
-        {{ msg.text }}
-      </div>
-
-      <!-- Bot Typing Indicator -->
-      <div *ngIf="isBotTyping" class="bot-typing">
-        <strong>Bot is typing...</strong>
-      </div>
-    </div>
-
-    <div class="chatbot-input">
-      <input
-        type="text"
-        [(ngModel)]="chatInput"
-        (keyup.enter)="sendMessage()"
-        placeholder="Ask something..."
-        aria-label="Chat input"
-      />
-      <button
-        (click)="sendMessage()"
-        aria-label="Send message"
-        [disabled]="isSending || !chatInput.trim()"
-      >
-        ➤
-      </button>
-    </div>
-  </div>
+  <app-chatbot></app-chatbot>
 </div>

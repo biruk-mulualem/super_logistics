@@ -295,7 +295,6 @@ D:\sharp\logistics\server\obj\Debug\net8.0\server.AssemblyInfo.cs
 D:\sharp\logistics\server\obj\Debug\net8.0\server.csproj.CoreCompileInputs.cache
 D:\sharp\logistics\server\obj\Debug\net8.0\server.MvcApplicationPartsAssemblyInfo.cs
 D:\sharp\logistics\server\obj\Debug\net8.0\server.MvcApplicationPartsAssemblyInfo.cache
-D:\sharp\logistics\server\obj\Debug\net8.0\server.sourcelink.json
 D:\sharp\logistics\server\bin\Debug\net8.0\appsettings.Development.json
 D:\sharp\logistics\server\bin\Debug\net8.0\appsettings.json
 D:\sharp\logistics\server\bin\Debug\net8.0\server.exe

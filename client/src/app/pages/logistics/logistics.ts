@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { Header } from '../../shared/components/header/header';
-import { Sidebar } from '../../shared/components/sidebar/sidebar';
+
 import { ReusableTable } from '../../shared/components/reusable-table/reusable-table';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { LogisticsFollowupService } from '../../services/services/logistics/logistics-followup.service';
 
 @Component({
-  imports: [Header, Sidebar, ReusableTable],
+  imports: [Header, ReusableTable],
   selector: 'app-logistics',
   templateUrl: './logistics.html',
   styleUrls: ['./logistics.css'],

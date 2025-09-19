@@ -1,0 +1,56 @@
+ <!-- Chatbot Trigger Button -->
+<button
+    class="chatbot-toggle"
+    (click)="toggleChat()"
+    aria-label="Toggle chatbot">
+    💬
+</button>
+<!-- Chatbot Window -->
+<div
+    class="chatbot-window"
+    [class.open]="isChatOpen"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="chatbotTitle">
+    <div class="chatbot-header">
+        <h4 id="chatbotTitle">Logistics Assistant</h4>
+        <button
+            class="close-btn"
+            (click)="toggleChat()"
+            aria-label="Close chatbot">
+            ✖
+        </button>
+    </div>
+
+    <div class="chatbot-body" #chatBody>
+        <div
+            *ngFor="let msg of messages"
+            [class.user]="msg.from === 'user'"
+            [class.bot]="msg.from === 'bot'"
+            class="chat-message">
+            <strong *ngIf="msg.from === 'user'">You:</strong>
+            <strong *ngIf="msg.from === 'bot'">Bot:</strong>
+            {{ msg.text }}
+        </div>
+
+        <!-- Bot Typing Indicator -->
+        <div *ngIf="isBotTyping" class="bot-typing">
+            <strong>Bot is typing...</strong>
+        </div>
+    </div>
+
+    <div class="chatbot-input">
+        <input
+            type="text"
+            [(ngModel)]="chatInput"
+            (keyup.enter)="sendMessage()"
+            placeholder="Ask something..."
+            aria-label="Chat input" />
+        <button
+            (click)="sendMessage()"
+            aria-label="Send message"
+            [disabled]="isSending || !chatInput.trim()">
+            ➤
+        </button>
+    </div>
+</div>

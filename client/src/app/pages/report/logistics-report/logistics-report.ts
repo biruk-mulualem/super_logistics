@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 
 import { Header } from '../../../shared/components/header/header';
-import { Sidebar } from '../../../shared/components/sidebar/sidebar';
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LogisticsReportsService } from '../../../services/services/report/LogisticsReport/logistics-reports.service';
 
 @Component({
   selector: 'app-logistics-report',
-imports: [Sidebar, Header, FormsModule,CommonModule],
+imports: [ Header, FormsModule,CommonModule],
 
   templateUrl: './logistics-report.html',
   styleUrl: './logistics-report.css'

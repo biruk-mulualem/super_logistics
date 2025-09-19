@@ -1,56 +1,28 @@
 <div id="dashboard_page">
 
-    <!-- Main Content Area -->
-    <div class="main">
+  <!-- Main Content Area -->
+  <div class="main">
 
+    <app-header></app-header>
 
-        <app-header></app-header>
+    <div class="content">
+      <br>
+      <h1> <span style="visibility: hidden;">-------</span> Logistics</h1>
 
-        <div class="content">
-            <br>
-            <h1> <span style="visibility: hidden;">-------</span> Logistics</h1>
-
-<app-reusable-table
-  [headers]="logisticsHeaders"
-  [data]="tableData"
-  [editData]="editData"
-  [showEditModal]="showEditModal"
-  [intransitOptions]="intransitOptions"
-  (logisticsAdd)="onAddLogistics($event)"
-(delete)="onDelete($event)"
-  (edit)="saveLogisticsEdit($event)"
-
-
->
-  <!-- (logisticsDelete)="onLogisticsDelete($event)" -->
-</app-reusable-table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </div>
-        <app-sidebar></app-sidebar>
+      <app-reusable-table
+        [headers]="logisticsHeaders"
+        [data]="tableData"
+        [editData]="editData"
+        [showEditModal]="showEditModal"
+        [intransitOptions]="intransitOptions"
+        (logisticsAdd)="onAddLogistics($event)"
+        (delete)="onDelete($event)"
+        (edit)="saveLogisticsEdit($event)">
+        <!-- (logisticsDelete)="onLogisticsDelete($event)" -->
+      </app-reusable-table>
 
     </div>
+    
+
+  </div>
 </div>

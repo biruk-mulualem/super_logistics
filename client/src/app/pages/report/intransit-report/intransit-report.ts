@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Header } from '../../../shared/components/header/header';
-import { Sidebar } from '../../../shared/components/sidebar/sidebar';
+
 import { IntransitReportService } from '../../../services/services/report/IntransitReport/intransit-report.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-intransit-report',
   standalone: true,
-  imports: [Header, Sidebar, FormsModule,CommonModule],
+  imports: [Header, FormsModule,CommonModule],
   templateUrl: './intransit-report.html',
   styleUrls: ['./intransit-report.css'],
 })

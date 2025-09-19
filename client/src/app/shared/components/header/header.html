@@ -1,22 +1,101 @@
 <header class="topbar">
-  <!-- Left section -->
   <div class="topbar-left">
-    <img src="https://i.pravatar.cc/40" alt="Logo" class="logo" />
-    <span class="header-text">Super Double T</span>
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
   </div>
-
-  <!-- User section -->
-  <div class="topbar-user">
+      <span class="header-text">Rodas Paints</span>
+  <div class="topbar-user" (click)="toggleUserDropdown()">
     <img src="https://i.pravatar.cc/40" alt="User" class="user-avatar" />
-    <i class="fas fa-caret-down dropdown-icon"></i>
 
-    <div class="user-dropdown">
-      <span class="username">John Doe</span>
+    <i class="fas fa-caret-down dropdown-icon"
+      [class.rotated]="isUserDropdownOpen"></i>
+    <!-- Dropdown Menu -->
+    <div class="user-dropdown" [class.show]="isUserDropdownOpen">
+      <div class="user-info">
+
+        <span class="dropdown-username">John Doe</span>
+        <!-- <span class="dropdown-role">Admin</span> -->
+      </div>
+
       <a href="#"><i class="fas fa-user"></i> Profile</a>
       <a href="#"><i class="fas fa-cog"></i> Settings</a>
-      <a href="#"><i class="fas fa-bell"></i> Notifications <span class="badge">3</span></a>
-      <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+      <a href="#"><i class="fas fa-bell"></i> Notifications <span
+          class="badge">3</span></a>
       <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
   </div>
 </header>
+<!-- Sidebar -->
+<aside class="sidebar" [class.open]="isSidebarOpen">
+  <!-- Dashboard -->
+  <button (click)="closeSidebar()" [routerLink]="'/dashboard'">
+    <i class="fas fa-tachometer-alt"></i>
+    <span>Dashboard</span>
+  </button>
+
+  <!-- Intransit -->
+  <button (click)="closeSidebar()" [routerLink]="'/intransit'">
+    <i class="fas fa-money-bill-wave"></i>
+    <span>Intransit</span>
+  </button>
+
+  <!-- Logistics -->
+  <button (click)="closeSidebar()" [routerLink]="'/logistics'">
+    <i class="fas fa-truck"></i>
+    <span>Logistics</span>
+  </button>
+
+  <!-- History Dropdown -->
+  <div class="dropdown">
+    <button class="dropdown-btn" (click)="toggleDropdown('history')">
+      <i class="fas fa-history"></i>
+      <span>History</span>
+      <i class="fas fa-caret-down" [class.rotated]="dropdowns['history']"></i>
+    </button>
+    <div class="dropdown-content" [class.show]="dropdowns['history']">
+      <button (click)="closeSidebar()" [routerLink]="'/donelogisticshistory'">
+        <i class="fas fa-check-circle"></i>
+        Done Logistics
+      </button>
+      <button (click)="closeSidebar()" [routerLink]="'/cancelledlogisticshistory'">
+        <i class="fas fa-times-circle"></i>
+        Cancelled Logistics
+      </button>
+      <button (click)="closeSidebar()" [routerLink]="'/doneintransithistory'">
+        <i class="fas fa-check-circle"></i>
+        Done Intransit
+      </button>
+      <button (click)="closeSidebar()" [routerLink]="'/cancelledintransithistory'">
+        <i class="fas fa-times-circle"></i>
+        Cancelled Intransit
+      </button>
+    </div>
+  </div>
+
+  <!-- Reports Dropdown -->
+  <div class="dropdown">
+    <button class="dropdown-btn" (click)="toggleDropdown('report')">
+      <i class="fas fa-chart-bar"></i>
+      <span>Reports</span>
+      <i class="fas fa-caret-down" [class.rotated]="dropdowns['report']"></i>
+    </button>
+    <div class="dropdown-content" [class.show]="dropdowns['report']">
+      <button (click)="closeSidebar()" [routerLink]="'/logisticsreport'">
+        <i class="fas fa-file-alt"></i>
+        Logistics Report
+      </button>
+      <button (click)="closeSidebar()" [routerLink]="'/intransitreport'">
+        <i class="fas fa-file-alt"></i>
+        Intransit Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <button (click)="closeSidebar()" [routerLink]="'/setting'">
+    <i class="fas fa-cog"></i>
+    <span>Settings</span>
+  </button>
+</aside>

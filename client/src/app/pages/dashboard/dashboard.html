@@ -11,7 +11,7 @@
         <div class="row row-6-cols">
           <div class="box kpi" style="width: 140px; flex: 0 0 auto">
             <h3>Total Shipments</h3>
-            <p class="kpi-number">1254</p>
+            <p class="kpi-number">{{totalContainers}}</p>
           </div>
 
           <div class="box kpi">
@@ -42,13 +42,18 @@
             <h3>Doc-Owner</h3>
             <ul class="alerts">
               <li class="success">
-                Shimlis Adugna: <span class="value">820 Documents</span>
+                Shimelis : <span class="value">{{shimelisDocuments}}
+                  Documents</span>
               </li>
               <li class="warning">
-                Fikadu Terefe: <span class="value">340 Documents</span>
+                Fikadu : <span class="value">{{fikaduDocuments}}
+                  Documents</span>
               </li>
               <li class="warning">
-                Others: <span class="value">50 Documents</span>
+                Super: <span class="value">{{superDocuments}} Documents</span>
+              </li>
+              <li class="warning">
+                Others: <span class="value">{{othersDocuments}} Documents</span>
               </li>
             </ul>
           </div>
@@ -56,30 +61,33 @@
             <h3>Logistics</h3>
             <ul class="alerts">
               <li class="success">
-                20ft container - <span class="value">120</span>
+                20ft container - <span class="value">{{containers20ft}}</span>
               </li>
               <li class="success">
-                40ft container - <span class="value">85</span>
+                40ft container - <span class="value">{{containers40ft}}</span>
               </li>
               <li class="success">
-                40ft_hq container - <span class="value">60</span>
+                40ft_hq container - <span class="value">{{containers45ftHC}}</span>
               </li>
             </ul>
           </div>
-     <div class="box">
-  <h3>Intransit</h3>
-  <ul class="alerts">
-    <li class="success">
-      Fully Paid - <span class="value">{{ advancePayment }} items</span>
-    </li>
-    <li class="warning">
-      Partially Paid - <span class="value">{{ pendingPayment }} items</span>
-    </li>
-    <li class="danger">
-      Cancelled - <span class="value">44 items</span> <!-- static example -->
-    </li>
-  </ul>
-</div>
+          <div class="box">
+            <h3>Intransit</h3>
+            <ul class="alerts">
+              <li class="success">
+                Fully Paid - <span class="value">{{ advancePayment }}
+                  items</span>
+              </li>
+              <li class="warning">
+                Partially Paid - <span class="value">{{ pendingPayment }}
+                  items</span>
+              </li>
+              <li class="danger">
+                No Payment - <span class="value">{{fullPayment}} items</span>
+                <!-- static example -->
+              </li>
+            </ul>
+          </div>
 
         </div>
         <!-- Row 3: Full-width -->
@@ -90,39 +98,40 @@
             <h3>Common Data</h3>
             <ul class="alerts">
               <li class="success">
-                Bill Not Collected: <span class="value">120 Documents</span>
+                Bill Not Collected: <span class="value">{{billNotCollected}} Documents</span>
               </li>
               <li class="success">
-                Tax Not Paid: <span class="value">145 Documents</span>
+                Tax Not Paid: <span class="value">{{taxNotPaid}} Documents</span>
               </li>
               <li class="success">
-                Doc Not Collected: <span class="value">130 Documents</span>
+                Doc Not Collected: <span class="value">{{docNotCollected}} Documents</span>
               </li>
               <li class="success">
-                Doc Not Sent DJB: <span class="value">90 Documents</span>
+                Doc Not Sent DJB: <span class="value">{{docNotSentDjb}} Documents</span>
               </li>
             </ul>
           </div>
           <div class="box">
-            <h3>Recent Activity</h3>
+            <h3>Sample status</h3>
             <ul class="activity-feed">
-              <li>Shipment #123 reached Djibouti</li>
-              <li>Shipment #987 dispatched</li>
-              <li>Shipment #654 delayed</li>
+              <li>In Transit-123 </li>
+              <li>In Gumruk-987 </li>
+              <li>In SDT-654 </li>
             </ul>
           </div>
           <div class="box">
             <h3>Top Origins</h3>
             <ul class="alerts">
               <li class="success">
-                China - <span class="value">220 items</span>
+                China - <span class="value">{{containersFromChina}} Containers</span>
               </li>
-              <li class="warning">Uae - <span class="value">50 items</span></li>
+              <li class="warning">UAE - <span class="value">{{containersFromUAE}}
+                  containers</span></li>
               <li class="danger">
-                India - <span class="value">44 items</span>
+                India - <span class="value">{{containersFromIndia}} containers</span>
               </li>
               <li class="warning">
-                Egypt - <span class="value">44 items</span>
+                Egypt - <span class="value">{{containersFromEgypt}} containers</span>
               </li>
             </ul>
           </div>
@@ -133,14 +142,21 @@
         <!-- Calendar -->
         <app-calander></app-calander>
         <!-- Reminders -->
-        <div class="box full-height" style="margin-top: 20px">
-          <h3>Reminders & Alerts</h3>
-          <ul>
-            <li class="warning">3 shipments near deadline</li>
-            <li class="danger">Shipment #452 is delayed</li>
-            <li class="success">Weekly report generated</li>
-          </ul>
-        </div>
+  <div class="box full-height" style="margin-top: 20px">
+  <h3>Reminders & Alerts</h3>
+<ul>
+     <li class="danger" *ngFor="let reminder of reminders">   {{ reminder.message }}</li>
+
+ 
+</ul>
+      <!--  additional reminders to be added if needed
+      <li class="danger">ELR123 left Djibouti, not in AAK</li>
+      <li class="danger">ELR123 in AAK too long</li>
+      <li class="danger">ELR123 ETA Djibouti overdue</li>
+      <li class="danger">PO1234 containers not returned</li>  -->
+
+   
+</div>
       </div>
     </div>
   </div>

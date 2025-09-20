@@ -26,5 +26,6 @@ namespace server.Models
           public string? Origin { get; set; }
         public string? Remark { get; set; }
             public int? status { get; set; }
+        
     }
 }

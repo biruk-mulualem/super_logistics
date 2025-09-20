@@ -220,7 +220,12 @@
 /* Sidebar Reminders */
 .dashboard-sidebar ul {
   text-align: left;
+  max-height: 360px;        /* Set max height to trigger scroll */
+  overflow-y: auto;         /* Enables vertical scrolling */
+               /* Optional: remove default margin */
+  list-style-type: none;    /* Optional: remove bullet points */
 }
+
 
 .dashboard-sidebar li {
   margin-bottom: 8px;

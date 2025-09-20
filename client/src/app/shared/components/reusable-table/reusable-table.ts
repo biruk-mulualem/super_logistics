@@ -71,7 +71,7 @@ export class ReusableTable implements OnInit, OnChanges {
   showModal = {
     add: false,
     edit: false,
-        print: false,
+    print: false,
     delete: false,
     detail: false,
     payment: false,
@@ -126,6 +126,7 @@ export class ReusableTable implements OnInit, OnChanges {
     'sheet_metal',
     'roll_fabric',
     'drum',
+    'Others',
   ];
 
   origins: string[] = [
@@ -153,9 +154,99 @@ export class ReusableTable implements OnInit, OnChanges {
     'vietnam',
     'malaysia',
     'indonesia',
+    'Others',
   ];
 
-  containerTypes = ['20ft', '40ft', '45ft_HC', 'Open_Top', 'Flat_Rack'];
+  shippers: string[] = [
+    // Major global carriers (very common worldwide)
+    'Maersk',
+    'MSC',
+    'CMA CGM',
+    'Hapag-Lloyd',
+    'Evergreen',
+    'ONE (Ocean Network Express)',
+    'COSCO',
+    'Yang Ming',
+    'HMM',
+    'ZIM',
+
+    // Other global carriers, less common but still known
+    'PIL (Pacific International Lines)',
+    'Hyundai Merchant Marine',
+    'K Line',
+    'NYK Line',
+    'Hamburg Süd',
+
+    // Carriers that operate frequently around Africa
+    'Swire Shipping',
+    'Grimaldi Group',
+    'Safmarine',
+    'Sinokor Merchant Marine',
+    'Ark Shipping (Arkas Line)',
+    'Samudera Indonesia',
+    'Seaboard Marine',
+
+    // Smaller or regional carriers
+    'Delmas (now CMA CGM Africa)',
+    'NileDutch',
+    'Eaglestar Shipping',
+    'Mediterranean Shipping Lines',
+    'AfriLine Shipping',
+    'Others',
+  ];
+  transitors: string[] = [
+    // Local / regional transitors (Djibouti & East Africa focus)
+    'Trans Africa Global Solutions',
+    'Akakas Logistics',
+    'Trans African Transit Services',
+    'Simme Group International',
+    'Darka Horn of Africa',
+    'Safmarine Logistics',
+    'Bolloré Africa Logistics',
+    'SDV (Bolloré Logistics)',
+    'Agility Logistics',
+
+    // Major global freight forwarders
+    'Eco',
+    'Elite/Stm',
+    'Africa',
+    'Zoom Africa',
+    'Cyen',
+    'Maersk Logistics',
+    'MSC Logistics',
+    'CMA CGM Logistics',
+    'DHL Global Forwarding',
+    'Kuehne + Nagel',
+    'Expeditors International',
+    'Schenker (DB Schenker)',
+    'CEVA Logistics',
+    'Damco',
+    'Panalpina',
+    'Transworld Cargo',
+    'Blue Water Shipping',
+    'Globalink',
+    'GAC Group',
+    'Freightworks',
+    'Unifreight',
+    'Others',
+  ];
+
+  docOwners: string[] = [
+    // Local / regional transitors (Djibouti & East Africa focus)
+    'Fikadu Terefe',
+    'Shimelis Adugna',
+     'Super',
+    'Others',
+  ];
+
+  containerTypes = [
+    '20ft',
+    '40ft',
+    '45ft_HC',
+    'Open_Top',
+    'Flat_Rack',
+    'Others',
+  ];
 
   isBrowser: boolean;
   pageType: string | null = null;
@@ -163,7 +254,7 @@ export class ReusableTable implements OnInit, OnChanges {
   buttonVisibility = {
     add: true,
     edit: true,
-    print:true,
+    print: true,
     delete: true,
     detail: true,
     payment: true,
@@ -175,7 +266,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'intransit',
       add: true,
       edit: true,
-        print:true,
+      print: true,
       delete: true,
       detail: true,
       payment: false,
@@ -185,7 +276,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'logistics',
       add: true,
       edit: true,
-        print:true,
+      print: true,
       delete: true,
       detail: true,
       payment: false,
@@ -195,7 +286,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'reports',
       add: false,
       edit: true,
-        print:true,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -205,7 +296,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'history',
       add: false,
       edit: false,
-        print:true,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -215,7 +306,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'donelogisticshistory',
       add: false,
       edit: false,
-        print:true,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -224,8 +315,8 @@ export class ReusableTable implements OnInit, OnChanges {
       match: '/doneintransit',
       pageType: 'doneintransithistory',
       add: false,
-      edit: false, 
-       print:true,
+      edit: false,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -235,7 +326,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'cancelledintransithistory',
       add: false,
       edit: false,
-        print:true,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -245,7 +336,7 @@ export class ReusableTable implements OnInit, OnChanges {
       pageType: 'cancelledlogisticshistory',
       add: false,
       edit: false,
-        print:true,
+      print: true,
       delete: false,
       detail: true,
       payment: false,
@@ -285,9 +376,6 @@ export class ReusableTable implements OnInit, OnChanges {
 
     // Automatically open detail modal if detailRow changes
     if (changes['detailRow'] && this.detailRow) {
-
-
-
       this.selectedRow = this.detailRow;
       this.openModal('detail', this.detailRow);
       this.fetchPayments(this.detailRow.transactionId);
@@ -356,7 +444,7 @@ export class ReusableTable implements OnInit, OnChanges {
     return (
       this.buttonVisibility.detail ||
       this.buttonVisibility.edit ||
-       this.buttonVisibility.print ||
+      this.buttonVisibility.print ||
       this.buttonVisibility.payment ||
       this.buttonVisibility.delete
     );
@@ -442,8 +530,6 @@ export class ReusableTable implements OnInit, OnChanges {
     this.fetchPayments(row.transactionId);
   }
 
-
-
   submitPayments(): void {
     const missingFields = this.validateIntransitPayments(this.newPayments);
     if (missingFields.length > 0) {
@@ -475,14 +561,12 @@ export class ReusableTable implements OnInit, OnChanges {
     return missing;
   }
 
-    // ============================================================
+  // ============================================================
   // -------------------- Intransit Add / Edit ------------------
   // ============================================================
- openPrintModal() {
-
+  openPrintModal() {
     this.openModal('print');
-
- }
+  }
 
   // ============================================================
   // -------------------- Intransit Add / Edit ------------------

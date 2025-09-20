@@ -7,18 +7,13 @@
       (input)="onSearch()"
       class="search-input"
       placeholder="Search..." />
-
-
- 
-
-  <button
-    *ngIf="buttonVisibility.add"
-    class="add-btn"
-    title="Add"
-    (click)="openAddModal()">
-    <i class="fas fa-plus"></i> 
-  </button>
-
+    <button
+      *ngIf="buttonVisibility.add"
+      class="add-btn"
+      title="Add"
+      (click)="openAddModal()">
+      <i class="fas fa-plus"></i>
+    </button>
 
   </div>
 
@@ -79,7 +74,6 @@
     </button>
   </div>
 </div>
-
 
 <!-- ================= ADD MODAL ================= -->
 <div class="modal" *ngIf="showModal.add" (click)="closeModal('add')">
@@ -851,20 +845,6 @@
                     (ngModelChange)="onTransactionChange(item)"
                     placeholder="Enter transaction ID " />
                 </div>
-
-                <!-- Item Description Selector -->
-                <!-- <div class="modal-input-group">
-
-                  <select
-                    [(ngModel)]="item.selectedItem"
-                    (ngModelChange)="onItemChange(item)">
-                    <option *ngFor="let itm of item.availableItems"
-                      [ngValue]="itm">
-                      {{ itm.itemDescription }}
-                    </option>
-                  </select>
-                </div> -->
-
                 <!-- Auto-filled UOM -->
                 <div class="modal-input-group">
 
@@ -904,15 +884,23 @@
                 <label>Track-Waybill:</label>
                 <input type="text" [(ngModel)]="editData.truckWayBill" />
               </div>
+
               <div class="modal-input-group">
                 <label>Shipper:</label>
-                <input type="text" [(ngModel)]="editData.shipper" />
+                <select [(ngModel)]="editData.shipper">
+                  <option *ngFor="let o of shippers" [value]="o">{{ o
+                    }}</option>
+                </select>
               </div>
 
               <div class="modal-input-group">
                 <label>Transitor:</label>
-                <input type="text" [(ngModel)]="editData.transitor" />
+                <select [(ngModel)]="editData.transitor">
+                  <option *ngFor="let o of transitors" [value]="o">{{ o
+                    }}</option>
+                </select>
               </div>
+
               <div class="modal-input-group">
                 <label>No-Cont:</label>
                 <input type="text" [(ngModel)]="editData.loadedOnfcl" />
@@ -939,8 +927,12 @@
 
               <div class="modal-input-group">
                 <label>Doc-Owner:</label>
-                <input type="text" [(ngModel)]="editData.docOwner" />
+                <select [(ngModel)]="editData.docOwner">
+                  <option *ngFor="let o of docOwners" [value]="o">{{ o
+                    }}</option>
+                </select>
               </div>
+
               <div class="modal-input-group">
                 <label>Cont-Type</label>
                 <select [(ngModel)]="editData.containerType" required>
